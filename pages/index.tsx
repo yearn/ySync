@@ -152,6 +152,7 @@ function	VaultRow({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 					<AddressWithActions
 						className={'text-sm font-normal'}
 						truncate={0}
+						explorer={getChainExplorer()}
 						address={vault.address} />
 				</div>
 			</div>
