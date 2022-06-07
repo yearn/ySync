@@ -7,7 +7,8 @@ module.exports = ({
 	plugins: [new Dotenv()],
 	images: {
 		domains: [
-			'rawcdn.githack.com'
+			'rawcdn.githack.com',
+			'raw.githubusercontent.com'
 		]
 	},
 	env: {
@@ -15,10 +16,10 @@ module.exports = ({
 		** Stuff used for the SEO or some related elements, like the title, the
 		** github url etc.
 		**********************************************************************/
-		WEBSITE_URI: 'https://web.ycorpo.com/',
-		WEBSITE_NAME: 'yWeb',
-		WEBSITE_TITLE: 'yWeb',
-		WEBSITE_DESCRIPTION: 'Template used for Yearn\'s projects',
+		WEBSITE_URI: 'https://sync.ycorpo.com/',
+		WEBSITE_NAME: 'yData Sync',
+		WEBSITE_TITLE: 'yData Sync',
+		WEBSITE_DESCRIPTION: 'Sync data from Yearn\'s data sources',
 		PROJECT_GITHUB_URL: 'https://github.com/yearn/yearn-template',
 
 		/* 🔵 - Yearn Finance **************************************************
@@ -32,18 +33,18 @@ module.exports = ({
 		** USE_PRICE_TRI_CRYPTO: should we fetch the special Tri Crypto token
 		** 			   price? (require blockchain call)
 		**********************************************************************/
-		USE_WALLET: true,
-		USE_PRICES: true,
+		USE_WALLET: false,
+		USE_PRICES: false,
 		USE_PRICE_TRI_CRYPTO: false,
-		CG_IDS: ['yearn-finance'],
-		TOKENS: [
-			['0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e', 18, 1]
-		],
+		CG_IDS: [],
+		TOKENS: [],
 		RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
 			250: process.env.RPC_URL_FANTOM || 'https://rpc.ftm.tools',
 			42161: process.env.RPC_URL_ARBITRUM || 'https://arbitrum.public-rpc.com'
 		},
-		ALCHEMY_KEY: process.env.ALCHEMY_KEY
+		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
+		META_API_URL: 'https://meta.yearn.finance/api',
+		META_GITHUB_URL: 'https://github.com/yearn/yearn-meta'
 	}
 });

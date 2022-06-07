@@ -1,2 +1,140 @@
 /* This will load Tailwindcss + all the overwrite from Yearn lib */
-@import '@yearn/web-lib/dist/style.css';
+@import '@yearn-finance/web-lib/dist/style.css';
+
+input::placeholder {@apply not-italic}
+
+
+/* 🔵 - Yearn Finance ******************************************************
+** Shorthand for some group of style used across the application
+**************************************************************************/
+.component--switchCard-wrapper {
+	@apply flex flex-row justify-between p-2 space-x-2 w-full cursor-pointer md:p-0 md:space-x-6 md:w-max
+}
+.image-align-middle > img {
+	object-position: 0 70%;
+}
+
+/* :root [data-theme="system-prefs"], */
+/* :root [data-theme="light"], */
+/* :root, */
+:root [data-theme="system-prefs"],
+:root [data-theme="dark"] {
+	--color-secondary: 23 34 69;
+	--color-secondary-variant: 23 34 69;
+	--color-surface: 34 51 103;
+	--color-surface-variant: 29 44 89;
+	--color-background: 28 40 77;
+	--color-background-variant: 16 33 64;
+	--color-typo-primary: 255 255 255;
+	--color-typo-secondary: 213 216 231;
+	
+	--color-button-outlined-primary: 55 79 154;
+	--color-button-outlined-variant: 48 68 133;
+	--color-button-outlined-text: 255 255 255;
+
+	--color-icons-primary: 255 255 255;
+	--color-icons-variant: 28 40 77;
+
+	--color-button-disabled-primary: 46 70 140;
+	--color-button-disabled-text: 206 213 227;
+
+	@apply bg-background;
+	background-image: linear-gradient(180deg,transparent 0,#293e81 80vh);
+}
+
+:root [data-theme="system-prefs"],
+:root [data-theme="light"] {
+	& .yearn--card {
+		@apply border border-transparent !shadow-none;
+	}
+	& .label {
+		@apply border-transparent;
+	}
+	& .project--kbar-wrapper {
+		@apply rounded-lg opacity-60 bg-background-variant/70 hover:bg-background-variant transition-colors;
+	}
+}
+
+:root [data-theme="system-prefs"],
+:root [data-theme="dark"] {
+	& .yearn--button {
+		&[data-variant="light"] {
+			@apply text-button-outlined-text bg-button-outlined-primary;
+			&:disabled {@apply bg-button-disabled-primary text-button-disabled-text opacity-40;}
+			&:not(:disabled):not(&[aria-busy="true"]):hover {@apply bg-button-outlined-variant;}
+		}
+		&[data-variant="filled"] {
+			&:disabled {
+				@apply opacity-40;
+			}
+		}
+	}
+
+	& .yearn--card {
+		@apply border border-background-variant !shadow-none;
+		&.yearn--card-tab {@apply border-b-0;}
+	}
+	& .yearn--card-tab-item {
+		--card-tab-color-active: rgb(var(--color-white));
+		--card-tab-color: rgb(var(--color-disabled) / 0.4);
+		--card-bg-color: rgb(var(--color-background));
+	}
+
+	& .yearn--searchBox-wrapper {
+		--searchBox-text-color: rgb(var(--color-typo-secondary));
+		--searchBox-border-color: rgb(var(--color-background-variant));
+		--searchBox-bg-color: rgb(var(--color-surface));
+		--searchBox-border-width: 1px;
+	}
+	& .yearn--searchBox {
+		@apply focus-within:border-background-variant;
+	}
+
+	& .yearn--banner {
+		--banner-bg-color: rgb(var(--color-secondary));
+		--banner-text-color: rgb(var(--color-typo-primary));
+		--banner-border-color: rgb(var(--color-background-variant));
+		--banner-border-width: 2px;
+	}
+
+	& .yearn--switch {
+		--switch-bg-color: rgb(var(--color-surface-variant));
+		--switch-border-color: rgb(var(--color-primary));
+		--switch-border-width: 1px;
+		--switch-knob-color: rgb(var(--color-primary));
+	}
+
+	& .yearn--dropdown-menu {
+		--dropdown-text-color: rgb(var(--color-typo-primary));
+		--dropdown-bg-color: rgb(var(--color-button-outlined-primary));
+		--dropdown-bg-color-active: rgb(var(--color-button-outlined-variant));
+		--dropdown-border-width: 0px;
+		--dropdown-border-color: transparent;
+	}
+
+	& .yearn--elementWithActions {
+		--elementWithActions-text-color: rgb(var(--color-typo-primary));
+		--elementWithActions-action-color: rgb(var(--color-primary));
+		--elementWithActions-action-color-hover: rgb(var(--color-primary-variant));
+	}
+
+	& .yearn--input-max {
+		--input-max-text-color: rgb(var(--color-typo-secondary));
+		--input-max-border-color: rgb(var(--color-typo-secondary));
+		--input-max-bg-color-hover: rgb(var(--color-typo-primary)/0.1);
+	}
+
+	& .project--kbar-wrapper {
+		@apply rounded-lg opacity-60 bg-surface-variant/70 hover:bg-surface-variant transition-colors;
+	}
+}
+
+.label {
+	@apply py-2 px-4 min-w-[40px] h-10 text-sm text-center bg-surface border border-background-variant rounded-lg hover:bg-surface-variant transition-colors relative;
+	&[aria-checked="true"] {
+		@apply bg-surface-variant;
+	}
+	& > input {
+		@apply opacity-0 cursor-pointer absolute inset-0 z-10 w-full h-full;
+	}
+}
