@@ -9,18 +9,20 @@ import	StatusLine							from	'components/VaultBox.StatusLine';
 import	ModalFix							from	'components/modals/ModalFix';
 import	type {TFixModalData, TSettings}		from 'types/types';
 
+const		defaultFixModalData: TFixModalData = {
+	isOpen: false,
+	fix: {
+		category: 'ledger',
+		address: '0x0000000000000000000000000000000000000000',
+		name: '',
+		instructions: []
+	}
+};
+
 function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactElement | null {
 	const	{strategiesFromMeta, aggregatedData, riskFramework} = useYearn();
 	const	{chainID} = useWeb3();
-	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>({
-		isOpen: false,
-		fix: {
-			category: 'ledger',
-			address: '0x0000000000000000000000000000000000000000',
-			name: '',
-			instructions: []
-		}
-	});
+	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
 
 	function getChainExplorer(): string {
 		if (chainID === 250) {
@@ -68,7 +70,6 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 					<AddressWithActions
 						className={'text-sm font-normal'}
 						truncate={0}
-						explorer={getChainExplorer()}
 						address={vault.address} />
 				</div>
 			</div>
@@ -249,15 +250,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 			<ModalFix
 				fix={fixModalData.fix}
 				isOpen={fixModalData.isOpen}
-				onClose={(): void => set_fixModalData({
-					isOpen: false,
-					fix: {
-						category: 'ledger',
-						address: '0x0000000000000000000000000000000000000000',
-						name: '',
-						instructions: []
-					}
-				})} />
+				onClose={(): void => set_fixModalData(defaultFixModalData)} />
 		</Card>
 	);
 }
