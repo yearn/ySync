@@ -80,7 +80,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			axios.get(`https://api.yearn.finance/v1/chains/${_chainID}/vaults/all`),
 			axios.get(`https://meta.yearn.finance/api/${_chainID}/vaults/all`),
 			axios.get(`https://meta.yearn.finance/api/${_chainID}/strategies/all?loc=all`),
-			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
+			// axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
+			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/81860246a607ac3853b63624e9e5acc43d868c04/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
 			request(getGraphForNetwork(_chainID), `{vaults(first: 1000) {
 				id

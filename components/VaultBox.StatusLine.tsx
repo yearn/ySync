@@ -1,0 +1,52 @@
+import	React, {ReactElement}				from	'react';
+import	IconCross							from	'components/icons/IconCross';
+import	IconCheck							from	'components/icons/IconCheck';
+import	IconFix								from	'components/icons/IconFix';
+import	type {TAnomalies, TSettings}		from	'types/types';
+
+function	StatusLine({
+	settings,
+	isValid,
+	onClick,
+	prefix,
+	sufix
+}: {settings: TSettings} & TAnomalies): ReactElement {
+	if (isValid) {
+		if (settings.shouldShowOnlyAnomalies) {
+			return <div />;
+		}
+		return (
+			<div className={'flex flex-row items-start space-x-2'}>
+				<IconCheck className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-primary'}/>
+				<p className={'text-sm text-typo-secondary'}>
+					{`${prefix} OK `}
+					{sufix}
+				</p>
+			</div>
+		);
+	}
+	if (isValid === null) { //indeterminate state
+		return (
+			<div className={'flex flex-row items-start space-x-2'}>
+				<div className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] rounded-full bg-typo-off'} />
+				<p className={'text-sm text-typo-secondary'}>
+					{'Checking ...'}
+				</p>
+			</div>
+		);
+	}
+	return (
+		<div className={'flex flex-row items-start space-x-2'}>
+			<IconCross className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-alert-error-primary'}/>
+			<p className={'text-sm text-typo-secondary'}>
+				{`${prefix} KO `}
+				{sufix}
+			</p>
+			{onClick ? <IconFix
+				onClick={onClick}
+				className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] transition-colors cursor-pointer text-typo-secondary/40 hover:text-typo-secondary'} /> : null}
+		</div>
+	);
+}
+
+export default StatusLine;

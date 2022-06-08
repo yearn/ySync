@@ -1,5 +1,11 @@
 /* This will load Tailwindcss + all the overwrite from Yearn lib */
 @import '@yearn-finance/web-lib/dist/style.css';
+@font-face {
+    font-family: 'Menlo Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Menlo Regular'), url('/Menlo-Regular.woff') format('woff');
+}
 
 input::placeholder {@apply not-italic}
 
@@ -137,4 +143,12 @@ input::placeholder {@apply not-italic}
 	& > input {
 		@apply opacity-0 cursor-pointer absolute inset-0 z-10 w-full h-full;
 	}
+}
+
+.prism-code {
+	@apply p-4 rounded-lg my-4 overflow-x-scroll;
+}
+.token {
+	@apply text-xs;
+	font-family: 'Menlo Regular', monospace;
 }
