@@ -1,8 +1,7 @@
 import	React, {ReactElement}	from	'react';
-import	{Card}					from	'@yearn-finance/web-lib/components';
+import	{Card, Modal}			from	'@yearn-finance/web-lib/components';
 import	{Copy}					from	'@yearn-finance/web-lib/icons';
 import 	{copyToClipboard}		from	'@yearn-finance/web-lib/utils';
-import	{Modal}					from	'components/modals/Modal';
 import	Code					from	'components/Code';
 
 type		TModalFix = {
@@ -41,7 +40,7 @@ function	ModalFix({fix, isOpen, onClose}: TModalFix): ReactElement {
 			isOpen={isOpen}
 			onClose={onClose}>
 			<Card>
-				<h1 className={'mb-4 text-3xl text-typo-primary'}>{'Fix this issue'}</h1>
+				<h1 className={'mb-4 text-3xl text-neutral-700'}>{'Fix this issue'}</h1>
 				<div className={'mb-4 space-y-2'}>
 					<p>{'In order to fix this issue, please, follow the instructions:'}</p>
 					<ul className={'space-y-2'}>

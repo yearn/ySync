@@ -7,9 +7,6 @@
     src: local('Menlo Regular'), url('/Menlo-Regular.woff') format('woff');
 }
 
-input::placeholder {@apply not-italic}
-
-
 /* 🔵 - Yearn Finance ******************************************************
 ** Shorthand for some group of style used across the application
 **************************************************************************/
@@ -20,36 +17,13 @@ input::placeholder {@apply not-italic}
 	object-position: 0 70%;
 }
 
-/* :root [data-theme="system-prefs"], */
-/* :root [data-theme="light"], */
-/* :root, */
-:root [data-theme="system-prefs"],
-:root [data-theme="dark"] {
-	--color-secondary: 23 34 69;
-	--color-secondary-variant: 23 34 69;
-	--color-surface: 34 51 103;
-	--color-surface-variant: 29 44 89;
-	--color-background: 28 40 77;
-	--color-background-variant: 16 33 64;
-	--color-typo-primary: 255 255 255;
-	--color-typo-secondary: 213 216 231;
-	
-	--color-button-outlined-primary: 55 79 154;
-	--color-button-outlined-variant: 48 68 133;
-	--color-button-outlined-text: 255 255 255;
 
-	--color-icons-primary: 255 255 255;
-	--color-icons-variant: 28 40 77;
-
-	--color-button-disabled-primary: 46 70 140;
-	--color-button-disabled-text: 206 213 227;
-
-	@apply bg-background;
-	background-image: linear-gradient(180deg,transparent 0,#293e81 80vh);
+:root body[data-theme="light"],
+:root body[data-theme="dark"] {
+	--color-red-900: 3 73% 47%
 }
 
-:root [data-theme="system-prefs"],
-:root [data-theme="light"] {
+:root body[data-theme="light"] {
 	& .yearn--card {
 		@apply border border-transparent !shadow-none;
 	}
@@ -57,92 +31,64 @@ input::placeholder {@apply not-italic}
 		@apply border-transparent;
 	}
 	& .project--kbar-wrapper {
-		@apply rounded-lg opacity-60 bg-background-variant/70 hover:bg-background-variant transition-colors;
+		@apply rounded-lg opacity-60 bg-neutral-300/70 hover:bg-neutral-300 transition-colors;
 	}
 }
 
-:root [data-theme="system-prefs"],
-:root [data-theme="dark"] {
-	& .yearn--button {
-		&[data-variant="light"] {
-			@apply text-button-outlined-text bg-button-outlined-primary;
-			&:disabled {@apply bg-button-disabled-primary text-button-disabled-text opacity-40;}
-			&:not(:disabled):not(&[aria-busy="true"]):hover {@apply bg-button-outlined-variant;}
-		}
-		&[data-variant="filled"] {
-			&:disabled {
-				@apply opacity-40;
-			}
-		}
+:root body[data-theme="dark"] {
+	--color-neutral-0: 225 50% 27%;
+	--color-neutral-100: 225 51% 23%;
+	--color-neutral-200: 225 47% 21%;
+	--color-neutral-300: 219 60% 16%;
+	--color-neutral-400: 0 0% 100%;
+	--color-neutral-500: 230 27% 87%;
+	--color-neutral-700: 0 0% 100%;
+
+	--color-primary-100: 226 50% 18%;
+	--color-primary-200: 225 47% 41%;
+
+	@apply bg-neutral-200;
+	background-image: linear-gradient(180deg,transparent 0,#293e81 80vh);
+
+	& .yearn--button[data-variant="light"] {
+		@apply text-neutral-900 bg-primary-200 hover:bg-primary-100;
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-100;}
 	}
 
 	& .yearn--card {
-		@apply border border-background-variant !shadow-none;
-		&.yearn--card-tab {@apply border-b-0;}
-	}
-	& .yearn--card-tab-item {
-		--card-tab-color-active: rgb(var(--color-white));
-		--card-tab-color: rgb(var(--color-disabled) / 0.4);
-		--card-bg-color: rgb(var(--color-background));
+		@apply border border-neutral-200 !shadow-none;
 	}
 
 	& .yearn--searchBox-wrapper {
-		--searchBox-text-color: rgb(var(--color-typo-secondary));
-		--searchBox-border-color: rgb(var(--color-background-variant));
-		--searchBox-bg-color: rgb(var(--color-surface));
+		--searchBox-text-color: hsl(var(--color-neutral-500));
+		--searchBox-border-color: hsl(var(--color-neutral-300));
+		--searchBox-bg-color: hsl(var(--color-neutral-0));
 		--searchBox-border-width: 1px;
 	}
 	& .yearn--searchBox {
-		@apply focus-within:border-background-variant;
+		@apply focus-within:border-neutral-200;
 	}
 
 	& .yearn--banner {
-		--banner-bg-color: rgb(var(--color-secondary));
-		--banner-text-color: rgb(var(--color-typo-primary));
-		--banner-border-color: rgb(var(--color-background-variant));
+		--banner-bg-color: hsl(var(--color-primary-100));
+		--banner-text-color: hsl(var(--color-neutral-700));
+		--banner-border-color: hsl(var(--color-neutral-200));
 		--banner-border-width: 2px;
 	}
 
-	& .yearn--switch {
-		--switch-bg-color: rgb(var(--color-surface-variant));
-		--switch-border-color: rgb(var(--color-primary));
-		--switch-border-width: 1px;
-		--switch-knob-color: rgb(var(--color-primary));
-	}
-
-	& .yearn--dropdown-menu {
-		--dropdown-text-color: rgb(var(--color-typo-primary));
-		--dropdown-bg-color: rgb(var(--color-button-outlined-primary));
-		--dropdown-bg-color-active: rgb(var(--color-button-outlined-variant));
-		--dropdown-border-width: 0px;
-		--dropdown-border-color: transparent;
-	}
-
 	& .yearn--elementWithActions {
-		--elementWithActions-text-color: rgb(var(--color-typo-primary));
-		--elementWithActions-action-color: rgb(var(--color-primary));
-		--elementWithActions-action-color-hover: rgb(var(--color-primary-variant));
-	}
-
-	& .yearn--input-max {
-		--input-max-text-color: rgb(var(--color-typo-secondary));
-		--input-max-border-color: rgb(var(--color-typo-secondary));
-		--input-max-bg-color-hover: rgb(var(--color-typo-primary)/0.1);
+		--elementWithActions-text-color: hsl(var(--color-neutral-700));
+		--elementWithActions-action-color: hsl(var(--color-primary-500));
+		--elementWithActions-action-color-hover: hsl(var(--color-primary-600));
 	}
 
 	& .project--kbar-wrapper {
-		@apply rounded-lg opacity-60 bg-surface-variant/70 hover:bg-surface-variant transition-colors;
+		@apply rounded-lg opacity-60 bg-neutral-100/70 hover:bg-neutral-100 transition-colors;
 	}
 }
 
-.label {
-	@apply py-2 px-4 min-w-[40px] h-10 text-sm text-center bg-surface border border-background-variant rounded-lg hover:bg-surface-variant transition-colors relative;
-	&[aria-checked="true"] {
-		@apply bg-surface-variant;
-	}
-	& > input {
-		@apply opacity-0 cursor-pointer absolute inset-0 z-10 w-full h-full;
-	}
+.yearn--modal {
+	@apply md:max-w-4xl;
 }
 
 .prism-code {

@@ -51,7 +51,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 	return (
 		<Card variant={'background'}>
 			<div className={'flex flex-row space-x-4'}>
-				<div className={'w-10 h-10 rounded-full bg-background'}>
+				<div className={'w-10 h-10 rounded-full bg-neutral-200'}>
 					{vault.icon ? 
 						<Image
 							src={vault.icon}
@@ -64,7 +64,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				</div>
 				<div className={'flex flex-col -mt-1'}>
 					<div className={'flex flex-row items-center space-x-2'}>
-						<h4 className={'text-lg font-bold text-typo-primary'}>{vault.name}</h4>
+						<h4 className={'text-lg font-bold text-neutral-700'}>{vault.name}</h4>
 						<p className={'text-sm opacity-60'}>{`(v${vault.version})`}</p>
 					</div>
 					<AddressWithActions
@@ -126,13 +126,13 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 									{'2. Append the following snippet at the end of the '}
 									<code
 										onClick={(): void => copyToClipboard('contracts')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-background'}>
+										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
 										{'contracts'}
 									</code>
 									{' object in the '}
 									<code
 										onClick={(): void => copyToClipboard('b2c.json')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-background'}>
+										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
 										{'b2c.json'}
 									</code>
 									{'file.'}
@@ -147,13 +147,13 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 									{'4. Clone and rename '}
 									<code
 										onClick={(): void => copyToClipboard('_vault_v0.4.3.json')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-background'}>
+										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
 										{'_vault_v0.4.3.json'}
 									</code>
 									{' to '}
 									<code
 										onClick={(): void => copyToClipboard(`${vault.address}.json`)}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-background'}>
+										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
 										{`${vault.address}.json`}
 									</code>
 								</span>
@@ -166,7 +166,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
-					<b className={'mb-1 font-mono text-sm text-typo-secondary'}>{'Risk Score'}</b>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
 						const	hasRiskFramework = Object.values(riskFramework)
 							.filter((r: any): boolean => r.network === chainID)
@@ -190,7 +190,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-alert-error-primary'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -203,7 +203,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
-					<b className={'mb-1 font-mono text-sm text-typo-secondary'}>{'Descriptions'}</b>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
 						const	isInMeta = strategiesFromMeta.some((s: any): boolean => s.addresses.map((s: string): string => toAddress(s)).includes(toAddress(strategy.address)));
 
@@ -216,7 +216,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${isInMeta ? '' : 'text-alert-error-primary'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${isInMeta ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -228,7 +228,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 
 			{(aggregatedData[toAddress(vault.address)]?.hasValidStrategiesTranslations && settings.shouldShowOnlyAnomalies) || !settings.shouldShowTranslationErrors ? null : (
 				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
-					<b className={'mb-1 font-mono text-sm text-typo-secondary'}>{'Translations'}</b>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Translations'}</b>
 					{vault.strategies.map((strategy: {address: string}): ReactNode => {
 						const	missingTranslationsObject: {[key: string]: string[]} = aggregatedData[toAddress(vault.address)]?.missingTranslations;
 						const	missingTranslations = missingTranslationsObject[toAddress(strategy.address) as string];

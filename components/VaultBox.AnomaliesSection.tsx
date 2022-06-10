@@ -23,7 +23,7 @@ function	AnomaliesSection({
 	}
 	return (
 		<section aria-label={'data source check'} className={'flex flex-col pl-14 mt-3'}>
-			<b className={'mb-1 font-mono text-sm text-typo-secondary'}>{label}</b>
+			<b className={'mb-1 font-mono text-sm text-neutral-500'}>{label}</b>
 			{localAnomalies.map((e: TAnomalies, i: number): ReactNode => <StatusLine key={`${e.prefix}-${i}`} settings={settings} {...e} />)}
 		</section>
 	);

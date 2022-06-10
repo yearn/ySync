@@ -17,8 +17,8 @@ function	StatusLine({
 		}
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
-				<IconCheck className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-primary'}/>
-				<p className={'text-sm text-typo-secondary'}>
+				<IconCheck className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-accent-500'}/>
+				<p className={'text-sm text-neutral-500'}>
 					{`${prefix} OK `}
 					{sufix}
 				</p>
@@ -28,8 +28,8 @@ function	StatusLine({
 	if (isValid === null) { //indeterminate state
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
-				<div className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] rounded-full bg-typo-off'} />
-				<p className={'text-sm text-typo-secondary'}>
+				<div className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] rounded-full bg-neutral-400'} />
+				<p className={'text-sm text-neutral-500'}>
 					{'Checking ...'}
 				</p>
 			</div>
@@ -37,14 +37,14 @@ function	StatusLine({
 	}
 	return (
 		<div className={'flex flex-row items-start space-x-2'}>
-			<IconCross className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-alert-error-primary'}/>
-			<p className={'text-sm text-typo-secondary'}>
+			<IconCross className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] text-red-900'}/>
+			<p className={'text-sm text-neutral-500'}>
 				{`${prefix} KO `}
 				{sufix}
 			</p>
 			{onClick ? <IconFix
 				onClick={onClick}
-				className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] transition-colors cursor-pointer text-typo-secondary/40 hover:text-typo-secondary'} /> : null}
+				className={'mt-[2px] w-4 min-w-[16px] h-4 min-h-[16px] transition-colors cursor-pointer text-neutral-500/40 hover:text-neutral-500'} /> : null}
 		</div>
 	);
 }
