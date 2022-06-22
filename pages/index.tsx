@@ -10,7 +10,6 @@ import	type {TSettings}					from	'types/types';
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
 	shouldShowOnlyEndorsed: true,
-	shouldShowTranslationErrors: false,
 	shouldShowVersion: 'v4'
 };
 
@@ -40,14 +39,10 @@ function	Index(): ReactNode {
 		vaults
 			.filter((vault): boolean => {
 				const	hasAnomalies = (
-					!aggregatedData[toAddress(vault.address)]?.fromAPI
-					|| !aggregatedData[toAddress(vault.address)]?.fromMeta
-					|| !aggregatedData[toAddress(vault.address)]?.fromGraph
-					|| !aggregatedData[toAddress(vault.address)]?.hasValidIcon
+					!aggregatedData[toAddress(vault.address)]?.hasValidIcon
 					|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 					|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 					|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
-					|| (settings.shouldShowTranslationErrors && !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesTranslations)
 				);
 				return (hasAnomalies);
 			})
@@ -132,18 +127,6 @@ function	Index(): ReactNode {
 								className={'ml-2 rounded-lg'}
 								checked={settings.shouldShowOnlyAnomalies}
 								onChange={(): void => set_settings({...settings, shouldShowOnlyAnomalies: !settings.shouldShowOnlyAnomalies})} />
-						</label>
-
-						<label
-							htmlFor={'checkbox-translations'}
-							className={'flex flex-row items-center p-2 w-fit font-mono text-sm rounded-lg transition-colors cursor-pointer text-neutral-500 bg-neutral-200/60 hover:bg-neutral-200'}>
-							<p className={'pr-4'}>{'Show Translations errors'}</p>
-							<input
-								type={'checkbox'}
-								id={'checkbox-translations'}
-								className={'ml-2 rounded-lg'}
-								checked={settings.shouldShowTranslationErrors}
-								onChange={(): void => set_settings({...settings, shouldShowTranslationErrors: !settings.shouldShowTranslationErrors})} />
 						</label>
 
 						<span

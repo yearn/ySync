@@ -12,7 +12,7 @@ import	type {TFixModalData, TSettings}		from 'types/types';
 const		defaultFixModalData: TFixModalData = {
 	isOpen: false,
 	fix: {
-		category: 'ledger',
+		category: '',
 		address: '0x0000000000000000000000000000000000000000',
 		name: '',
 		instructions: []
@@ -20,11 +20,11 @@ const		defaultFixModalData: TFixModalData = {
 };
 
 function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactElement | null {
-	const	{strategiesFromMeta, aggregatedData, riskFramework} = useYearn();
+	const	{aggregatedData, riskFramework} = useYearn();
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
 
-	function getChainExplorer(): string {
+	function	getChainExplorer(): string {
 		if (chainID === 250) {
 			return ('https://ftmscan.com');
 		} else if (chainID === 42161) {
@@ -33,17 +33,112 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 		return ('https://etherscan.io');
 	}
 
-	const	hasAnomalies = (
-		!aggregatedData[toAddress(vault.address)]?.fromAPI
-		|| !aggregatedData[toAddress(vault.address)]?.fromMeta
-		|| !aggregatedData[toAddress(vault.address)]?.fromGraph
-		|| !aggregatedData[toAddress(vault.address)]?.hasValidIcon
+	const		hasAnomalies = (
+		!aggregatedData[toAddress(vault.address)]?.hasValidIcon
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidTokenIcon
 		|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
-		|| (settings.shouldShowTranslationErrors && !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesTranslations)
 	);
+
+	function	onTriggerModalForLedger(): void {
+		set_fixModalData({
+			isOpen: true,
+			fix: {
+				category: 'ledger',
+				address: vault.address,
+				name: vault.name,
+				instructions: [
+					<span key={'step-1'}>
+						{'1. Access the Ledger\'s B2C file for Yearn on GitHub: '}
+						<a href={'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/tests/yearn/b2c.json'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/tests/yearn/b2c.json'}
+						</a>
+					</span>,
+					<span key={'step-3'}>
+						{'2. Append the following snippet at the end of the '}
+						<code
+							onClick={(): void => copyToClipboard('contracts')}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{'contracts'}
+						</code>
+						{' object in the '}
+						<code
+							onClick={(): void => copyToClipboard('b2c.json')}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{'b2c.json'}
+						</code>
+						{'file.'}
+					</span>,
+					<span key={'step-3'}>
+						{'3. Access the Ledger\'s ABIs folder for Yearn on GitHub: '}
+						<a href={'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'}
+						</a>
+					</span>,
+					<span key={'step-3'}>
+						{'4. Clone and rename '}
+						<code
+							onClick={(): void => copyToClipboard('_vault_v0.4.3.json')}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{'_vault_v0.4.3.json'}
+						</code>
+						{' to '}
+						<code
+							onClick={(): void => copyToClipboard(`${vault.address}.json`)}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{`${vault.address}.json`}
+						</code>
+					</span>
+				]
+			}
+		});
+	}
+	function	onTriggerModalForDescription(currentStrategy: {name: string, address: string}): void {
+		set_fixModalData({
+			isOpen: true,
+			fix: {
+				category: 'description',
+				address: vault.address,
+				name: vault.name,
+				instructions: [
+					<span key={'step-1'}>
+						{'1. Access the Strategies folder in the meta repo: '}
+						<a href={`https://github.com/yearn/yearn-meta/tree/master/data/strategies/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{`https://github.com/yearn/yearn-meta/tree/master/data/strategies/${chainID}`}
+						</a>
+					</span>,
+					<span key={'step-3'}>
+						{'2. Select the file in which the strategy '}
+						<code
+							onClick={(): void => copyToClipboard(currentStrategy.name)}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{currentStrategy.name}
+						</code>
+						{' should belong to.'}
+					</span>,
+					<span key={'step-3'}>
+						{'3a. If the file exists, append the address of the strategy to the file, under "addresses": '}
+						<code
+							onClick={(): void => copyToClipboard(currentStrategy.address)}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{currentStrategy.address}
+						</code>
+					</span>,
+					<span key={'step-3'}>
+						{'3b. If the file does not exists, create a new one and append the address of the strategy to the file, under "addresses": '}
+						<code
+							onClick={(): void => copyToClipboard(currentStrategy.address)}
+							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							{currentStrategy.address}
+						</code>
+					</span>
+				]
+			}
+		});
+	}
+
+
 
 	if (!hasAnomalies && settings.shouldShowOnlyAnomalies) {
 		return null;
@@ -75,23 +170,6 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 			</div>
 
 			<AnomaliesSection
-				label={'Sources'}
-				settings={settings}
-				anomalies={[{
-					isValid: aggregatedData[toAddress(vault.address)]?.fromAPI,
-					prefix: 'Source',
-					sufix: 'for api.yearn.finance'
-				}, {
-					isValid: aggregatedData[toAddress(vault.address)]?.fromMeta,
-					prefix: 'Source',
-					sufix: 'for meta.yearn.finance'
-				}, {
-					isValid: aggregatedData[toAddress(vault.address)]?.fromGraph,
-					prefix: 'Source',
-					sufix: 'for subgraph'
-				}]} />
-
-			<AnomaliesSection
 				label={'Icon'}
 				settings={settings}
 				anomalies={[{
@@ -109,57 +187,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				settings={settings}
 				anomalies={[{
 					isValid: aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration,
-					onClick: (): void => set_fixModalData({
-						isOpen: true,
-						fix: {
-							category: 'ledger',
-							address: vault.address,
-							name: vault.name,
-							instructions: [
-								<span key={'step-1'}>
-									{'1. Access the Ledger\'s B2C file for Yearn on GitHub: '}
-									<a href={'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/tests/yearn/b2c.json'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
-										{'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/tests/yearn/b2c.json'}
-									</a>
-								</span>,
-								<span key={'step-3'}>
-									{'2. Append the following snippet at the end of the '}
-									<code
-										onClick={(): void => copyToClipboard('contracts')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
-										{'contracts'}
-									</code>
-									{' object in the '}
-									<code
-										onClick={(): void => copyToClipboard('b2c.json')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
-										{'b2c.json'}
-									</code>
-									{'file.'}
-								</span>,
-								<span key={'step-3'}>
-									{'3. Access the Ledger\'s ABIs folder for Yearn on GitHub: '}
-									<a href={'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
-										{'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'}
-									</a>
-								</span>,
-								<span key={'step-3'}>
-									{'4. Clone and rename '}
-									<code
-										onClick={(): void => copyToClipboard('_vault_v0.4.3.json')}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
-										{'_vault_v0.4.3.json'}
-									</code>
-									{' to '}
-									<code
-										onClick={(): void => copyToClipboard(`${vault.address}.json`)}
-										className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
-										{`${vault.address}.json`}
-									</code>
-								</span>
-							]
-						}
-					}),
+					onClick: onTriggerModalForLedger,
 					prefix: 'Ledger integration',
 					sufix: 'for vault'
 				}]} />
@@ -205,18 +233,19 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
-						const	isInMeta = strategiesFromMeta.some((s: any): boolean => s.addresses.map((s: string): string => toAddress(s)).includes(toAddress(strategy.address)));
+						const	isMissingDescription = strategy.description === '';
 
 						return (
 							<StatusLine
 								key={`${strategy.address}_description`}
+								onClick={(): void => onTriggerModalForDescription(strategy)}
 								settings={settings}
-								isValid={isInMeta}
+								isValid={isMissingDescription}
 								prefix={'Description'}
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${isInMeta ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -226,27 +255,6 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				</section>
 			)}
 
-			{(aggregatedData[toAddress(vault.address)]?.hasValidStrategiesTranslations && settings.shouldShowOnlyAnomalies) || !settings.shouldShowTranslationErrors ? null : (
-				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Translations'}</b>
-					{vault.strategies.map((strategy: {address: string}): ReactNode => {
-						const	missingTranslationsObject: {[key: string]: string[]} = aggregatedData[toAddress(vault.address)]?.missingTranslations;
-						const	missingTranslations = missingTranslationsObject[toAddress(strategy.address) as string];
-
-						if (!missingTranslations || missingTranslations?.length === 0) {
-							return null;
-						}
-						return (
-							<StatusLine
-								key={`${strategy.address}_translation`}
-								settings={settings}
-								isValid={!missingTranslations || missingTranslations?.length === 0}
-								prefix={'Strategy translation'}
-								sufix={`for ${missingTranslations.join(', ')}`} />
-						);
-					})}
-				</section>
-			)}
 			<ModalFix
 				fix={fixModalData.fix}
 				isOpen={fixModalData.isOpen}

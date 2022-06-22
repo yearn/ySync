@@ -9,7 +9,7 @@ export type	TAnomalies = {
 export type	TFixModalData = {
 	isOpen: boolean,
 	fix: {
-		category: 'ledger',
+		category: 'ledger' | 'description' | '',
 		address: string,
 		name: string,
 		instructions: (string | ReactElement)[]
@@ -24,6 +24,5 @@ export type	TAnomaliesSection = {
 export type TSettings = {
 	shouldShowOnlyAnomalies: boolean;
 	shouldShowOnlyEndorsed: boolean;
-	shouldShowTranslationErrors: boolean;
 	shouldShowVersion: 'all' | 'v2' | 'v3' | 'v4';
 }

@@ -3,14 +3,10 @@ import	{Card, Modal}			from	'@yearn-finance/web-lib/components';
 import	{Copy}					from	'@yearn-finance/web-lib/icons';
 import 	{copyToClipboard}		from	'@yearn-finance/web-lib/utils';
 import	Code					from	'components/Code';
+import	type {TFixModalData}	from	'types/types';
 
 type		TModalFix = {
-	fix: {
-		category: 'ledger',
-		address: string,
-		name: string,
-		instructions: (string | ReactElement)[]
-	},
+	fix: TFixModalData['fix'],
 	isOpen: boolean,
 	onClose: () => void,
 }
@@ -49,14 +45,14 @@ function	ModalFix({fix, isOpen, onClose}: TModalFix): ReactElement {
 						))}
 					</ul>
 				</div>
-				<section aria-label={'code-part'} className={'relative'}>
+				{fix.category === 'ledger' ? <section aria-label={'code-part'} className={'relative'}>
 					<div className={'absolute top-4 right-4'}>
 						<Copy
 							onClick={(): void => copyToClipboard(renderSnippet())}
 							className={'w-4 h-4 opacity-60 hover:opacity-100 transition-colors cursor-copy'} />
 					</div>
 					<Code code={renderSnippet()} language={'json'} />
-				</section>
+				</section> : null}
 			</Card>
 		</Modal>
 	);
