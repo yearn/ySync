@@ -62,12 +62,12 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**********************************************************************/
 	function	getGraphForNetwork(chain: number): string {
 		if (chain === 1)
-			return ('https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2');
+			return ('https://api.thegraph.com/subgraphs/name/rareweasel/yearn-vaults-v2-subgraph-mainnet');
 		if (chain === 250)
 			return ('https://api.thegraph.com/subgraphs/name/bsamuels453/yearn-fantom-validation-grafted');
 		if (chain === 42161)
 			return ('https://api.thegraph.com/subgraphs/name/yearn/yearn-vaults-v2-arbitrum');
-		return ('https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2');
+		return ('https://api.thegraph.com/subgraphs/name/rareweasel/yearn-vaults-v2-subgraph-mainnet');
 	}
 
 	/* 🔵 - Yearn Finance **************************************************
