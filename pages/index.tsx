@@ -79,8 +79,8 @@ function	Index(): ReactNode {
 						</li>
 						<li>
 							{'- The data from the Yearn Graph: '}
-							<a href={'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
-								{'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'}
+							<a href={'https://api.thegraph.com/subgraphs/name/rareweasel/yearn-vaults-v2-subgraph-mainnet'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+								{'https://api.thegraph.com/subgraphs/name/rareweasel/yearn-vaults-v2-subgraph-mainnet'}
 							</a>
 						</li>
 						<li>
