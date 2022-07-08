@@ -138,8 +138,6 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 		});
 	}
 
-
-
 	if (!hasAnomalies && settings.shouldShowOnlyAnomalies) {
 		return null;
 	}
@@ -240,12 +238,12 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 								key={`${strategy.address}_description`}
 								onClick={(): void => onTriggerModalForDescription(strategy)}
 								settings={settings}
-								isValid={isMissingDescription}
+								isValid={!isMissingDescription}
 								prefix={'Description'}
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
