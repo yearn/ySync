@@ -51,7 +51,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**********************************************************************/
 	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _riskFramework] = await Promise.all([
-			axios.get(`https://api.ycorpo.com/${_chainID}/vaults/all`),
+			axios.get(`https://api.ycorpo.com/${_chainID}/vaults/all?classification=any`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json')
 		]) as [any, any, any];
