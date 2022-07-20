@@ -12,7 +12,6 @@ The available data sources are:
 - The data from the Ledger Live Plugin: https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json
 - The data from the Risk Framework: https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json
 
-
 ## How to run the project  
 1. Clone the repository  
 2. Run `yarn`  
