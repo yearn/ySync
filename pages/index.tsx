@@ -53,58 +53,18 @@ function	Index(): ReactNode {
 	return (
 		<div>
 			<ImageTester vaults={vaults} />
-			<Banner
-				title={'Vault Anomalies'}>
-				<div className={'space-y-2'}>
-					<p>{'An anomaly is a problem with a vault that is not a properly a bug, but a missing information or a desynchronization issue between the main data source for Yearn.'}</p>
-					<p>{'Having an anomaly means that we are missing important information or data for the vaults, that can lead to poor user experience, front-end bug or even incompatibility with some external partner.'}</p>
-					<p>{'The available data sources are:'}</p>
-					<ul className={'space-y-2 pl-4'}>
-						<li>
-							{'- The data from the Yearn API: '}
-							<a href={'https://api.yearn.finance/v1/chains/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
-								{'https://api.yearn.finance/v1/chains/1/vaults/all'}
-							</a>
-						</li>
-						<li>
-							{'- The data from the Yearn Meta: '}
-							<a href={'https://meta.yearn.finance/api/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
-								{'https://meta.yearn.finance/api/1/vaults/all'}
-							</a>
-						</li>
-						<li>
-							{'- The data from the Yearn Graph: '}
-							<a href={'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
-								{'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'}
-							</a>
-						</li>
-						<li>
-							{'- The data from the Ledger Live Plugin: '}
-							<a href={'https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
-								{'https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'}
-							</a>
-						</li>
-						<li>
-							{'- The data from the Risk Framework: '}
-							<a href={'https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
-								{'https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'}
-							</a>
-						</li>
-					</ul>
-				</div>
-			</Banner>
 
-			<div className={'my-4'}>
+			<div className={'mb-4'}>
 				<StatisticCard.Wrapper>
-					<StatisticCard className={'col-span-3'} label={'Vaults count'} value={vaults.length} />
-					<StatisticCard className={'col-span-3'} label={'Error ratio'} value={`${(errorCount / (vaults.length || 1) * 100).toFixed(2)} %`} />
+					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Vaults count'} value={vaults.length} />
+					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Error ratio'} value={`${(errorCount / (vaults.length || 1) * 100).toFixed(2)} %`} />
 				</StatisticCard.Wrapper>
 			</div>
 
 			<Card>
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Filters'}</b>
-					<div className={'flex flex-row space-x-4'}>
+					<div className={'grid grid-cols-2 flex-row gap-4 space-x-0 md:flex md:gap-0 md:space-x-4'}>
 						<label
 							htmlFor={'checkbox-endorsed'}
 							className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
@@ -130,8 +90,8 @@ function	Index(): ReactNode {
 						</label>
 
 						<span
-							className={'flex w-fit flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors'}>
-							<p className={'pr-4 pl-2'}>{'Show version '}</p>
+							className={'col-span-2 flex w-full flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
+							<p className={'pr-4 pl-2'}>{'Version'}</p>
 
 							<div className={'divide-primary flex flex-row'}>
 								<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-all'}>
@@ -179,7 +139,7 @@ function	Index(): ReactNode {
 				</div>
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
-					<div className={'mt-4 grid w-full grid-cols-2 gap-4'}>
+					<div className={'mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2'}>
 						{vaults.map((vault: any, index: number): ReactNode => {
 							if (vault.strategies.length === 0) {
 								return null;

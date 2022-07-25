@@ -144,7 +144,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 	return (
 		<Card variant={'background'}>
 			<div className={'flex flex-row space-x-4'}>
-				<div className={'h-10 w-10 rounded-full bg-neutral-200'}>
+				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 					{vault.icon ? 
 						<Image
 							src={vault.icon}
@@ -160,10 +160,18 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						<h4 className={'text-lg font-bold text-neutral-700'}>{vault.name}</h4>
 						<p className={'text-sm opacity-60'}>{`(v${vault.version})`}</p>
 					</div>
-					<AddressWithActions
-						className={'text-sm font-normal'}
-						truncate={0}
-						address={vault.address} />
+					<div className={'hidden md:flex'}>
+						<AddressWithActions
+							className={'text-sm font-normal'}
+							truncate={0}
+							address={vault.address} />
+					</div>
+					<div className={'flex md:hidden'}>
+						<AddressWithActions
+							className={'text-sm font-normal'}
+							truncate={8}
+							address={vault.address} />
+					</div>
 				</div>
 			</div>
 
@@ -191,23 +199,10 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				}]} />
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-14'}>
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
 						const	hasRiskFramework = (strategy.risk.TVLImpact + strategy.risk.auditScore + strategy.risk.codeReviewScore + strategy.risk.complexityScore + strategy.risk.longevityImpact + strategy.risk.protocolSafetyScore + strategy.risk.teamKnowledgeScore + strategy.risk.testingScore) > 0;
-						// const	hasRiskFramework = Object.values(riskFramework)
-						// 	.filter((r: any): boolean => r.network === chainID)
-						// 	.some((r: any): boolean => {
-						// 		const	nameLike = r?.criteria?.nameLike || [];
-						// 		const	strategies = (r?.criteria?.strategies || []).map(toAddress);
-						// 		const	exclude = r?.criteria?.exclude || [];
-							
-						// 		const	isInStrategies = strategies.includes(toAddress(strategy.address));
-						// 		const	isInNameLike = nameLike.some((n: string): boolean => strategy.name.toLowerCase().includes(n.toLowerCase()));
-						// 		const	isInExclude = exclude.includes(strategy.name);
-						// 		return 	(isInStrategies || isInNameLike) && !isInExclude;
-						// 	});
-
 						return (
 							<StatusLine
 								key={`${strategy.address}_risk`}
@@ -229,7 +224,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 			)}
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-14'}>
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
 						const	isMissingDescription = strategy.description === '';
