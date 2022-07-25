@@ -1,11 +1,11 @@
-import	React, {ReactNode}					from	'react';
-import	{useWeb3}							from	'@yearn-finance/web-lib/contexts';
-import	{toAddress}							from	'@yearn-finance/web-lib/utils';
-import	{Banner, Card, StatisticCard}		from	'@yearn-finance/web-lib/components';
-import	useYearn 							from	'contexts/useYearn';
-import	VaultBox							from	'components/VaultBox';
-import	ImageTester							from	'components/ImageTester';
-import	type {TSettings}					from	'types/types';
+import	React, {ReactNode}			from	'react';
+import	{useWeb3}					from	'@yearn-finance/web-lib/contexts';
+import	{toAddress}					from	'@yearn-finance/web-lib/utils';
+import	{Card, StatisticCard}		from	'@yearn-finance/web-lib/components';
+import	useYearn 					from	'contexts/useYearn';
+import	VaultBox					from	'components/VaultBox';
+import	ImageTester					from	'components/ImageTester';
+import	type {TSettings}			from	'types/types';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
