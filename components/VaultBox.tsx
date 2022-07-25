@@ -20,7 +20,7 @@ const		defaultFixModalData: TFixModalData = {
 };
 
 function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactElement | null {
-	const	{aggregatedData, riskFramework} = useYearn();
+	const	{aggregatedData} = useYearn();
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
 
@@ -59,13 +59,13 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						{'2. Append the following snippet at the end of the '}
 						<code
 							onClick={(): void => copyToClipboard('contracts')}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{'contracts'}
 						</code>
 						{' object in the '}
 						<code
 							onClick={(): void => copyToClipboard('b2c.json')}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{'b2c.json'}
 						</code>
 						{'file.'}
@@ -80,13 +80,13 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						{'4. Clone and rename '}
 						<code
 							onClick={(): void => copyToClipboard('_vault_v0.4.3.json')}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{'_vault_v0.4.3.json'}
 						</code>
 						{' to '}
 						<code
 							onClick={(): void => copyToClipboard(`${vault.address}.json`)}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{`${vault.address}.json`}
 						</code>
 					</span>
@@ -112,7 +112,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						{'2. Select the file in which the strategy '}
 						<code
 							onClick={(): void => copyToClipboard(currentStrategy.name)}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{currentStrategy.name}
 						</code>
 						{' should belong to.'}
@@ -121,7 +121,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						{'3a. If the file exists, append the address of the strategy to the file, under "addresses": '}
 						<code
 							onClick={(): void => copyToClipboard(currentStrategy.address)}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{currentStrategy.address}
 						</code>
 					</span>,
@@ -129,7 +129,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 						{'3b. If the file does not exists, create a new one and append the address of the strategy to the file, under "addresses": '}
 						<code
 							onClick={(): void => copyToClipboard(currentStrategy.address)}
-							className={'py-1 px-2 text-sm rounded-md cursor-copy bg-neutral-200'}>
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{currentStrategy.address}
 						</code>
 					</span>
@@ -144,7 +144,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 	return (
 		<Card variant={'background'}>
 			<div className={'flex flex-row space-x-4'}>
-				<div className={'w-10 h-10 rounded-full bg-neutral-200'}>
+				<div className={'h-10 w-10 rounded-full bg-neutral-200'}>
 					{vault.icon ? 
 						<Image
 							src={vault.icon}
@@ -155,7 +155,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 							width={40}
 							height={40} />}
 				</div>
-				<div className={'flex flex-col -mt-1'}>
+				<div className={'-mt-1 flex flex-col'}>
 					<div className={'flex flex-row items-center space-x-2'}>
 						<h4 className={'text-lg font-bold text-neutral-700'}>{vault.name}</h4>
 						<p className={'text-sm opacity-60'}>{`(v${vault.version})`}</p>
@@ -191,21 +191,22 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 				}]} />
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
-						const	hasRiskFramework = Object.values(riskFramework)
-							.filter((r: any): boolean => r.network === chainID)
-							.some((r: any): boolean => {
-								const	nameLike = r?.criteria?.nameLike || [];
-								const	strategies = (r?.criteria?.strategies || []).map(toAddress);
-								const	exclude = r?.criteria?.exclude || [];
+						const	hasRiskFramework = (strategy.risk.TVLImpact + strategy.risk.auditScore + strategy.risk.codeReviewScore + strategy.risk.complexityScore + strategy.risk.longevityImpact + strategy.risk.protocolSafetyScore + strategy.risk.teamKnowledgeScore + strategy.risk.testingScore) > 0;
+						// const	hasRiskFramework = Object.values(riskFramework)
+						// 	.filter((r: any): boolean => r.network === chainID)
+						// 	.some((r: any): boolean => {
+						// 		const	nameLike = r?.criteria?.nameLike || [];
+						// 		const	strategies = (r?.criteria?.strategies || []).map(toAddress);
+						// 		const	exclude = r?.criteria?.exclude || [];
 							
-								const	isInStrategies = strategies.includes(toAddress(strategy.address));
-								const	isInNameLike = nameLike.some((n: string): boolean => strategy.name.toLowerCase().includes(n.toLowerCase()));
-								const	isInExclude = exclude.includes(strategy.name);
-								return 	(isInStrategies || isInNameLike) && !isInExclude;
-							});
+						// 		const	isInStrategies = strategies.includes(toAddress(strategy.address));
+						// 		const	isInNameLike = nameLike.some((n: string): boolean => strategy.name.toLowerCase().includes(n.toLowerCase()));
+						// 		const	isInExclude = exclude.includes(strategy.name);
+						// 		return 	(isInStrategies || isInNameLike) && !isInExclude;
+						// 	});
 
 						return (
 							<StatusLine
@@ -228,7 +229,7 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 			)}
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'flex flex-col pl-14 mt-3'}>
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
 						const	isMissingDescription = strategy.description === '';

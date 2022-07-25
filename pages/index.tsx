@@ -59,34 +59,34 @@ function	Index(): ReactNode {
 					<p>{'An anomaly is a problem with a vault that is not a properly a bug, but a missing information or a desynchronization issue between the main data source for Yearn.'}</p>
 					<p>{'Having an anomaly means that we are missing important information or data for the vaults, that can lead to poor user experience, front-end bug or even incompatibility with some external partner.'}</p>
 					<p>{'The available data sources are:'}</p>
-					<ul className={'pl-4 space-y-2'}>
+					<ul className={'space-y-2 pl-4'}>
 						<li>
 							{'- The data from the Yearn API: '}
-							<a href={'https://api.yearn.finance/v1/chains/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+							<a href={'https://api.yearn.finance/v1/chains/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
 								{'https://api.yearn.finance/v1/chains/1/vaults/all'}
 							</a>
 						</li>
 						<li>
 							{'- The data from the Yearn Meta: '}
-							<a href={'https://meta.yearn.finance/api/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+							<a href={'https://meta.yearn.finance/api/1/vaults/all'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
 								{'https://meta.yearn.finance/api/1/vaults/all'}
 							</a>
 						</li>
 						<li>
 							{'- The data from the Yearn Graph: '}
-							<a href={'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+							<a href={'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
 								{'https://api.thegraph.com/subgraphs/name/0xkofee/yearn-vaults-v2'}
 							</a>
 						</li>
 						<li>
 							{'- The data from the Ledger Live Plugin: '}
-							<a href={'https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+							<a href={'https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
 								{'https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'}
 							</a>
 						</li>
 						<li>
 							{'- The data from the Risk Framework: '}
-							<a href={'https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm underline text-primary-600'}>
+							<a href={'https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'} target={'_blank'} rel={'noreferrer'} className={'font-mono text-sm text-primary-600 underline'}>
 								{'https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'}
 							</a>
 						</li>
@@ -102,12 +102,12 @@ function	Index(): ReactNode {
 			</div>
 
 			<Card>
-				<div className={'flex flex-col pb-6 space-y-2'}>
+				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Filters'}</b>
 					<div className={'flex flex-row space-x-4'}>
 						<label
 							htmlFor={'checkbox-endorsed'}
-							className={'flex flex-row items-center p-2 w-fit font-mono text-sm rounded-lg transition-colors cursor-pointer text-neutral-500 bg-neutral-200/60 hover:bg-neutral-200'}>
+							className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
 							<p className={'pr-4'}>{'Show endorsed only'}</p>
 							<input
 								type={'checkbox'}
@@ -119,7 +119,7 @@ function	Index(): ReactNode {
 
 						<label
 							htmlFor={'checkbox-anomalies'}
-							className={'flex flex-row items-center p-2 w-fit font-mono text-sm rounded-lg transition-colors cursor-pointer text-neutral-500 bg-neutral-200/60 hover:bg-neutral-200'}>
+							className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
 							<p className={'pr-4'}>{'Show anomalies only'}</p>
 							<input
 								type={'checkbox'}
@@ -130,11 +130,11 @@ function	Index(): ReactNode {
 						</label>
 
 						<span
-							className={'flex overflow-hidden flex-row items-center w-fit font-mono text-sm rounded-lg transition-colors text-neutral-500 bg-neutral-200/60'}>
+							className={'flex w-fit flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors'}>
 							<p className={'pr-4 pl-2'}>{'Show version '}</p>
 
-							<div className={'flex flex-row divide-primary'}>
-								<label className={'p-2 transition-colors cursor-pointer hover:bg-neutral-200'} htmlFor={'checkbox-vaults-all'}>
+							<div className={'divide-primary flex flex-row'}>
+								<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-all'}>
 									{'All'}
 									<input
 										type={'checkbox'}
@@ -144,7 +144,7 @@ function	Index(): ReactNode {
 										onChange={(): void => set_settings({...settings, shouldShowVersion: 'all'})} />
 								</label>
 
-								<label className={'p-2 transition-colors cursor-pointer hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v2'}>
+								<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v2'}>
 									{'>= v0.2.0'}
 									<input
 										type={'checkbox'}
@@ -154,7 +154,7 @@ function	Index(): ReactNode {
 										onChange={(): void => set_settings({...settings, shouldShowVersion: 'v2'})} />
 								</label>
 
-								<label className={'p-2 transition-colors cursor-pointer hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v3'}>
+								<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v3'}>
 									{'>= v0.3.0'}
 									<input
 										type={'checkbox'}
@@ -164,7 +164,7 @@ function	Index(): ReactNode {
 										onChange={(): void => set_settings({...settings, shouldShowVersion: 'v3'})} />
 								</label>
 
-								<label className={'p-2 transition-colors cursor-pointer hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v4'}>
+								<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v4'}>
 									{'>= v0.4.0'}
 									<input
 										type={'checkbox'}
@@ -177,9 +177,9 @@ function	Index(): ReactNode {
 						</span>
 					</div>
 				</div>
-				<div className={'flex flex-col pb-6 space-y-2'}>
+				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
-					<div className={'grid grid-cols-2 gap-4 mt-4 w-full'}>
+					<div className={'mt-4 grid w-full grid-cols-2 gap-4'}>
 						{vaults.map((vault: any, index: number): ReactNode => {
 							if (vault.strategies.length === 0) {
 								return null;

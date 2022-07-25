@@ -22,7 +22,7 @@ class MyDocument extends Document {
 					<link href={'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;700&family=Source+Code+Pro&&display=swap'} rel={'stylesheet'} />
 				</Head>
 				<body
-					className={'min-h-screen transition-colors duration-150 bg-neutral-200'}
+					className={'min-h-screen bg-neutral-200 transition-colors duration-150'}
 					data-theme={'light'}>
 					<Main />
 					<NextScript />

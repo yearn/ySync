@@ -51,7 +51,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**********************************************************************/
 	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _riskFramework] = await Promise.all([
-			axios.get(`https://api.ycorpo.com/${_chainID}/vaults/all?classification=any`),
+			axios.get(`https://api.ycorpo.com/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisks`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json')
 		]) as [any, any, any];
@@ -64,17 +64,18 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				));
 
 				const	hasValidStrategiesRisk = data.strategies.every((strategy: any): boolean => {
-					const	hasRiskFramework = Object.values(_riskFramework.data)
-						.filter((r: any): boolean => r.network === _chainID)
-						.some((r: any): boolean => {
-							const	nameLike = r?.criteria?.nameLike || [];
-							const	strategies = (r?.criteria?.strategies || []).map(toAddress);
-							const	exclude = r?.criteria?.exclude || [];
-							const	isInStrategies = strategies.includes(toAddress(strategy.address));
-							const	isInNameLike = nameLike.some((n: string): boolean => strategy.name.toLowerCase().includes(n.toLowerCase()));
-							const	isInExclude = exclude.includes(strategy.name);
-							return 	(isInStrategies || isInNameLike) && !isInExclude;
-						});
+					const hasRiskFramework = (strategy.risk.TVLImpact + strategy.risk.auditScore + strategy.risk.codeReviewScore + strategy.risk.complexityScore + strategy.risk.longevityImpact + strategy.risk.protocolSafetyScore + strategy.risk.teamKnowledgeScore + strategy.risk.testingScore) > 0;
+					// const	hasRiskFramework = Object.values(_riskFramework.data)
+					// 	.filter((r: any): boolean => r.network === _chainID)
+					// 	.some((r: any): boolean => {
+					// 		const	nameLike = r?.criteria?.nameLike || [];
+					// 		const	strategies = (r?.criteria?.strategies || []).map(toAddress);
+					// 		const	exclude = r?.criteria?.exclude || [];
+					// 		const	isInStrategies = strategies.includes(toAddress(strategy.address));
+					// 		const	isInNameLike = nameLike.some((n: string): boolean => strategy.name.toLowerCase().includes(n.toLowerCase()));
+					// 		const	isInExclude = exclude.includes(strategy.name);
+					// 		return 	(isInStrategies || isInNameLike) && !isInExclude;
+					// 	});
 					return hasRiskFramework;
 				});
 

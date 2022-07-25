@@ -5,7 +5,7 @@ function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
 	const	{onUpdateIconStatus, onUpdateTokenIconStatus} = useYearn();
 
 	return (
-		<div className={'overflow-hidden invisible w-0 h-0'}>
+		<div className={'invisible h-0 w-0 overflow-hidden'}>
 			{(vaults || []).map((vault: any): ReactElement => {
 				return (
 					<div key={`image_tester-${vault.icon}_${vault.address}`}>

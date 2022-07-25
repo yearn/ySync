@@ -49,7 +49,7 @@ function	ModalFix({fix, isOpen, onClose}: TModalFix): ReactElement {
 					<div className={'absolute top-4 right-4'}>
 						<Copy
 							onClick={(): void => copyToClipboard(renderSnippet())}
-							className={'w-4 h-4 opacity-60 hover:opacity-100 transition-colors cursor-copy'} />
+							className={'h-4 w-4 cursor-copy opacity-60 transition-colors hover:opacity-100'} />
 					</div>
 					<Code code={renderSnippet()} language={'json'} />
 				</section> : null}
