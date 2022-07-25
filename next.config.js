@@ -1,10 +1,6 @@
-const dotenv = require('dotenv-webpack');
+const withPWA = require('next-pwa');
 
-module.exports = ({
-	experimental: {
-		concurrentFeatures: true
-	},
-	plugins: [new dotenv()],
+module.exports = withPWA({
 	images: {
 		domains: [
 			'rawcdn.githack.com',
