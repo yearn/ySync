@@ -19,7 +19,7 @@ const		defaultFixModalData: TFixModalData = {
 	}
 };
 
-function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactElement | null {
+function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSettings, noStrategies: boolean}): ReactElement | null {
 	const	{aggregatedData} = useYearn();
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
@@ -197,6 +197,17 @@ function	VaultBox({vault, settings}: {vault: any, settings: TSettings}): ReactEl
 					prefix: 'Ledger integration',
 					sufix: 'for vault'
 				}]} />
+
+			{noStrategies ?
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Strategies'}</b>
+					<StatusLine
+						settings={settings}
+						isValid={false}
+						prefix={'No strategies for this vault:'}
+						sufix={''} />
+				</section> : null}
+
 
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>

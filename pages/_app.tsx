@@ -23,12 +23,6 @@ const thumbnailVariants = {
 function	WithLayout(props: AppProps): ReactElement {
 	const	{Component, pageProps, router} = props;
 
-	function handleExitComplete(): void {
-		if (typeof window !== 'undefined') {
-			window.scrollTo({top: 0});
-		}
-	}
-
 	return (
 		<div id={'app'} className={'mx-auto mb-0 flex w-full max-w-6xl flex-col'}>
 			<Header shouldUseNetworks={true} shouldUseWallets={false}>
@@ -39,7 +33,7 @@ function	WithLayout(props: AppProps): ReactElement {
 					</div>
 				</div>
 			</Header>
-			<AnimatePresence exitBeforeEnter onExitComplete={handleExitComplete}>
+			<AnimatePresence exitBeforeEnter>
 				<motion.div
 					key={router.asPath}
 					initial={'initial'}
@@ -80,6 +74,7 @@ function	AppWrapper(props: AppProps): ReactElement {
 		</>
 	);
 }
+
 function	MyApp(props: AppProps): ReactElement {
 	const	{Component, pageProps} = props;
 	
@@ -87,7 +82,7 @@ function	MyApp(props: AppProps): ReactElement {
 		<WithYearn options={{
 			web3: {
 				defaultChainID: 1,
-				supportedChainID: [1, 250, 42161]
+				supportedChainID: [1, 10, 250, 42161]
 			}
 		}}>
 			<YearnContextApp>

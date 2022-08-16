@@ -49,6 +49,8 @@ function	Index(): ReactNode {
 			.length
 	), [vaults, aggregatedData]);
 
+	console.log(vaults);
+
 
 	return (
 		<div>
@@ -142,7 +144,9 @@ function	Index(): ReactNode {
 					<div className={'mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2'}>
 						{vaults.map((vault: any, index: number): ReactNode => {
 							if (vault.strategies.length === 0) {
-								return null;
+								return (
+									<VaultBox key={`${vault.address}_${index}`} vault={vault} settings={settings} noStrategies />
+								);
 							}
 							return (
 								<VaultBox key={`${vault.address}_${index}`} vault={vault} settings={settings} />
