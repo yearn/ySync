@@ -1,6 +1,13 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 const withPWA = require('next-pwa');
+const {PHASE_EXPORT} = require('next/constants');
 
-module.exports = withPWA({
+module.exports = (phase) => withPWA({
+	experimental: {
+		images: {
+			unoptimized: phase === PHASE_EXPORT //Exporting image does not support optimization
+		}
+	},
 	images: {
 		domains: [
 			'rawcdn.githack.com',

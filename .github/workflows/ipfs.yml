@@ -1,0 +1,22 @@
+name: IPFS
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy-ipfs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: npm run export
+
+      - name: Upload to IPFS
+        uses: aquiladev/ipfs-action@v0.3.0-alpha.1
+        with:
+          path: './ipfs/'
+          host: ${{ secrets.IPFS_HOST }}
+          port: ${{ secrets.IPFS_PORT }}
+          protocol: http
