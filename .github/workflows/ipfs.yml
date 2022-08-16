@@ -35,5 +35,4 @@ jobs:
           path: './ipfs/'
           host: ${{ secrets.IPFS_HOST }}
           port: ${{ secrets.IPFS_PORT }}
-          key: 'QmQv4uN9wNK82ohjRyhuorZ57cm7sktB19XUSQUUaKta99'
           protocol: http
