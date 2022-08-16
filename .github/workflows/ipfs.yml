@@ -2,7 +2,7 @@ name: IPFS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["next"]
   workflow_dispatch:
 
 jobs:
@@ -35,4 +35,5 @@ jobs:
           path: './ipfs/'
           host: ${{ secrets.IPFS_HOST }}
           port: ${{ secrets.IPFS_PORT }}
+          key: 'QmQv4uN9wNK82ohjRyhuorZ57cm7sktB19XUSQUUaKta99'
           protocol: http
