@@ -19,7 +19,7 @@ const		defaultFixModalData: TFixModalData = {
 	}
 };
 
-function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSettings, noStrategies: boolean}): ReactElement | null {
+function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSettings, noStrategies?: boolean}): ReactElement | null {
 	const	{aggregatedData} = useYearn();
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
