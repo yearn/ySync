@@ -8,6 +8,7 @@ module.exports = (phase) => withPWA({
 			unoptimized: phase === PHASE_EXPORT //Exporting image does not support optimization
 		}
 	},
+	assetPrefix: './',
 	images: {
 		domains: [
 			'rawcdn.githack.com',
