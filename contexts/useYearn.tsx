@@ -121,6 +121,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			}
 		}
 
+
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);
 			set_riskFramework(_riskFramework.data.filter((r: {network: number}): boolean => r.network === _chainID));

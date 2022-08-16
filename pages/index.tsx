@@ -39,7 +39,8 @@ function	Index(): ReactNode {
 		vaults
 			.filter((vault): boolean => {
 				const	hasAnomalies = (
-					!aggregatedData[toAddress(vault.address)]?.hasValidIcon
+					vault.strategies.length === 0
+					|| !aggregatedData[toAddress(vault.address)]?.hasValidIcon
 					|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 					|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 					|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
@@ -48,9 +49,6 @@ function	Index(): ReactNode {
 			})
 			.length
 	), [vaults, aggregatedData]);
-
-	console.log(vaults);
-
 
 	return (
 		<div>

@@ -34,7 +34,8 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 	}
 
 	const		hasAnomalies = (
-		!aggregatedData[toAddress(vault.address)]?.hasValidIcon
+		vault.strategies.length === 0
+		|| !aggregatedData[toAddress(vault.address)]?.hasValidIcon
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidTokenIcon
 		|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
