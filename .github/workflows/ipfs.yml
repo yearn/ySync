@@ -1,0 +1,38 @@
+name: IPFS
+
+on:
+  push:
+    branches: ["next"]
+  workflow_dispatch:
+
+jobs:
+  deploy-ipfs:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['16.x']
+        os: ['ubuntu-latest']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install project dependencies
+        run: yarn --prefer-offline
+        id: install
+
+      - run: yarn export
+
+      - name: Upload to IPFS
+        uses: aquiladev/ipfs-action@v0.3.0-alpha.1
+        with:
+          path: './ipfs/'
+          host: ${{ secrets.IPFS_HOST }}
+          port: ${{ secrets.IPFS_PORT }}
+          protocol: http
