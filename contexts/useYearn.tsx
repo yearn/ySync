@@ -64,7 +64,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				));
 
 				const	hasValidStrategiesRisk = data.strategies.every((strategy: any): boolean => {
-					const hasRiskFramework = (strategy.risk.TVLImpact + strategy.risk.auditScore + strategy.risk.codeReviewScore + strategy.risk.complexityScore + strategy.risk.longevityImpact + strategy.risk.protocolSafetyScore + strategy.risk.teamKnowledgeScore + strategy.risk.testingScore) > 0;
+					const hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
 					// const	hasRiskFramework = Object.values(_riskFramework.data)
 					// 	.filter((r: any): boolean => r.network === _chainID)
 					// 	.some((r: any): boolean => {

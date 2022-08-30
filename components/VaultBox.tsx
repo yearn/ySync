@@ -214,7 +214,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
-						const	hasRiskFramework = (strategy.risk.TVLImpact + strategy.risk.auditScore + strategy.risk.codeReviewScore + strategy.risk.complexityScore + strategy.risk.longevityImpact + strategy.risk.protocolSafetyScore + strategy.risk.teamKnowledgeScore + strategy.risk.testingScore) > 0;
+						const	hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
 						return (
 							<StatusLine
 								key={`${strategy.address}_risk`}
