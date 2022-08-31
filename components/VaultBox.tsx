@@ -40,6 +40,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 		|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
+		|| !aggregatedData[toAddress(vault.address)]?.hasMissingYearnMetaFile
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -175,6 +176,16 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 					</div>
 				</div>
 			</div>
+
+			<AnomaliesSection
+				label={'Yearn Meta File'}
+				settings={settings}
+				anomalies={[{
+					isValid: aggregatedData[toAddress(vault.address)]?.hasMissingYearnMetaFile,
+					onClick: onTriggerModalForLedger,
+					prefix: 'Yearn Meta File',
+					sufix: 'for vault'
+				}]} />
 
 			<AnomaliesSection
 				label={'Icon'}
