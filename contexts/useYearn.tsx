@@ -98,7 +98,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk,
 					hasValidIcon: true,
 					hasValidTokenIcon: true,
-					hasYearnMetaFile: hasYearnMetaFile,
+					hasYearnMetaFile,
 					missingTranslations: missingTranslations,
 					address: toAddress(data.address),
 					name: data.display_name || data.name,
