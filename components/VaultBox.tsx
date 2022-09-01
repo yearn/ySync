@@ -140,6 +140,33 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 		});
 	}
 
+	function	onTriggerModalForMetaFileMissing(): void {
+		set_fixModalData({
+			isOpen: true,
+			fix: {
+				category: 'file',
+				address: vault.address,
+				name: vault.name,
+				instructions: [
+					<span key={'step-1'}>
+						{'1. Access the vaults\' folder in the meta repo: '}
+						<a href={`https://github.com/yearn/yearn-meta/tree/master/data/vaults/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{`https://github.com/yearn/yearn-meta/tree/master/data/vaults/${chainID}`}
+						</a>
+					</span>,
+					<span key={'step-3'}>
+						{'2. Add missing vault file with the filename '}
+						<code
+							onClick={(): void => copyToClipboard(`${vault.address}.json`)}
+							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
+							{`${vault.address}.json`}
+						</code>
+					</span>
+				]
+			}
+		});
+	}
+
 	if (!hasAnomalies && settings.shouldShowOnlyAnomalies) {
 		return null;
 	}
@@ -182,7 +209,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				settings={settings}
 				anomalies={[{
 					isValid: aggregatedData[toAddress(vault.address)]?.hasYearnMetaFile,
-					onClick: onTriggerModalForLedger,
+					onClick: onTriggerModalForMetaFileMissing,
 					prefix: 'Yearn Meta File',
 					sufix: 'for vault'
 				}]} />
