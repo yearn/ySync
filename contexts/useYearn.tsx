@@ -87,7 +87,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					return hasRiskFramework;
 				});
 
-				const	hasMissingYearnMetaFile = YEARN_META_FILES.includes(data.address);
+				const	hasMissingYearnMetaFile = YEARN_META_FILES.filter((f): boolean => f !== '0xa258C4606Ca8206D8aA700cE2143D7db854D168c').includes(data.address);
 
 				const missingTranslations: {[key: string]: string[]} = {};
 
@@ -110,6 +110,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 		for (const data of _ledgerSupport?.data?.contracts || []) {
 			if (!_allData[toAddress(data.address) as string]) {
+				const	hasMissingYearnMetaFile = YEARN_META_FILES.includes(data.address);
+
 				_allData[toAddress(data.address) as string] = {
 					hasLedgerIntegration: true,
 					hasValidStrategiesDescriptions: false,
@@ -117,6 +119,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk: false,
 					hasValidIcon: false,
 					hasValidTokenIcon: false,
+					hasMissingYearnMetaFile,
 					missingTranslations: {},
 					address: toAddress(data.address),
 					name: data?.contractName || '',
