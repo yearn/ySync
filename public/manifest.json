@@ -7,7 +7,7 @@
 	"uri": "https://sync.yearn.farm/",
 	"og": "https://sync.yearn.farm/og.jpeg",
 	"twitter": "@iearnfinance",
-	"github": "https://github.com/yearn/yearn-data-sync",
+	"github": "https://github.com/yearn/ySync",
 
 	"icons": [
 		{
