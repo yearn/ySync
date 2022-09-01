@@ -19,7 +19,7 @@ type	TAllData = {
 		hasValidStrategiesRisk: boolean,
 		hasValidIcon: boolean,
 		hasValidTokenIcon: boolean,
-		hasMissingYearnMetaFile: boolean;
+		hasYearnMetaFile: boolean;
 		missingTranslations: {[key: string]: string[]},
 		address: string,
 		name: string,
@@ -87,7 +87,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					return hasRiskFramework;
 				});
 
-				const	hasMissingYearnMetaFile = YEARN_META_FILES.filter((f): boolean => f !== '0xa258C4606Ca8206D8aA700cE2143D7db854D168c').includes(data.address);
+				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
 
 				const missingTranslations: {[key: string]: string[]} = {};
 
@@ -98,7 +98,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk,
 					hasValidIcon: true,
 					hasValidTokenIcon: true,
-					hasMissingYearnMetaFile,
+					hasYearnMetaFile: hasYearnMetaFile,
 					missingTranslations: missingTranslations,
 					address: toAddress(data.address),
 					name: data.display_name || data.name,
@@ -110,7 +110,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 		for (const data of _ledgerSupport?.data?.contracts || []) {
 			if (!_allData[toAddress(data.address) as string]) {
-				const	hasMissingYearnMetaFile = YEARN_META_FILES.includes(data.address);
+				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
 
 				_allData[toAddress(data.address) as string] = {
 					hasLedgerIntegration: true,
@@ -119,7 +119,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk: false,
 					hasValidIcon: false,
 					hasValidTokenIcon: false,
-					hasMissingYearnMetaFile,
+					hasYearnMetaFile,
 					missingTranslations: {},
 					address: toAddress(data.address),
 					name: data?.contractName || '',

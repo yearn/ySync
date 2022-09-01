@@ -181,7 +181,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				label={'Yearn Meta File'}
 				settings={settings}
 				anomalies={[{
-					isValid: aggregatedData[toAddress(vault.address)]?.hasMissingYearnMetaFile,
+					isValid: aggregatedData[toAddress(vault.address)]?.hasYearnMetaFile,
 					onClick: onTriggerModalForLedger,
 					prefix: 'Yearn Meta File',
 					sufix: 'for vault'
