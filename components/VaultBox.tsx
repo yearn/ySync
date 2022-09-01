@@ -40,7 +40,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 		|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
-		|| !aggregatedData[toAddress(vault.address)]?.hasMissingYearnMetaFile
+		|| !aggregatedData[toAddress(vault.address)]?.hasYearnMetaFile
 	);
 
 	function	onTriggerModalForLedger(): void {
