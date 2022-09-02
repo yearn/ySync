@@ -10,7 +10,8 @@ import	type {TSettings}			from	'types/types';
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
 	shouldShowOnlyEndorsed: true,
-	shouldShowVersion: 'v4'
+	shouldShowVersion: 'v4',
+	shouldShowMissingTranslations: false
 };
 
 function	Index(): ReactNode {
@@ -87,6 +88,18 @@ function	Index(): ReactNode {
 								className={'ml-2 rounded-lg'}
 								checked={settings.shouldShowOnlyAnomalies}
 								onChange={(): void => set_settings({...settings, shouldShowOnlyAnomalies: !settings.shouldShowOnlyAnomalies})} />
+						</label>
+
+						<label
+							htmlFor={'checkbox-translations'}
+							className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+							<p className={'pr-4'}>{'Show missing translations'}</p>
+							<input
+								type={'checkbox'}
+								id={'checkbox-translations'}
+								className={'ml-2 rounded-lg'}
+								checked={settings.shouldShowMissingTranslations}
+								onChange={(): void => set_settings({...settings, shouldShowMissingTranslations: !settings.shouldShowMissingTranslations})} />
 						</label>
 
 						<span

@@ -299,6 +299,32 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
+			{Object.keys(aggregatedData[toAddress(vault.address)]?.missingTranslations).length !== 0 && settings.shouldShowMissingTranslations ? (
+				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
+					{Object.keys(aggregatedData[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
+						const missingTranslation = aggregatedData[toAddress(vault.address)]?.missingTranslations;
+						const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
+
+						return (
+							<StatusLine
+								key={`${strategyAddress}_translation`}
+								settings={settings}
+								isValid={false}
+								prefix={missingTranslation[strategyAddress].join(', ')}
+								sufix={(
+									<span>
+										{'for '}
+										<a href={`${getChainExplorer()}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
+											{shortAddress}
+										</a>
+									</span>
+								)} />
+						);
+					})}
+				</section>
+			) : null}
+
 			<ModalFix
 				fix={fixModalData.fix}
 				isOpen={fixModalData.isOpen}
