@@ -150,8 +150,8 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				instructions: [
 					<span key={'step-1'}>
 						{'1. Access the vaults\' folder in the meta repo: '}
-						<a href={`https://github.com/yearn/yearn-meta/tree/master/data/vaults/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
-							{`https://github.com/yearn/yearn-meta/tree/master/data/vaults/${chainID}`}
+						<a href={`https://github.com/yearn/ydaemon/tree/master/data/meta/vaults/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{`https://github.com/yearn/ydaemon/tree/master/data/meta/vaults/${chainID}`}
 						</a>
 					</span>,
 					<span key={'step-3'}>
