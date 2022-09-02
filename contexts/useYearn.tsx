@@ -59,7 +59,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
-			axios.get(`https://api.github.com/repos/yearn/yearn-meta/contents/data/vaults/${_chainID}`)
+			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`)
 		]) as [any, any, any, AxiosResponse<TGHFile[]>];
 
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
