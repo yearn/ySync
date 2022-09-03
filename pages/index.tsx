@@ -192,6 +192,10 @@ function	Index(): ReactNode {
 						})}
 
 						{settings.shouldShowEntity === 'tokens' && tokens && Object.keys(tokens).map((tokenAddress: string): ReactNode => {
+							if (!aggregatedData.tokens[toAddress(tokenAddress)]) {
+								return null;
+							}
+
 							const {name, symbol, missingTranslations} = aggregatedData.tokens[toAddress(tokenAddress)];
 
 							if (!missingTranslations) {
