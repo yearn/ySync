@@ -1,5 +1,5 @@
 import	React, {ReactElement, useContext, createContext}	from	'react';
-import	axios												from	'axios';
+import	axios, {AxiosResponse}								from	'axios';
 import	{performBatchedUpdates, toAddress}					from	'@yearn-finance/web-lib/utils';
 import	{useWeb3}											from	'@yearn-finance/web-lib/contexts';
 
@@ -19,12 +19,17 @@ type	TAllData = {
 		hasValidStrategiesRisk: boolean,
 		hasValidIcon: boolean,
 		hasValidTokenIcon: boolean,
+		hasYearnMetaFile: boolean;
 		missingTranslations: {[key: string]: string[]},
 		address: string,
 		name: string,
 		icon: string,
 		version: string
 	}
+}
+
+type	TGHFile = {
+	name: string
 }
 
 const	YearnContext = createContext<TYearnContext>({
@@ -50,11 +55,14 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**********************************************************************/
 	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _riskFramework] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles] = await Promise.all([
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
-			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json')
-		]) as [any, any, any];
+			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
+			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`)
+		]) as [any, any, any, AxiosResponse<TGHFile[]>];
+
+		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 
 		const	_allData: TAllData = {};
 		for (const data of fromAPI.data) {
@@ -79,6 +87,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					return hasRiskFramework;
 				});
 
+				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
+
 				const missingTranslations: {[key: string]: string[]} = {};
 
 				_allData[toAddress(data.address) as string] = {
@@ -88,6 +98,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk,
 					hasValidIcon: true,
 					hasValidTokenIcon: true,
+					hasYearnMetaFile,
 					missingTranslations: missingTranslations,
 					address: toAddress(data.address),
 					name: data.display_name || data.name,
@@ -99,6 +110,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 		for (const data of _ledgerSupport?.data?.contracts || []) {
 			if (!_allData[toAddress(data.address) as string]) {
+				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
+
 				_allData[toAddress(data.address) as string] = {
 					hasLedgerIntegration: true,
 					hasValidStrategiesDescriptions: false,
@@ -106,6 +119,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesRisk: false,
 					hasValidIcon: false,
 					hasValidTokenIcon: false,
+					hasYearnMetaFile,
 					missingTranslations: {},
 					address: toAddress(data.address),
 					name: data?.contractName || '',

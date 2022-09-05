@@ -9,7 +9,7 @@ export type	TAnomalies = {
 export type	TFixModalData = {
 	isOpen: boolean,
 	fix: {
-		category: 'ledger' | 'description' | '',
+		category: 'ledger' | 'description' | 'file' | '',
 		address: string,
 		name: string,
 		instructions: (string | ReactElement)[]
