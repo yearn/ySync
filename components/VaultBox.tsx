@@ -247,7 +247,6 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 						sufix={''} />
 				</section> : null}
 
-
 			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
@@ -299,7 +298,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
-			{Object.keys(aggregatedData[toAddress(vault.address)]?.missingTranslations).length !== 0 && settings.shouldShowMissingTranslations ? (
+			{Object.keys((aggregatedData?.[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && settings.shouldShowMissingTranslations ? (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
 					{Object.keys(aggregatedData[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
