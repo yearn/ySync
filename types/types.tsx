@@ -25,4 +25,5 @@ export type TSettings = {
 	shouldShowOnlyAnomalies: boolean;
 	shouldShowOnlyEndorsed: boolean;
 	shouldShowVersion: 'all' | 'v2' | 'v3' | 'v4';
+	shouldShowMissingTranslations: boolean;
 }

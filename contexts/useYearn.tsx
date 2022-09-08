@@ -32,6 +32,25 @@ type	TGHFile = {
 	name: string
 }
 
+type	TRisk = {
+	TVLImpact: number;
+	auditScore: number;
+	codeReviewScore: number;
+	complexityScore: number;
+	longevityImpact: number;
+	protocolSafetyScore: number;
+	teamKnowledgeScore: number;
+	testingScore: number;
+}
+
+type	TStrategy = {
+	address: string;
+	name: string;
+	description?: string;
+	risk?: TRisk;
+	localization?: { [key: string]: string };
+}
+
 const	YearnContext = createContext<TYearnContext>({
 	dataFromAPI: [],
 	riskFramework: {},
@@ -55,23 +74,32 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**********************************************************************/
 	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies] = await Promise.all([
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
-			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`)
-		]) as [any, any, any, AxiosResponse<TGHFile[]>];
+			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
+			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/strategies?loc=all`)
+		]) as [any, any, any, AxiosResponse<TGHFile[]>, any];
 
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
+
+		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
+
+		const STRATEGIES: {[key: string]: any} = {};
+
+		for (const strategyAddress of Object.keys(strategies.data)) {
+			STRATEGIES[toAddress(strategyAddress)] = strategies.data[strategyAddress];
+		}
 
 		const	_allData: TAllData = {};
 		for (const data of fromAPI.data) {
 			if (!_allData[toAddress(data.address) as string]) {
-				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: any): boolean => (
+				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: TStrategy): boolean => (
 					strategy.description !== ''
 				));
 
-				const	hasValidStrategiesRisk = data.strategies.every((strategy: any): boolean => {
+				const	hasValidStrategiesRisk = data.strategies.every((strategy: TStrategy): boolean => {
 					const hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
 					// const	hasRiskFramework = Object.values(_riskFramework.data)
 					// 	.filter((r: any): boolean => r.network === _chainID)
@@ -91,6 +119,23 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 				const missingTranslations: {[key: string]: string[]} = {};
 
+				const strategiesAddresses = data.strategies.map(({address}: TStrategy): string => toAddress(address));
+				for (const strategyAddress of strategiesAddresses) {
+					const localizations = STRATEGIES[strategyAddress]?.localization;
+					
+					const english = localizations?.en;
+					if (!english) {
+						missingTranslations[strategyAddress] = LANGUAGES;
+						continue;
+					}
+
+					for (const lang of LANGUAGES) {
+						if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
+							missingTranslations[strategyAddress] = missingTranslations[strategyAddress] ? [...missingTranslations[strategyAddress], lang] : [lang];
+						}
+					}
+				}
+
 				_allData[toAddress(data.address) as string] = {
 					hasLedgerIntegration: _chainID === 1 ? false : true, //Ledger live integration only for mainnet
 					hasValidStrategiesDescriptions,
@@ -99,7 +144,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidIcon: true,
 					hasValidTokenIcon: true,
 					hasYearnMetaFile,
-					missingTranslations: missingTranslations,
+					missingTranslations,
 					address: toAddress(data.address),
 					name: data.display_name || data.name,
 					icon: data.icon,
