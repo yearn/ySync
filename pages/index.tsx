@@ -96,7 +96,7 @@ function	Index(): ReactNode {
 								<label
 									htmlFor={'checkbox-endorsed'}
 									className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-									<p className={'pr-4'}>{'Show endorsed only'}</p>
+									<p className={'pr-4'}>{'Endorsed only'}</p>
 									<input
 										type={'checkbox'}
 										id={'checkbox-endorsed'}
@@ -107,7 +107,7 @@ function	Index(): ReactNode {
 								<label
 									htmlFor={'checkbox-anomalies'}
 									className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-									<p className={'pr-4'}>{'Show anomalies only'}</p>
+									<p className={'pr-4'}>{'Anomalies only'}</p>
 									<input
 										type={'checkbox'}
 										id={'checkbox-anomalies'}
@@ -118,7 +118,7 @@ function	Index(): ReactNode {
 								<label
 									htmlFor={'checkbox-translations'}
 									className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-									<p className={'pr-4'}>{'Show missing translations'}</p>
+									<p className={'pr-4'}>{'Missing translations'}</p>
 									<input
 										type={'checkbox'}
 										id={'checkbox-translations'}
