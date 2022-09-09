@@ -11,7 +11,8 @@ type	TYearnContext = {
 	onUpdateTokenIconStatus: (address: string, status: boolean) => void,
 	nonce: number
 }
-type	TAllData = {
+
+type	TVaultsData = {
 	[key: string]: {
 		hasLedgerIntegration: boolean,
 		hasValidStrategiesDescriptions: boolean,
@@ -51,10 +52,23 @@ type	TStrategy = {
 	localization?: { [key: string]: string };
 }
 
+type	TTokensData = {
+	[key: string]: {
+		name: string;
+		symbol: string;
+		missingTranslations: {[key: string]: string[]},
+	}
+}
+
+type	TAllData = {
+	vaults: TVaultsData;
+	tokens: TTokensData;
+}
+
 const	YearnContext = createContext<TYearnContext>({
 	dataFromAPI: [],
 	riskFramework: {},
-	aggregatedData: {},
+	aggregatedData: {vaults: {}, tokens: {}},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
 	nonce: 0
@@ -63,7 +77,7 @@ const	YearnContext = createContext<TYearnContext>({
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = React.useState(0);
-	const	[aggregatedData, set_aggregatedData] = React.useState<TAllData>({});
+	const	[aggregatedData, set_aggregatedData] = React.useState<TAllData>({vaults: {}, tokens: {}});
 	const	[dataFromAPI, set_dataFromAPI] = React.useState<any[]>([]);
 	const	[riskFramework, set_riskFramework] = React.useState<any[]>([]);
 
@@ -74,13 +88,14 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**********************************************************************/
 	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens] = await Promise.all([
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
-			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/strategies?loc=all`)
-		]) as [any, any, any, AxiosResponse<TGHFile[]>, any];
+			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/strategies?loc=all`),
+			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/tokens?loc=all`)
+		]) as [any, any, any, AxiosResponse<TGHFile[]>, any, any];
 
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 
@@ -92,9 +107,9 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			STRATEGIES[toAddress(strategyAddress)] = strategies.data[strategyAddress];
 		}
 
-		const	_allData: TAllData = {};
+		const	_allData: TAllData = {vaults: {}, tokens: {}};
 		for (const data of fromAPI.data) {
-			if (!_allData[toAddress(data.address) as string]) {
+			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: TStrategy): boolean => (
 					strategy.description !== ''
 				));
@@ -136,7 +151,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					}
 				}
 
-				_allData[toAddress(data.address) as string] = {
+				_allData.vaults[toAddress(data.address) as string] = {
 					hasLedgerIntegration: _chainID === 1 ? false : true, //Ledger live integration only for mainnet
 					hasValidStrategiesDescriptions,
 					hasValidStrategiesTranslations: false, //unused
@@ -154,10 +169,9 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		}
 
 		for (const data of _ledgerSupport?.data?.contracts || []) {
-			if (!_allData[toAddress(data.address) as string]) {
+			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
-
-				_allData[toAddress(data.address) as string] = {
+				_allData.vaults[toAddress(data.address) as string] = {
 					hasLedgerIntegration: true,
 					hasValidStrategiesDescriptions: false,
 					hasValidStrategiesTranslations: false,
@@ -173,13 +187,45 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 				};
 			} else {
-				_allData[toAddress(data.address) as string] = {
-					..._allData[toAddress(data.address) as string],
+				_allData.vaults[toAddress(data.address) as string] = {
+					..._allData.vaults[toAddress(data.address) as string],
 					hasLedgerIntegration: true
 				};
 			}
 		}
+		
+		const TOKENS_LANGUAGES = [...new Set(Object.values(tokens.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
+		
+		const TOKENS: {[key: string]: any} = {};
+		
+		for (const tokenAddress of Object.keys(tokens.data)) {
+			TOKENS[toAddress(tokenAddress)] = tokens.data[tokenAddress];
+		}
 
+		const missingTokensTranslations: {[key: string]: string[]} = {};
+
+		for (const address of Object.keys(TOKENS)) {
+			const localizations = TOKENS[address]?.localization;
+			
+			const english = localizations?.en;
+
+			if (!english) {
+				missingTokensTranslations[address] = TOKENS_LANGUAGES;
+				continue;
+			}
+
+			for (const lang of TOKENS_LANGUAGES) {
+				if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
+					missingTokensTranslations[address] = missingTokensTranslations[address] ? [...missingTokensTranslations[address], lang] : [lang];
+				}
+			}
+
+			_allData.tokens[toAddress(address) as string] = {
+				name: TOKENS[address]?.name,
+				symbol: TOKENS[address]?.symbol,
+				missingTranslations: missingTokensTranslations
+			};
+		}
 
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);
@@ -204,7 +250,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			const	newData = {
 				...data,
 				[toAddress(address)]: {
-					...data[toAddress(address)],
+					...data.vaults[toAddress(address)],
 					hasValidIcon: status
 				}
 			};
@@ -223,7 +269,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			const	newData = {
 				...data,
 				[toAddress(address)]: {
-					...data[toAddress(address)],
+					...data.vaults[toAddress(address)],
 					hasValidTokenIcon: status
 				}
 			};

@@ -7,7 +7,8 @@ import	useYearn 							from	'contexts/useYearn';
 import	AnomaliesSection					from	'components/VaultBox.AnomaliesSection';
 import	StatusLine							from	'components/VaultBox.StatusLine';
 import	ModalFix							from	'components/modals/ModalFix';
-import	type {TFixModalData, TSettings}		from 'types/types';
+import	type {TFixModalData, TSettings}		from 	'types/types';
+import {getChainExplorer} 					from 	'components/utils/getChainExplorer';
 
 const		defaultFixModalData: TFixModalData = {
 	isOpen: false,
@@ -24,23 +25,14 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
 
-	function	getChainExplorer(): string {
-		if (chainID === 250) {
-			return ('https://ftmscan.com');
-		} else if (chainID === 42161) {
-			return ('https://arbiscan.io');
-		} 
-		return ('https://etherscan.io');
-	}
-
 	const		hasAnomalies = (
 		vault.strategies.length === 0
-		|| !aggregatedData[toAddress(vault.address)]?.hasValidIcon
-		|| !aggregatedData[toAddress(vault.address)]?.hasValidTokenIcon
-		|| !aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration
-		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions
-		|| !aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk
-		|| !aggregatedData[toAddress(vault.address)]?.hasYearnMetaFile
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -208,7 +200,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				label={'Yearn Meta File'}
 				settings={settings}
 				anomalies={[{
-					isValid: aggregatedData[toAddress(vault.address)]?.hasYearnMetaFile,
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
 					onClick: onTriggerModalForMetaFileMissing,
 					prefix: 'Yearn Meta File',
 					sufix: 'for vault'
@@ -218,11 +210,11 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				label={'Icon'}
 				settings={settings}
 				anomalies={[{
-					isValid: aggregatedData[toAddress(vault.address)]?.hasValidIcon,
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
 					prefix: 'Icon',
 					sufix: 'for vault'
 				}, {
-					isValid: aggregatedData[toAddress(vault.address)]?.hasValidTokenIcon,
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
 					prefix: 'Icon',
 					sufix: 'for underlying token'
 				}]} />
@@ -231,7 +223,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				label={'Ledger Live'}
 				settings={settings}
 				anomalies={[{
-					isValid: aggregatedData[toAddress(vault.address)]?.hasLedgerIntegration,
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
 					onClick: onTriggerModalForLedger,
 					prefix: 'Ledger integration',
 					sufix: 'for vault'
@@ -247,7 +239,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 						sufix={''} />
 				</section> : null}
 
-			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
+			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
@@ -261,7 +253,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer(chainID)}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -272,7 +264,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
-			{aggregatedData[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
+			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
@@ -288,7 +280,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer()}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${getChainExplorer(chainID)}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -298,11 +290,11 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
-			{Object.keys((aggregatedData?.[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && settings.shouldShowMissingTranslations ? (
+			{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && settings.shouldShowMissingTranslations ? (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
-					{Object.keys(aggregatedData[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
-						const missingTranslation = aggregatedData[toAddress(vault.address)]?.missingTranslations;
+					{Object.keys(aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
+						const missingTranslation = aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations;
 						const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
 
 						return (
@@ -314,7 +306,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 								sufix={(
 									<span>
 										{'for '}
-										<a href={`${getChainExplorer()}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
+										<a href={`${getChainExplorer(chainID)}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
 											{shortAddress}
 										</a>
 									</span>

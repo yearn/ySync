@@ -6,6 +6,7 @@ export type	TAnomalies = {
 	sufix: string | ReactElement,
 	onClick?: () => void
 }
+
 export type	TFixModalData = {
 	isOpen: boolean,
 	fix: {
@@ -15,6 +16,7 @@ export type	TFixModalData = {
 		instructions: (string | ReactElement)[]
 	}
 }
+
 export type	TAnomaliesSection = {
 	label: string,
 	anomalies: TAnomalies[],
@@ -26,4 +28,5 @@ export type TSettings = {
 	shouldShowOnlyEndorsed: boolean;
 	shouldShowVersion: 'all' | 'v2' | 'v3' | 'v4';
 	shouldShowMissingTranslations: boolean;
+	shouldShowEntity: 'vaults' | 'tokens';
 }
