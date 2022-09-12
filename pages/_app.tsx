@@ -3,9 +3,9 @@ import {AppProps} from 'next/app';
 import {AnimatePresence, motion} from 'framer-motion';
 import {KBarProvider} from 'kbar';
 import {WithYearn} from '@yearn-finance/web-lib/contexts';
-import {Header} from '@yearn-finance/web-lib/layouts';
 import {YearnContextApp} from 'contexts/useYearn';
 import Footer from 'components/StandardFooter';
+import Header from 'components/Header';
 import HeaderTitle from 'components/HeaderTitle';
 import KBar from 'components/Kbar';
 import KBarButton from 'components/KBarButton';
@@ -81,8 +81,10 @@ function	MyApp(props: AppProps): ReactElement {
 	return (
 		<WithYearn options={{
 			web3: {
+				shouldUseWallets: false,
+				shouldUseStrictChainMode: false,
 				defaultChainID: 1,
-				supportedChainID: [1, 10, 250, 42161]
+				supportedChainID: [1, 10, 250, 42161, 1337, 31337]
 			}
 		}}>
 			<YearnContextApp>
