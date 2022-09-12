@@ -1,6 +1,6 @@
-import	React, {ReactElement}				from	'react';
-import	IconCross							from	'components/icons/IconCross';
-import	IconCheck							from	'components/icons/IconCheck';
+import React, {ReactElement} from 'react';
+import IconCross from 'components/icons/IconCross';
+import IconCheck from 'components/icons/IconCheck';
 
 
 function	TranslationStatusLine({

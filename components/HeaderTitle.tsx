@@ -1,5 +1,5 @@
-import	React, {ReactElement}	from	'react';
-import	LogoYearn				from	'components/icons/LogoYearn';
+import React, {ReactElement} from 'react';
+import LogoYearn from 'components/icons/LogoYearn';
 
 function	HeaderTitle(): ReactElement {
 	return (

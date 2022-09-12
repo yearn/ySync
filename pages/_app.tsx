@@ -1,15 +1,15 @@
-import	React, {ReactElement}			from	'react';
-import	{AppProps}						from	'next/app';
-import	{AnimatePresence, motion}		from	'framer-motion';
-import	{KBarProvider}					from	'kbar';
-import	{WithYearn}						from	'@yearn-finance/web-lib/contexts';
-import	{Header}						from	'@yearn-finance/web-lib/layouts';
-import	{YearnContextApp}				from	'contexts/useYearn';
-import	Footer							from	'components/StandardFooter';
-import	HeaderTitle						from	'components/HeaderTitle';
-import	KBar							from	'components/Kbar';
-import	KBarButton						from	'components/KBarButton';
-import	Meta							from	'components/Meta';
+import React, {ReactElement} from 'react';
+import {AppProps} from 'next/app';
+import {AnimatePresence, motion} from 'framer-motion';
+import {KBarProvider} from 'kbar';
+import {WithYearn} from '@yearn-finance/web-lib/contexts';
+import {Header} from '@yearn-finance/web-lib/layouts';
+import {YearnContextApp} from 'contexts/useYearn';
+import Footer from 'components/StandardFooter';
+import HeaderTitle from 'components/HeaderTitle';
+import KBar from 'components/Kbar';
+import KBarButton from 'components/KBarButton';
+import Meta from 'components/Meta';
 
 import	'../style.css';
 

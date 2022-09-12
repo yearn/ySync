@@ -1,18 +1,18 @@
-import	React, {ReactElement}				from	'react';
-import	IconCross							from	'components/icons/IconCross';
-import	IconCheck							from	'components/icons/IconCheck';
-import	IconFix								from	'components/icons/IconFix';
-import	type {TAnomalies, TSettings}		from	'types/types';
+import React, {ReactElement} from 'react';
+import IconCross from 'components/icons/IconCross';
+import IconCheck from 'components/icons/IconCheck';
+import IconFix from 'components/icons/IconFix';
+import type {TAnomalies, TSettings} from 'types/types';
 
 function	StatusLine({
-	settings,
+	settings: statusSettings,
 	isValid,
 	onClick,
 	prefix,
 	sufix
 }: {settings: TSettings} & TAnomalies): ReactElement {
 	if (isValid) {
-		if (settings.shouldShowOnlyAnomalies) {
+		if (statusSettings.shouldShowOnlyAnomalies) {
 			return <div />;
 		}
 		return (

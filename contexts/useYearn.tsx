@@ -1,7 +1,7 @@
-import	React, {ReactElement, useContext, createContext}	from	'react';
-import	axios, {AxiosResponse}								from	'axios';
-import	{performBatchedUpdates, toAddress}					from	'@yearn-finance/web-lib/utils';
-import	{useWeb3}											from	'@yearn-finance/web-lib/contexts';
+import React, {ReactElement, createContext, useCallback, useContext, useEffect, useState} from 'react';
+import axios, {AxiosResponse} from 'axios';
+import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
+import {useWeb3} from '@yearn-finance/web-lib/contexts';
 
 type	TYearnContext = {
 	dataFromAPI: any[],
@@ -76,10 +76,10 @@ const	YearnContext = createContext<TYearnContext>({
 
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
-	const	[nonce, set_nonce] = React.useState(0);
-	const	[aggregatedData, set_aggregatedData] = React.useState<TAllData>({vaults: {}, tokens: {}});
-	const	[dataFromAPI, set_dataFromAPI] = React.useState<any[]>([]);
-	const	[riskFramework, set_riskFramework] = React.useState<any[]>([]);
+	const	[nonce, set_nonce] = useState(0);
+	const	[aggregatedData, set_aggregatedData] = useState<TAllData>({vaults: {}, tokens: {}});
+	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
+	const	[riskFramework, set_riskFramework] = useState<any[]>([]);
 
 
 	/* 🔵 - Yearn Finance **************************************************
@@ -87,7 +87,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** endpoints. The method is pretty stupid. Fetch all, loop and check
 	** anomalies.
 	**********************************************************************/
-	const getYearnDataSync = React.useCallback(async (_chainID: number): Promise<void> => {
+	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens] = await Promise.all([
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
@@ -235,7 +235,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		});
 	}, []);
 
-	React.useEffect((): void => {
+	useEffect((): void => {
 		getYearnDataSync(chainID || 1);
 	}, [getYearnDataSync, chainID]);
 

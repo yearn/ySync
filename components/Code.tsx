@@ -1,6 +1,6 @@
-import	React, {ReactElement, ReactNode}	from	'react';
-import	PrismHighlight, {defaultProps}		from	'prism-react-renderer';
-import	vsDark								from	'prism-react-renderer/themes/vsDark';
+import React, {ReactElement, ReactNode} from 'react';
+import PrismHighlight, {defaultProps} from 'prism-react-renderer';
+import vsDark from 'prism-react-renderer/themes/vsDark';
 
 function	Code({code, language}: {code: string, language: any}): ReactElement {
 	return (

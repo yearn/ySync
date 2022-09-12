@@ -1,5 +1,6 @@
-import	React, {ReactElement}	from	'react';
-import	useYearn 				from	'contexts/useYearn';
+import React, {ReactElement} from 'react';
+import Image from 'next/image';
+import {useYearn}  from 'contexts/useYearn';
 
 function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
 	const	{onUpdateIconStatus, onUpdateTokenIconStatus} = useYearn();
@@ -9,12 +10,16 @@ function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
 			{(vaults || []).map((vault: any): ReactElement => {
 				return (
 					<div key={`image_tester-${vault.icon}_${vault.address}`}>
-						<img
+						<Image
+							unoptimized
+							alt={''}
 							onError={(): void => onUpdateIconStatus(vault.address, false)}
 							src={vault.icon}
 							width={40}
 							height={40} />
-						<img
+						<Image
+							unoptimized
+							alt={''}
 							onError={(): void => onUpdateTokenIconStatus(vault.address, false)}
 							src={vault.token.icon}
 							width={40}

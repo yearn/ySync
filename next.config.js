@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-const withPWA = require('next-pwa');
+const withPWA = require('next-pwa')({
+	dest: 'public',
+	disable: process.env.NODE_ENV !== 'production'
+});
 const {PHASE_EXPORT} = require('next/constants');
+
 
 module.exports = (phase) => withPWA({
 	assetPrefix: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT ? './' : '/',

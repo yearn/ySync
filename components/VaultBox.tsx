@@ -1,14 +1,14 @@
-import	React, {ReactElement, ReactNode}	from	'react';
-import	Image								from	'next/image';
-import	{useWeb3}							from	'@yearn-finance/web-lib/contexts';
-import	{copyToClipboard, toAddress}		from	'@yearn-finance/web-lib/utils';
-import	{AddressWithActions, Card}			from	'@yearn-finance/web-lib/components';
-import	useYearn 							from	'contexts/useYearn';
-import	AnomaliesSection					from	'components/VaultBox.AnomaliesSection';
-import	StatusLine							from	'components/VaultBox.StatusLine';
-import	ModalFix							from	'components/modals/ModalFix';
-import	type {TFixModalData, TSettings}		from 	'types/types';
-import {getChainExplorer} 					from 	'components/utils/getChainExplorer';
+import React, {ReactElement, ReactNode, useState} from 'react';
+import Image from 'next/image';
+import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {copyToClipboard, toAddress} from '@yearn-finance/web-lib/utils';
+import {AddressWithActions, Card} from '@yearn-finance/web-lib/components';
+import {useYearn}  from 'contexts/useYearn';
+import AnomaliesSection from 'components/VaultBox.AnomaliesSection';
+import StatusLine from 'components/VaultBox.StatusLine';
+import ModalFix from 'components/modals/ModalFix';
+import type {TFixModalData, TSettings} from  'types/types';
+import {getChainExplorer}  from  'components/utils/getChainExplorer';
 
 const		defaultFixModalData: TFixModalData = {
 	isOpen: false,
@@ -20,10 +20,14 @@ const		defaultFixModalData: TFixModalData = {
 	}
 };
 
-function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSettings, noStrategies?: boolean}): ReactElement | null {
+function	VaultBox({
+	vault,
+	settings: vaultSettings,
+	noStrategies
+}: {vault: any, settings: TSettings, noStrategies?: boolean}): ReactElement | null {
 	const	{aggregatedData} = useYearn();
 	const	{chainID} = useWeb3();
-	const	[fixModalData, set_fixModalData] = React.useState<TFixModalData>(defaultFixModalData);
+	const	[fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
 
 	const		hasAnomalies = (
 		vault.strategies.length === 0
@@ -159,7 +163,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 		});
 	}
 
-	if (!hasAnomalies && settings.shouldShowOnlyAnomalies) {
+	if (!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies) {
 		return null;
 	}
 	return (
@@ -168,10 +172,12 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 					{vault.icon ? 
 						<Image
+							alt={''}
 							src={vault.icon}
 							width={40}
 							height={40} /> : 
 						<Image
+							alt={''}
 							src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${vault.address}/logo-128.png`}
 							width={40}
 							height={40} />}
@@ -198,7 +204,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 
 			<AnomaliesSection
 				label={'Yearn Meta File'}
-				settings={settings}
+				settings={vaultSettings}
 				anomalies={[{
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
 					onClick: onTriggerModalForMetaFileMissing,
@@ -208,7 +214,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 
 			<AnomaliesSection
 				label={'Icon'}
-				settings={settings}
+				settings={vaultSettings}
 				anomalies={[{
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
 					prefix: 'Icon',
@@ -221,7 +227,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 
 			<AnomaliesSection
 				label={'Ledger Live'}
-				settings={settings}
+				settings={vaultSettings}
 				anomalies={[{
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
 					onClick: onTriggerModalForLedger,
@@ -233,13 +239,13 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Strategies'}</b>
 					<StatusLine
-						settings={settings}
+						settings={vaultSettings}
 						isValid={false}
 						prefix={'No strategies for this vault:'}
 						sufix={''} />
 				</section> : null}
 
-			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && settings.shouldShowOnlyAnomalies ? null : (
+			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
@@ -247,7 +253,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 						return (
 							<StatusLine
 								key={`${strategy.address}_risk`}
-								settings={settings}
+								settings={vaultSettings}
 								isValid={hasRiskFramework}
 								prefix={'Risk'}
 								sufix={(
@@ -264,7 +270,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
-			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && settings.shouldShowOnlyAnomalies ? null : (
+			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 					{vault.strategies.map((strategy: any): ReactNode => {
@@ -274,7 +280,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 							<StatusLine
 								key={`${strategy.address}_description`}
 								onClick={(): void => onTriggerModalForDescription(strategy)}
-								settings={settings}
+								settings={vaultSettings}
 								isValid={!isMissingDescription}
 								prefix={'Description'}
 								sufix={(
@@ -290,7 +296,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 				</section>
 			)}
 
-			{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && settings.shouldShowMissingTranslations ? (
+			{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
 					{Object.keys(aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
@@ -300,7 +306,7 @@ function	VaultBox({vault, settings, noStrategies}: {vault: any, settings: TSetti
 						return (
 							<StatusLine
 								key={`${strategyAddress}_translation`}
-								settings={settings}
+								settings={vaultSettings}
 								isValid={false}
 								prefix={missingTranslation[strategyAddress].join(', ')}
 								sufix={(
