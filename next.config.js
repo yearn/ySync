@@ -19,10 +19,6 @@ module.exports = (phase) => withPWA({
 			'raw.githubusercontent.com'
 		]
 	},
-	pwa: {
-		dest: 'public',
-		disable: process.env.NODE_ENV !== 'production'
-	},
 	env: {
 		/* 🔵 - Yearn Finance **************************************************
 		** Config over the RPC
