@@ -5,7 +5,6 @@ const withPWA = require('next-pwa')({
 });
 const {PHASE_EXPORT} = require('next/constants');
 
-
 module.exports = (phase) => withPWA({
 	assetPrefix: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT ? './' : '/',
 	experimental: {
