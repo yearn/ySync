@@ -19,7 +19,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	const	[nonce, set_nonce] = useState(0);
 	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {}});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
-	const	[riskFramework, set_riskFramework] = useState<any[]>([]);
 
 
 	/* 🔵 - Yearn Finance ******************************************************
@@ -31,7 +30,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
-			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
@@ -214,7 +212,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);
-			set_riskFramework(_riskFramework.data.filter((r: {network: number}): boolean => r.network === _chainID));
 			set_aggregatedData(_allData);
 			set_nonce((n): number => n + 1);
 		});
@@ -301,7 +298,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	return (
 		<YearnContext.Provider value={{
 			dataFromAPI,
-			riskFramework,
 			aggregatedData,
 			onUpdateIconStatus,
 			onUpdateTokenIconStatus,
