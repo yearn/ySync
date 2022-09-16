@@ -2,6 +2,7 @@ import React, {ReactElement, createContext, useCallback, useContext, useEffect, 
 import axios, {AxiosResponse} from 'axios';
 import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {getUniqueLanguages} from 'components/utils/getUniqueLanguages';
 
 type	TYearnContext = {
 	dataFromAPI: any[],
@@ -60,15 +61,22 @@ type	TTokensData = {
 	}
 }
 
+type	TProtocolData = {
+	[key: string]: {
+		missingTranslations: string[],
+	}
+}
+
 type	TAllData = {
 	vaults: TVaultsData;
 	tokens: TTokensData;
+	protocols: TProtocolData;
 }
 
 const	YearnContext = createContext<TYearnContext>({
 	dataFromAPI: [],
 	riskFramework: {},
-	aggregatedData: {vaults: {}, tokens: {}},
+	aggregatedData: {vaults: {}, tokens: {}, protocols: {}},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
 	nonce: 0
@@ -77,7 +85,7 @@ const	YearnContext = createContext<TYearnContext>({
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = useState(0);
-	const	[aggregatedData, set_aggregatedData] = useState<TAllData>({vaults: {}, tokens: {}});
+	const	[aggregatedData, set_aggregatedData] = useState<TAllData>({vaults: {}, tokens: {}, protocols: {}});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
 	const	[riskFramework, set_riskFramework] = useState<any[]>([]);
 
@@ -88,14 +96,15 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**********************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
 			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/strategies?loc=all`),
-			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/tokens?loc=all`)
-		]) as [any, any, any, AxiosResponse<TGHFile[]>, any, any];
+			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/tokens?loc=all`),
+			axios.get(`https://ydaemon.yearn.finance/${_chainID}/meta/protocols?loc=all`)
+		]) as [any, any, any, AxiosResponse<TGHFile[]>, any, any, any];
 
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 
@@ -107,7 +116,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			STRATEGIES[toAddress(strategyAddress)] = strategies.data[strategyAddress];
 		}
 
-		const	_allData: TAllData = {vaults: {}, tokens: {}};
+		const	_allData: TAllData = {vaults: {}, tokens: {}, protocols: {}};
 		for (const data of fromAPI.data) {
 			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: TStrategy): boolean => (
@@ -194,8 +203,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			}
 		}
 		
-		const TOKENS_LANGUAGES = [...new Set(Object.values(tokens.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
-		
+		const TOKENS_LANGUAGES = getUniqueLanguages(tokens.data);
+
 		const TOKENS: {[key: string]: any} = {};
 		
 		for (const tokenAddress of Object.keys(tokens.data)) {
@@ -225,6 +234,29 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				symbol: TOKENS[address]?.symbol,
 				missingTranslations: missingTokensTranslations
 			};
+		}
+
+		const PROTOCOLS_LANGUAGES = getUniqueLanguages(protocols.data);
+
+		for (const protocol of Object.keys(protocols.data)) {
+			let missingProtocolsTranslations: string[] = [];
+
+			const localizations = protocols.data[protocol]?.localization;
+			
+			const english = localizations?.en;
+
+			if (!english) {
+				missingProtocolsTranslations = PROTOCOLS_LANGUAGES;
+				continue;
+			}
+
+			for (const lang of PROTOCOLS_LANGUAGES) {
+				if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
+					missingProtocolsTranslations = missingProtocolsTranslations ? [...missingProtocolsTranslations, lang] : [lang];
+				}
+			}
+
+			_allData.protocols[protocol] = {missingTranslations: missingProtocolsTranslations};
 		}
 
 		performBatchedUpdates((): void => {
