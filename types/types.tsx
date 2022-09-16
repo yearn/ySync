@@ -23,10 +23,12 @@ export type	TAnomaliesSection = {
 	settings: TSettings
 }
 
+export type TEntity = 'vaults' | 'tokens' | 'protocols';
+
 export type TSettings = {
 	shouldShowOnlyAnomalies: boolean;
 	shouldShowOnlyEndorsed: boolean;
 	shouldShowVersion: 'all' | 'v2' | 'v3' | 'v4';
 	shouldShowMissingTranslations: boolean;
-	shouldShowEntity: 'vaults' | 'tokens';
+	shouldShowEntity: TEntity;
 }

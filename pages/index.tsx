@@ -5,7 +5,7 @@ import {AddressWithActions, Card, Dropdown, StatisticCard} from '@yearn-finance/
 import {useYearn}  from 'contexts/useYearn';
 import VaultBox from 'components/VaultBox';
 import ImageTester from 'components/ImageTester';
-import type {TSettings} from 'types/types';
+import type {TEntity, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 
 const	defaultSettings: TSettings = {
@@ -16,11 +16,12 @@ const	defaultSettings: TSettings = {
 	shouldShowEntity: 'vaults'
 };
 
-type 	TOption = {label: string; value: 'vaults' | 'tokens'};
+type 	TOption = {label: string; value: TEntity};
 
 const	OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
-	{label: 'Tokens', value: 'tokens'}
+	{label: 'Tokens', value: 'tokens'},
+	{label: 'Protocols', value: 'protocols'}
 ];
 
 function	Index(): ReactNode {
@@ -28,6 +29,7 @@ function	Index(): ReactNode {
 	const	{dataFromAPI, aggregatedData} = useYearn();
 	const	[vaults, set_vaults] = useState<any[]>([]);
 	const	[tokens, set_tokens] = useState<any>();
+	const	[protocols, set_protocols] = useState<any>();
 	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
 	const	[selectedOption, set_selectedOption] = useState(OPTIONS[0]);
 
@@ -51,7 +53,11 @@ function	Index(): ReactNode {
 		if (appSettings.shouldShowEntity === 'tokens') {
 			set_tokens(aggregatedData.tokens);
 		}
-	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens]);
+
+		if (appSettings.shouldShowEntity === 'protocols') {
+			set_protocols(aggregatedData.protocols);
+		}
+	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols]);
 
 	const	errorCount = useMemo((): number => (
 		vaults
@@ -268,8 +274,38 @@ function	Index(): ReactNode {
 									</section>
 								</Card>
 							);
-						})
-						}
+						})}
+
+						{appSettings.shouldShowEntity === 'protocols' && protocols && Object.keys(protocols).map((protocol: string): ReactNode => {
+							if (!aggregatedData.protocols[protocol]) {
+								return null;
+							}
+							
+							const {missingTranslations} = aggregatedData.protocols[protocol];
+
+							if (!missingTranslations) {
+								return null;
+							}
+							
+							return (
+								<Card variant={'background'} key={protocol}>
+									<div className={'flex flex-row space-x-4'}>
+										<div className={'-mt-1 flex flex-col'}>
+											<div className={'flex flex-row items-center space-x-2'}>
+												<h4 className={'text-lg font-bold text-neutral-700'}>{protocol}</h4>
+											</div>
+										</div>
+									</div>
+									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
+										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${missingTranslations.length}) Missing Translations`}</b>
+										<TranslationStatusLine
+											key={`${protocol}_translation`}
+											isValid={false}
+											content={missingTranslations.join(', ')} />
+									</section>
+								</Card>
+							);
+						})}
 					</div>
 				</div>
 			</Card>
