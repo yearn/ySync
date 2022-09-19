@@ -4,8 +4,8 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {copyToClipboard, toAddress} from '@yearn-finance/web-lib/utils';
 import {AddressWithActions, Card} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
-import AnomaliesSection from 'components/VaultBox.AnomaliesSection';
-import StatusLine from 'components/VaultBox.StatusLine';
+import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
+import StatusLine from 'components/VaultEntity.StatusLine';
 import ModalFix from 'components/modals/ModalFix';
 import type {TFixModalData, TSettings} from  'types/types';
 import {getChainExplorer}  from  'components/utils/getChainExplorer';
@@ -20,7 +20,7 @@ const		defaultFixModalData: TFixModalData = {
 	}
 };
 
-function	VaultBox({
+function	VaultEntity({
 	vault,
 	settings: vaultSettings,
 	noStrategies
@@ -29,8 +29,13 @@ function	VaultBox({
 	const	{chainID} = useWeb3();
 	const	[fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
 
+	if (!vault) {
+		return <React.Fragment />;
+	}
+
 	const		hasAnomalies = (
-		vault.strategies.length === 0
+		(vault?.strategies?.length || 0) === 0
+		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
@@ -178,7 +183,7 @@ function	VaultBox({
 							height={40} /> : 
 						<Image
 							alt={''}
-							src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${vault.address}/logo-128.png`}
+							src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/${chainID}/${vault.address}/logo-128.png`}
 							width={40}
 							height={40} />}
 				</div>
@@ -232,6 +237,15 @@ function	VaultBox({
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
 					onClick: onTriggerModalForLedger,
 					prefix: 'Ledger integration',
+					sufix: 'for vault'
+				}]} />
+
+			<AnomaliesSection
+				label={'Price'}
+				settings={vaultSettings}
+				anomalies={[{
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
+					prefix: 'Price',
 					sufix: 'for vault'
 				}]} />
 
@@ -330,4 +344,4 @@ function	VaultBox({
 	);
 }
 
-export default VaultBox;
+export default VaultEntity;
