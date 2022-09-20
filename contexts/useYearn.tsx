@@ -146,13 +146,20 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** All available languages are initialized in English. If a translation
 		** is the same as the english one, it not translated.
 		**********************************************************************/
-		const missingTokensTranslations: {[key: string]: string[]} = {};
 		for (const address of Object.keys(TOKENS)) {
+			const missingTokensTranslations: {[key: string]: string[]} = {};
 			const localizations = TOKENS[address]?.localization;
 			const english = localizations?.en;
 
 			if (!english) {
 				missingTokensTranslations[address] = LANGUAGES;
+				_allData.tokens[toAddress(address) as string] = {
+					address: toAddress(address),
+					name: TOKENS[address]?.name,
+					symbol: TOKENS[address]?.symbol,
+					missingTranslations: missingTokensTranslations,
+					hasValidPrice: TOKENS[address]?.price > 0
+				};
 				continue;
 			}
 
