@@ -223,20 +223,41 @@ function	Index(): ReactNode {
 		}
 	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols]);
 
-	const	errorCount = useMemo((): number => (
-		vaults
+	const	errorCount = useMemo((): number => {
+		if (appSettings.shouldShowEntity === 'tokens') {
+			const _errorCount = (
+				Object.keys(tokens)
+				.filter((tokenAddress: string): boolean => {
+					const	hasAnomalies = (
+						!aggregatedData.tokens[toAddress(tokenAddress)]?.hasValidPrice
+					);
+
+					return hasAnomalies;
+				}).length
+			)
+			return _errorCount / (Object.keys(tokens).length || 1) * 100;
+
+		}
+		const	_errorCount = (
+			vaults
 			.filter((vault): boolean => {
 				const	hasAnomalies = (
 					vault.strategies.length === 0
+					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
+					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
+					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
 				);
 				return (hasAnomalies);
 			})
 			.length
-	), [vaults, aggregatedData]);
+		)
+		return _errorCount / (vaults.length || 1) * 100;
+
+	}, [vaults, tokens, appSettings.shouldShowEntity, aggregatedData]);
 
 	return (
 		<div>
@@ -246,7 +267,7 @@ function	Index(): ReactNode {
 				<StatisticCard.Wrapper>
 					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Vaults count'} value={vaults.length} />
 					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Tokens count'} value={Object.values(tokens || {}).length} />
-					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Error ratio'} value={`${(errorCount / (vaults.length || 1) * 100).toFixed(2)} %`} />
+					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Error ratio'} value={`${errorCount.toFixed(2)} %`} />
 				</StatisticCard.Wrapper>
 			</div>
 

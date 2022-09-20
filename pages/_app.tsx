@@ -33,7 +33,7 @@ function	WithLayout(props: AppProps): ReactElement {
 					</div>
 				</div>
 			</Header>
-			<AnimatePresence exitBeforeEnter>
+			<AnimatePresence mode={'wait'}>
 				<motion.div
 					key={router.asPath}
 					initial={'initial'}

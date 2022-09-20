@@ -63,7 +63,7 @@ function	TokenEntity({
 			</div>
 
 			<section aria-label={'price check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
-				<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
+				<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Price'}</b>
 				<StatusLine
 					settings={statusSettings}
 					isValid={tokenData.hasValidPrice}
