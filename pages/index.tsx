@@ -249,7 +249,7 @@ function	Index(): ReactNode {
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY);
+					|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY);
 					return (hasAnomalies);
 				})
 				.length
