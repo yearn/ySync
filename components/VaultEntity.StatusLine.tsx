@@ -21,7 +21,7 @@ function	StatusLine({
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
 				<IconCheck className={'mt-[2px] h-4 min-h-[16px] w-4 min-w-[16px] text-accent-500'}/>
-				<p className={'whitespace-pre break-words text-sm text-neutral-500'}>
+				<p className={'break-words text-sm text-neutral-500'}>
 					{`${prefix} OK `}
 					{sufix}
 				</p>
@@ -43,7 +43,7 @@ function	StatusLine({
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
 				<IconWarning className={'mt-[2px] h-4 min-h-[16px] w-4 min-w-[16px] text-yellow-900'}/>
-				<p className={'whitespace-pre break-words text-sm text-neutral-500'}>
+				<p className={'break-words text-sm text-neutral-500'}>
 					{`${prefix} ${errorMessage} `}
 					{sufix}
 					{onClick ? <IconFix
@@ -56,7 +56,7 @@ function	StatusLine({
 	return (
 		<div className={'flex flex-row items-start space-x-2'}>
 			<IconCross className={'mt-[2px] h-4 min-h-[16px] w-4 min-w-[16px] text-red-900'}/>
-			<p className={'whitespace-pre break-words text-sm text-neutral-500'}>
+			<p className={'break-words text-sm text-neutral-500'}>
 				{`${prefix} ${errorMessage} `}
 				{sufix}
 				{onClick ? <IconFix

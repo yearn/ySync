@@ -2,7 +2,7 @@ import React, {ReactElement, ReactNode, useState} from 'react';
 import Image from 'next/image';
 import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
 import {copyToClipboard, toAddress} from '@yearn-finance/web-lib/utils';
-import {AddressWithActions, Card} from '@yearn-finance/web-lib/components';
+import {AddressWithActions} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/VaultEntity.StatusLine';
@@ -221,8 +221,8 @@ function	VaultEntity({
 	}
 
 	return (
-		<Card variant={'background'}>
-			<div className={'flex flex-row space-x-4'}>
+		<div className={'rounded-lg bg-neutral-200'}>
+			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
 				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 					{vault.icon ? 
 						<Image
@@ -255,191 +255,191 @@ function	VaultEntity({
 					</div>
 				</div>
 			</div>
+			<div className={'flex flex-col p-4 pt-0'}>
+				<AnomaliesSection
+					label={'Yearn Meta File'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
+						onClick: onTriggerModalForMetaFileMissing,
+						prefix: 'Yearn Meta File',
+						sufix: 'for vault'
+					}]} />
 
-			<AnomaliesSection
-				label={'Yearn Meta File'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
-					onClick: onTriggerModalForMetaFileMissing,
-					prefix: 'Yearn Meta File',
-					sufix: 'for vault'
-				}]} />
+				<AnomaliesSection
+					label={'Icon'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
+						prefix: 'Icon',
+						sufix: (
+							<span className={'inline'}>
+								{'for vault '}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+									{vault.symbol || 'not_set'}
+								</a>
+								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
+									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</button>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} rel={'noreferrer'}>
+									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</a>
+							</span>
+						)
+					}, {
+						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
+						prefix: 'Icon',
+						sufix: (
+							<span className={'inline'}>
+								{'for underlying token '}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+									{vault.token.symbol || 'not_set'}
+								</a>
+								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
+									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</button>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} rel={'noreferrer'}>
+									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</a>
+							</span>
+						)
+					}]} />
 
-			<AnomaliesSection
-				label={'Icon'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
-					prefix: 'Icon',
-					sufix: (
-						<span className={'inline'}>
-							{'for vault '}
-							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
-								{vault.symbol || 'not_set'}
-							</a>
-							<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
-								<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-							</button>
-							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} rel={'noreferrer'}>
-								<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-							</a>
-						</span>
-					)
-				}, {
-					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
-					prefix: 'Icon',
-					sufix: (
-						<span className={'inline'}>
-							{'for underlying token '}
-							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
-								{vault.token.symbol || 'not_set'}
-							</a>
-							<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
-								<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-							</button>
-							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} rel={'noreferrer'}>
-								<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-							</a>
-						</span>
-					)
-				}]} />
+				<AnomaliesSection
+					label={'Ledger Live'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
+						onClick: onTriggerModalForLedger,
+						prefix: 'Ledger integration',
+						sufix: 'for vault'
+					}]} />
 
-			<AnomaliesSection
-				label={'Ledger Live'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
-					onClick: onTriggerModalForLedger,
-					prefix: 'Ledger integration',
-					sufix: 'for vault'
-				}]} />
+				<AnomaliesSection
+					label={'Price'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
+						prefix: 'Price',
+						sufix: (
+							<span>
+								{'for vault '}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${aggregatedData.vaults[toAddress(vault.address)].address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)].hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+									{aggregatedData.vaults[toAddress(vault.address)].name}
+								</a>
+							</span>
+						)
+					}]} />
 
-			<AnomaliesSection
-				label={'Price'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
-					prefix: 'Price',
-					sufix: (
-						<span>
-							{'for vault '}
-							<a href={`${networks[chainID].explorerBaseURI}/address/${aggregatedData.vaults[toAddress(vault.address)].address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)].hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-								{aggregatedData.vaults[toAddress(vault.address)].name}
-							</a>
-						</span>
-					)
-				}]} />
+				<AnomaliesSection
+					label={'Strategies'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: !noStrategies,
+						prefix: 'No strategies for this vault',
+						errorMessage: '',
+						sufix: ''
+					}]} />
 
-			<AnomaliesSection
-				label={'Strategies'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: !noStrategies,
-					prefix: 'No strategies for this vault',
-					errorMessage: '',
-					sufix: ''
-				}]} />
-
-			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-14'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
-					{vault.strategies.map((strategy: any): ReactNode => {
-						const	hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
-						return (
-							<StatusLine
-								key={`${strategy.address}_risk`}
-								settings={vaultSettings}
-								isValid={hasRiskFramework}
-								prefix={'Risk'}
-								sufix={(
-									<span>
-										{'for strategy '}
-										<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-											{strategy.name}
-										</a>
-									</span>
-								)} />
+				{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
+					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
+						{vault.strategies.map((strategy: any): ReactNode => {
+							const	hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
+							return (
+								<StatusLine
+									key={`${strategy.address}_risk`}
+									settings={vaultSettings}
+									isValid={hasRiskFramework}
+									prefix={'Risk'}
+									sufix={(
+										<span>
+											{'for strategy '}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+												{strategy.name}
+											</a>
+										</span>
+									)} />
 								
-						);
-					})}
-				</section>
-			)}
+							);
+						})}
+					</section>
+				)}
 
-			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
-				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-14'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
-					{vault.strategies.map((strategy: any): ReactNode => {
-						const	isMissingDescription = strategy.description === '';
+				{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
+					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
+						{vault.strategies.map((strategy: any): ReactNode => {
+							const	isMissingDescription = strategy.description === '';
 
-						return (
-							<StatusLine
-								key={`${strategy.address}_description`}
-								onClick={(): void => onTriggerModalForDescription(strategy)}
-								settings={vaultSettings}
-								isValid={!isMissingDescription}
-								prefix={'Description'}
-								sufix={(
-									<span>
-										{'for strategy '}
-										<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-											{strategy.name}
-										</a>
-									</span>
-								)} />
-						);
-					})}
-				</section>
-			)}
+							return (
+								<StatusLine
+									key={`${strategy.address}_description`}
+									onClick={(): void => onTriggerModalForDescription(strategy)}
+									settings={vaultSettings}
+									isValid={!isMissingDescription}
+									prefix={'Description'}
+									sufix={(
+										<span>
+											{'for strategy '}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+												{strategy.name}
+											</a>
+										</span>
+									)} />
+							);
+						})}
+					</section>
+				)}
 
-			<AnomaliesSection
-				label={'APY'}
-				settings={vaultSettings}
-				anomalies={[{
-					isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
-					prefix: 'APY is set to ',
-					errorMessage: '[ ERROR ]',
-					sufix: 'for vault'
-				}, {
-					isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
-					isWarning: true,
-					prefix: 'APY is set to ',
-					errorMessage: '[ NEW ]',
-					sufix: 'for vault'
-				}]} />
+				<AnomaliesSection
+					label={'APY'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
+						prefix: 'APY is set to ',
+						errorMessage: '[ ERROR ]',
+						sufix: 'for vault'
+					}, {
+						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
+						isWarning: true,
+						prefix: 'APY is set to ',
+						errorMessage: '[ NEW ]',
+						sufix: 'for vault'
+					}]} />
 
 
-			{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
-				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-14'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
-					{Object.keys(aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
-						const missingTranslation = aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations;
-						const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
+				{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
+					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
+						{Object.keys(aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
+							const missingTranslation = aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations;
+							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
 
-						return (
-							<StatusLine
-								key={`${strategyAddress}_translation`}
-								settings={vaultSettings}
-								isValid={false}
-								prefix={missingTranslation[strategyAddress].join(', ')}
-								sufix={(
-									<span>
-										{'for '}
-										<a href={`${networks[chainID].explorerBaseURI}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
-											{shortAddress}
-										</a>
-									</span>
-								)} />
-						);
-					})}
-				</section>
-			) : null}
-
+							return (
+								<StatusLine
+									key={`${strategyAddress}_translation`}
+									settings={vaultSettings}
+									isValid={false}
+									prefix={missingTranslation[strategyAddress].join(', ')}
+									sufix={(
+										<span>
+											{'for '}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
+												{shortAddress}
+											</a>
+										</span>
+									)} />
+							);
+						})}
+					</section>
+				) : null}
+			</div>
 			<ModalFix
 				fix={fixModalData.fix}
 				isOpen={fixModalData.isOpen}
 				onClose={(): void => set_fixModalData(defaultFixModalData)} />
-		</Card>
+		</div>
 	);
 }
 
