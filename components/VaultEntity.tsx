@@ -1,7 +1,7 @@
 import React, {ReactElement, ReactNode, useState} from 'react';
 import Image from 'next/image';
 import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
-import {copyToClipboard, toAddress} from '@yearn-finance/web-lib/utils';
+import {copyToClipboard, format, toAddress} from '@yearn-finance/web-lib/utils';
 import {AddressWithActions} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
@@ -399,13 +399,13 @@ function	VaultEntity({
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
 						prefix: 'APY is set to ',
 						errorMessage: '[ ERROR ]',
-						sufix: 'for vault'
+						sufix: `for vault - (APY: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}, {
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
 						isWarning: true,
 						prefix: 'APY is set to ',
 						errorMessage: '[ NEW ]',
-						sufix: 'for vault'
+						sufix: `for vault - (APY: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}]} />
 
 
