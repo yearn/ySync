@@ -227,22 +227,22 @@ function	Index(): ReactNode {
 		if (appSettings.shouldShowEntity === 'tokens') {
 			const _errorCount = (
 				Object.keys(tokens)
-				.filter((tokenAddress: string): boolean => {
-					const	hasAnomalies = (
-						!aggregatedData.tokens[toAddress(tokenAddress)]?.hasValidPrice
-					);
+					.filter((tokenAddress: string): boolean => {
+						const	hasAnomalies = (
+							!aggregatedData.tokens[toAddress(tokenAddress)]?.hasValidPrice
+						);
 
-					return hasAnomalies;
-				}).length
-			)
+						return hasAnomalies;
+					}).length
+			);
 			return _errorCount / (Object.keys(tokens).length || 1) * 100;
 
 		}
 		const	_errorCount = (
 			vaults
-			.filter((vault): boolean => {
-				const	hasAnomalies = (
-					vault.strategies.length === 0
+				.filter((vault): boolean => {
+					const	hasAnomalies = (
+						vault.strategies.length === 0
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
@@ -250,11 +250,11 @@ function	Index(): ReactNode {
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
 					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
-				);
-				return (hasAnomalies);
-			})
-			.length
-		)
+					);
+					return (hasAnomalies);
+				})
+				.length
+		);
 		return _errorCount / (vaults.length || 1) * 100;
 
 	}, [vaults, tokens, appSettings.shouldShowEntity, aggregatedData]);
