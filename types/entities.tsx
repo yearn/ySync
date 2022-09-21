@@ -24,6 +24,7 @@ export type	TTokenData = {
 	address: string,
 	name: string,
 	symbol: string,
+	price: string,
 	missingTranslations: {[key: string]: string[]},
 	hasValidTokenIcon: boolean,
 	hasValidPrice: boolean

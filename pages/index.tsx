@@ -290,7 +290,7 @@ function	Index(): ReactNode {
 				</div>
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
-					<div className={'mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2'}>
+					<div className={'mt-4 grid w-full grid-cols-1 gap-4 lg:grid-cols-2'}>
 						{appSettings.shouldShowEntity === 'vaults' && vaults.map((vault: any, index: number): ReactNode => {
 							return (
 								<VaultEntity

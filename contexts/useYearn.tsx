@@ -161,6 +161,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					address: toAddress(address),
 					name: TOKENS[address]?.name,
 					symbol: TOKENS[address]?.symbol,
+					price: TOKENS[address]?.price,
 					missingTranslations: missingTokensTranslations,
 					hasValidPrice: TOKENS[address]?.price > 0,
 					hasValidTokenIcon: true
@@ -179,6 +180,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				address: toAddress(address),
 				name: TOKENS[address]?.name,
 				symbol: TOKENS[address]?.symbol,
+				price: TOKENS[address]?.price,
 				missingTranslations: missingTokensTranslations,
 				hasValidPrice: TOKENS[address]?.price > 0,
 				hasValidTokenIcon: true
