@@ -249,15 +249,15 @@ function	VaultEntity({
 					sufix: 'for vault'
 				}]} />
 
-			{noStrategies ?
-				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Strategies'}</b>
-					<StatusLine
-						settings={vaultSettings}
-						isValid={false}
-						prefix={'No strategies for this vault:'}
-						sufix={''} />
-				</section> : null}
+			<AnomaliesSection
+				label={'Strategies'}
+				settings={vaultSettings}
+				anomalies={[{
+					isValid: !noStrategies,
+					prefix: 'No strategies for this vault',
+					errorMessage: '',
+					sufix: ''
+				}]} />
 
 			{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
@@ -309,6 +309,18 @@ function	VaultEntity({
 					})}
 				</section>
 			)}
+
+			<AnomaliesSection
+				label={'APY'}
+				settings={vaultSettings}
+				isWarning
+				anomalies={[{
+					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
+					prefix: 'APY is set to ',
+					errorMessage: '[ NEW ]',
+					sufix: 'for vault'
+				}]} />
+
 
 			{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 				<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>

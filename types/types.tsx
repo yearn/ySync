@@ -1,11 +1,30 @@
 import {ReactElement} from 'react';
 import {TProtocolsData, TTokensData, TVaultsData} from './entities';
 
+export type TEntity = 'vaults' | 'tokens' | 'protocols'
+export type TVersions = 'all' | 'v2' | 'v3' | 'v4'
+export type TSettings = {
+	shouldShowOnlyAnomalies: boolean,
+	shouldShowOnlyEndorsed: boolean,
+	shouldShowMissingTranslations: boolean,
+	shouldShowVersion: TVersions,
+	shouldShowEntity: TEntity,
+}
+
 export type	TAnomalies = {
 	isValid: boolean,
+	isWarning?: boolean
 	prefix: string,
+	errorMessage?: string,
 	sufix: string | ReactElement,
 	onClick?: () => void
+}
+
+export type	TAnomaliesSection = {
+	label: string,
+	anomalies: TAnomalies[],
+	settings: TSettings
+	isWarning?: boolean
 }
 
 export type	TFixModalData = {
@@ -18,21 +37,6 @@ export type	TFixModalData = {
 	}
 }
 
-export type	TAnomaliesSection = {
-	label: string,
-	anomalies: TAnomalies[],
-	settings: TSettings
-}
-
-export type TEntity = 'vaults' | 'tokens' | 'protocols'
-
-export type TSettings = {
-	shouldShowOnlyAnomalies: boolean,
-	shouldShowOnlyEndorsed: boolean,
-	shouldShowVersion: 'all' | 'v2' | 'v3' | 'v4',
-	shouldShowMissingTranslations: boolean,
-	shouldShowEntity: TEntity,
-}
 
 export type	TYearnContext = {
 	dataFromAPI: any[],

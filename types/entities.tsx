@@ -8,6 +8,7 @@ export type	TVaultData = {
 	hasValidTokenIcon: boolean,
 	hasYearnMetaFile: boolean,
 	hasValidPrice: boolean,
+	hasNewAPY: boolean,
 	missingTranslations: {[key: string]: string[]},
 	address: string,
 	name: string,
