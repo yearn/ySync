@@ -24,7 +24,6 @@ export type	TAnomaliesSection = {
 	label: string,
 	anomalies: TAnomalies[],
 	settings: TSettings
-	isWarning?: boolean
 }
 
 export type	TFixModalData = {

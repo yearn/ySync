@@ -62,7 +62,7 @@ function	TokenEntity({
 				</div>
 			</div>
 
-			<section aria-label={'price check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
+			<section aria-label={'price check'} className={'mt-4 flex flex-col pl-0 md:pl-14'}>
 				<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Price'}</b>
 				<StatusLine
 					settings={statusSettings}
@@ -79,7 +79,7 @@ function	TokenEntity({
 			</section>
 		
 			{statusSettings.shouldShowMissingTranslations ? (
-				<section aria-label={'localization check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
+				<section aria-label={'localization check'} className={'mt-4 flex flex-col pl-0 md:pl-14'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${missingTranslations[tokenData.address].length || 0}) Missing Translations`}</b>
 					<TranslationStatusLine
 						key={`${tokenData.address}_translation`}
