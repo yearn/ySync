@@ -2,7 +2,7 @@
 	"name": "ySync",
 	"short_name": "ySync",
 	"description": "Sync data from Yearn's data sources",
-	"iconPath": "./favicons/apple-icon.png",
+	"iconPath": "./favicons/favicon.svg",
 	"locale": "en-US",
 	"uri": "https://sync.yearn.farm/",
 	"og": "https://sync.yearn.farm/og.jpeg",

@@ -4,12 +4,12 @@ import {AnimatePresence, motion} from 'framer-motion';
 import {KBarProvider} from 'kbar';
 import {WithYearn} from '@yearn-finance/web-lib/contexts';
 import {YearnContextApp} from 'contexts/useYearn';
-import Footer from 'components/StandardFooter';
-import Header from 'components/Header';
-import HeaderTitle from 'components/HeaderTitle';
-import KBar from 'components/Kbar';
-import KBarButton from 'components/KBarButton';
-import Meta from 'components/Meta';
+import Footer from 'components/common/StandardFooter';
+import Header from 'components/common/Header';
+import HeaderTitle from 'components/common/HeaderTitle';
+import KBar from 'components/common/Kbar';
+import KBarButton from 'components/common/KBarButton';
+import Meta from 'components/common/Meta';
 
 import	'../style.css';
 
@@ -33,7 +33,7 @@ function	WithLayout(props: AppProps): ReactElement {
 					</div>
 				</div>
 			</Header>
-			<AnimatePresence exitBeforeEnter>
+			<AnimatePresence mode={'wait'}>
 				<motion.div
 					key={router.asPath}
 					initial={'initial'}

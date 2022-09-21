@@ -35,6 +35,8 @@ module.exports = (phase) => withPWA({
 			42161: process.env.RPC_URL_ARBITRUM
 		},
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
-		INFURA_KEY: process.env.INFURA_KEY
+		INFURA_KEY: process.env.INFURA_KEY,
+		// YDAEMON_ENDPOINT: 'http://localhost:8080'
+		YDAEMON_ENDPOINT: 'https://ydaemon.yearn.finance'
 	}
 });

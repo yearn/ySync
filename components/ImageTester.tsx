@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import React, {ReactElement} from 'react';
-import Image from 'next/image';
 import {useYearn}  from 'contexts/useYearn';
+import {TTokenData, TTokensData} from 'types/entities';
+import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {toAddress} from '@yearn-finance/web-lib/utils';
 
-function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
+function	VaultImageTester({vaults}: {vaults: any[]}): ReactElement {
 	const	{onUpdateIconStatus, onUpdateTokenIconStatus} = useYearn();
 
 	return (
@@ -10,17 +13,19 @@ function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
 			{(vaults || []).map((vault: any): ReactElement => {
 				return (
 					<div key={`image_tester-${vault.icon}_${vault.address}`}>
-						<Image
-							unoptimized
+						<img
 							alt={''}
-							onError={(): void => onUpdateIconStatus(vault.address, false)}
+							onError={(): void => {
+								onUpdateIconStatus(vault.address, false);
+							}}
 							src={vault.icon}
 							width={40}
 							height={40} />
-						<Image
-							unoptimized
+						<img
 							alt={''}
-							onError={(): void => onUpdateTokenIconStatus(vault.address, false)}
+							onError={(): void => {
+								onUpdateTokenIconStatus(vault.address, false, false);
+							}}
 							src={vault.token.icon}
 							width={40}
 							height={40} />
@@ -31,4 +36,29 @@ function	ImageTester({vaults}: {vaults: any[]}): ReactElement {
 	);
 }
 
-export default ImageTester;
+function	TokensImageTester({tokens}: {tokens: TTokensData}): ReactElement {
+	const	{chainID} = useWeb3();
+	const	{onUpdateTokenIconStatus} = useYearn();
+
+	return (
+		<div className={'invisible h-0 w-0 overflow-hidden'}>
+			{(Object.values(tokens) || []).map((token: TTokenData): ReactElement => {
+				const	icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/${chainID}/${toAddress(token.address)}/logo-128.png`;
+				return (
+					<div key={`image_tester-${icon}_${token.address}`}>
+						<img
+							alt={''}
+							onError={(): void => {
+								onUpdateTokenIconStatus(token.address, false, true);
+							}}
+							src={icon}
+							width={40}
+							height={40} />
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
+export {VaultImageTester, TokensImageTester};

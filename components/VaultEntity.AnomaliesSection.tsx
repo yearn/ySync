@@ -1,6 +1,6 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils';
-import StatusLine from 'components/VaultBox.StatusLine';
+import StatusLine from 'components/VaultEntity.StatusLine';
 import type {TAnomalies, TAnomaliesSection} from 'types/types';
 
 function	AnomaliesSection({
@@ -22,10 +22,13 @@ function	AnomaliesSection({
 		return <div />;
 	}
 	return (
-		<section aria-label={'data source check'} className={'mt-3 flex flex-col pl-0 md:pl-14'}>
+		<section aria-label={'data source check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 			<b className={'mb-1 font-mono text-sm text-neutral-500'}>{label}</b>
 			{localAnomalies.map((e: TAnomalies, i: number): ReactNode => (
-				<StatusLine key={`${e.prefix}-${i}`} settings={anomaliesSettings} {...e} />
+				<StatusLine
+					key={`${e.prefix}-${i}`}
+					settings={anomaliesSettings}
+					{...e} />
 			))}
 		</section>
 	);
