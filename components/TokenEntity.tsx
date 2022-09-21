@@ -96,9 +96,10 @@ function	TokenEntity({
 						sufix: (
 							<span>
 								{'for token '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${!tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 									{tokenData.name}
 								</a>
+								{tokenData?.hasValidPrice ? ` (${tokenData.price}$)` : ''}
 							</span>
 						)
 					}]} />
