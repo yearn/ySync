@@ -47,7 +47,6 @@ function	VaultEntity({
 	);
 
 	function	onTriggerModalForLedger(): void {
-
 		function	renderSnippetB2C(): string {
 			const ledgerSnippetB2C = '{\n\t"address": "0x0000000000000000000000000000000000000000",\n\t"contractName": "some-contract-name",\n\t"selectors": {\n\t\t"0x3ccfd60b": {"erc20OfInterest": [], "method": "withdraw_all", "plugin": "Yearn"},\n\t\t"0x2e1a7d4d": {"erc20OfInterest": [], "method": "withdraw", "plugin": "Yearn"},\n\t\t"0x00f714ce": {"erc20OfInterest": [], "method": "withdraw_to", "plugin": "Yearn"},\n\t\t"0xe63697c8": {"erc20OfInterest": [], "method": "withdraw_to_with_slippage", "plugin": "Yearn"}\n\t}\n}'.trim();
 			let	snippet = '';
@@ -156,12 +155,12 @@ function	VaultEntity({
 				name: vault.name,
 				instructions: [
 					<span key={'step-1'}>
-						{'1. Access the Strategies folder in the meta repo: '}
-						<a href={`https://github.com/yearn/yearn-meta/tree/master/data/strategies/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
-							{`https://github.com/yearn/yearn-meta/tree/master/data/strategies/${chainID}`}
+						{'1. Access the Strategies folder in the yDaemon meta directory: '}
+						<a href={`https://github.com/yearn/ydaemon/tree/main/data/meta/strategies/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{`https://github.com/yearn/ydaemon/tree/main/data/meta/strategies/${chainID}`}
 						</a>
 					</span>,
-					<span key={'step-3'}>
+					<span key={'step-2'}>
 						{'2. Select the file in which the strategy '}
 						<code
 							onClick={(): void => copyToClipboard(currentStrategy.name)}
@@ -178,7 +177,7 @@ function	VaultEntity({
 							{currentStrategy.address}
 						</code>
 					</span>,
-					<span key={'step-3'}>
+					<span key={'step-4'}>
 						{'3b. If the file does not exists, create a new one and append the address of the strategy to the file, under "addresses": '}
 						<code
 							onClick={(): void => copyToClipboard(currentStrategy.address)}
@@ -200,12 +199,12 @@ function	VaultEntity({
 				name: vault.name,
 				instructions: [
 					<span key={'step-1'}>
-						{'1. Access the vaults\' folder in the meta repo: '}
-						<a href={`https://github.com/yearn/ydaemon/tree/master/data/meta/vaults/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
-							{`https://github.com/yearn/ydaemon/tree/master/data/meta/vaults/${chainID}`}
+						{'1. Access the vaults\' folder in the yDaemon meta directory: '}
+						<a href={`https://github.com/yearn/ydaemon/tree/main/data/meta/vaults/${chainID}`} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{`https://github.com/yearn/ydaemon/tree/main/data/meta/vaults/${chainID}`}
 						</a>
 					</span>,
-					<span key={'step-3'}>
+					<span key={'step-2'}>
 						{'2. Add missing vault file with the filename '}
 						<code
 							onClick={(): void => copyToClipboard(`${vault.address}.json`)}
