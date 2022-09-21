@@ -44,6 +44,8 @@ function	VaultEntity({
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
 		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
+		|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY
+		|| aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -324,7 +326,7 @@ function	VaultEntity({
 						sufix: (
 							<span>
 								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 									{aggregatedData.vaults[toAddress(vault.address)]?.name}
 								</a>
 							</span>
