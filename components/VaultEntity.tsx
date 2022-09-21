@@ -130,7 +130,7 @@ function	VaultEntity({
 					</span>,
 
 					<span key={'step-5'}>
-						{'5. Access the Ledger\'s main.c file for Yearn on GitHub, and append the following snippet at the end of the array'}
+						{'5. Access the Ledger\'s main.c file for Yearn on GitHub, and append the following snippet at the end of the array '}
 						<a href={'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/src/main.c#L51'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
 							{'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/src/main.c#L51'}
 						</a>
