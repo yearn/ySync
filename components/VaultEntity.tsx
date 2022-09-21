@@ -7,6 +7,7 @@ import {useYearn}  from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/VaultEntity.StatusLine';
 import ModalFix from 'components/modals/ModalFix';
+import Code from 'components/Code';
 import type {TFixModalData, TSettings} from  'types/types';
 import {Copy, LinkOut} from '@yearn-finance/web-lib/icons';
 
@@ -46,6 +47,31 @@ function	VaultEntity({
 	);
 
 	function	onTriggerModalForLedger(): void {
+
+		function	renderSnippetB2C(): string {
+			const ledgerSnippetB2C = '{\n\t"address": "0x0000000000000000000000000000000000000000",\n\t"contractName": "some-contract-name",\n\t"selectors": {\n\t\t"0x3ccfd60b": {"erc20OfInterest": [], "method": "withdraw_all", "plugin": "Yearn"},\n\t\t"0x2e1a7d4d": {"erc20OfInterest": [], "method": "withdraw", "plugin": "Yearn"},\n\t\t"0x00f714ce": {"erc20OfInterest": [], "method": "withdraw_to", "plugin": "Yearn"},\n\t\t"0xe63697c8": {"erc20OfInterest": [], "method": "withdraw_to_with_slippage", "plugin": "Yearn"}\n\t}\n}'.trim();
+			let	snippet = '';
+			snippet = ledgerSnippetB2C.replace('0x0000000000000000000000000000000000000000', vault.address.toLowerCase());
+			snippet = snippet.replace('some-contract-name', vault.name);
+			return snippet;
+		}
+
+		function	renderSnippetMain(): string {
+			let addressChunks = vault.address.toLowerCase().replace('0x', '');
+			addressChunks = addressChunks.match(/.{1,2}/g);
+			addressChunks = addressChunks.map((chunk: string): string => `0x${chunk}`);
+			addressChunks = addressChunks.join(', ');
+			addressChunks = addressChunks.match(/.{0,59}/g);
+			addressChunks = addressChunks.map((chunk: string): string => `${chunk}\n `);
+			addressChunks = addressChunks.join('').trim();
+
+			const ledgerSnippetMain = `{{${addressChunks}},\n "${vault.token.symbol}",\n "${vault.symbol}",\n ${vault.decimals}}`;
+			let	snippet = '';
+			snippet = ledgerSnippetMain.replace('0x0000000000000000000000000000000000000000', vault.address.toLowerCase());
+			snippet = snippet.replace('some-contract-name', vault.name);
+			return snippet;
+		}
+
 		set_fixModalData({
 			isOpen: true,
 			fix: {
@@ -59,7 +85,7 @@ function	VaultEntity({
 							{'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/tests/yearn/b2c.json'}
 						</a>
 					</span>,
-					<span key={'step-3'}>
+					<span key={'step-2'}>
 						{'2. Append the following snippet at the end of the '}
 						<code
 							onClick={(): void => copyToClipboard('contracts')}
@@ -74,13 +100,21 @@ function	VaultEntity({
 						</code>
 						{'file.'}
 					</span>,
+					<section key={'step-2-2'} aria-label={'code-part'} className={'relative'}>
+						<div className={'absolute top-4 right-4'}>
+							<Copy
+								onClick={(): void => copyToClipboard(renderSnippetB2C())}
+								className={'h-4 w-4 cursor-copy opacity-60 transition-colors hover:opacity-100'} />
+						</div>
+						<Code code={renderSnippetB2C()} language={'json'} />
+					</section>,
 					<span key={'step-3'}>
 						{'3. Access the Ledger\'s ABIs folder for Yearn on GitHub: '}
 						<a href={'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
 							{'https://github.com/LedgerHQ/app-plugin-yearn/tree/develop/tests/yearn/abis'}
 						</a>
 					</span>,
-					<span key={'step-3'}>
+					<span key={'step-4'}>
 						{'4. Clone and rename '}
 						<code
 							onClick={(): void => copyToClipboard('_vault_v0.4.3.json')}
@@ -93,7 +127,22 @@ function	VaultEntity({
 							className={'cursor-copy rounded-md bg-neutral-200 py-1 px-2 text-sm'}>
 							{`${vault.address}.json`}
 						</code>
-					</span>
+					</span>,
+
+					<span key={'step-5'}>
+						{'5. Access the Ledger\'s main.c file for Yearn on GitHub, and append the following snippet at the end of the array'}
+						<a href={'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/src/main.c#L51'} target={'_blank'} className={'underline'} rel={'noreferrer'}>
+							{'https://github.com/LedgerHQ/app-plugin-yearn/blob/develop/src/main.c#L51'}
+						</a>
+					</span>,
+					<section key={'step-5-2'} aria-label={'code-part'} className={'relative'}>
+						<div className={'absolute top-4 right-4'}>
+							<Copy
+								onClick={(): void => copyToClipboard(renderSnippetMain())}
+								className={'h-4 w-4 cursor-copy opacity-60 transition-colors hover:opacity-100'} />
+						</div>
+						<Code code={renderSnippetMain()} language={'json'} />
+					</section>
 				]
 			}
 		});
