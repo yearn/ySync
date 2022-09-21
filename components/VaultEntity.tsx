@@ -189,7 +189,6 @@ function	VaultEntity({
 			}
 		});
 	}
-
 	function	onTriggerModalForMetaFileMissing(): void {
 		set_fixModalData({
 			isOpen: true,
@@ -322,7 +321,14 @@ function	VaultEntity({
 				anomalies={[{
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
 					prefix: 'Price',
-					sufix: 'for vault'
+					sufix: (
+						<span>
+							{'for vault '}
+							<a href={`${networks[chainID].explorerBaseURI}/address/${aggregatedData.vaults[toAddress(vault.address)].address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)].hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+								{aggregatedData.vaults[toAddress(vault.address)].name}
+							</a>
+						</span>
+					)
 				}]} />
 
 			<AnomaliesSection

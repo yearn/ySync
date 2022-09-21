@@ -42,7 +42,7 @@ export type	TYearnContext = {
 	riskFramework: {}, // eslint-disable-line @typescript-eslint/ban-types
 	aggregatedData: TAllData,
 	onUpdateIconStatus: (address: string, status: boolean) => void,
-	onUpdateTokenIconStatus: (address: string, status: boolean) => void,
+	onUpdateTokenIconStatus: (address: string, status: boolean, pureToken: boolean) => void,
 	nonce: number
 }
 

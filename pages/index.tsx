@@ -5,7 +5,7 @@ import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
-import ImageTester from 'components/ImageTester';
+import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
 import type {TEntity, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 import {TTokensData} from 'types/entities';
@@ -260,7 +260,8 @@ function	Index(): ReactNode {
 
 	return (
 		<div>
-			<ImageTester vaults={vaults} />
+			{appSettings.shouldShowEntity === 'vaults' ? <VaultImageTester vaults={vaults} /> : null}
+			{appSettings.shouldShowEntity === 'tokens' ? <TokensImageTester tokens={aggregatedData.tokens} /> : null}
 
 			<div className={'mb-4'}>
 				<StatisticCard.Wrapper>

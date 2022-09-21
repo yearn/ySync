@@ -162,7 +162,9 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					name: TOKENS[address]?.name,
 					symbol: TOKENS[address]?.symbol,
 					missingTranslations: missingTokensTranslations,
-					hasValidPrice: TOKENS[address]?.price > 0
+					hasValidPrice: TOKENS[address]?.price > 0,
+					hasValidTokenIcon: true
+
 				};
 				continue;
 			}
@@ -178,7 +180,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				name: TOKENS[address]?.name,
 				symbol: TOKENS[address]?.symbol,
 				missingTranslations: missingTokensTranslations,
-				hasValidPrice: TOKENS[address]?.price > 0
+				hasValidPrice: TOKENS[address]?.price > 0,
+				hasValidTokenIcon: true
 			};
 		}
 
@@ -250,15 +253,39 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** image loader event to set the status to false if the load fails.
 	** This function track the underlying token for a vault.
 	**********************************************************************/
-	function	onUpdateTokenIconStatus(address: string, status: boolean): void {
+	function	onUpdateTokenIconStatus(
+		address: string,
+		status: boolean,
+		pureToken: boolean
+	): void {
 		performBatchedUpdates((): void => {
 			set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
+				if (pureToken) {
+					const	newData = {
+						...data,
+						tokens: {
+							...data.tokens,
+							[toAddress(address)]: {
+								...data.tokens[toAddress(address)],
+								hasValidTokenIcon: status
+							}
+						}
+					};
+					return newData;
+				}
 				const	newData = {
 					...data,
 					vaults: {
 						...data.vaults,
 						[toAddress(address)]: {
 							...data.vaults[toAddress(address)],
+							hasValidTokenIcon: status
+						}
+					},
+					tokens: {
+						...data.tokens,
+						[toAddress(address)]: {
+							...data.tokens[toAddress(address)],
 							hasValidTokenIcon: status
 						}
 					}

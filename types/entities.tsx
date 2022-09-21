@@ -25,6 +25,7 @@ export type	TTokenData = {
 	name: string,
 	symbol: string,
 	missingTranslations: {[key: string]: string[]},
+	hasValidTokenIcon: boolean,
 	hasValidPrice: boolean
 }
 export type	TTokensData = {[key: string]: TTokenData}
