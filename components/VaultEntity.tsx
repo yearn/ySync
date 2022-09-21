@@ -324,8 +324,8 @@ function	VaultEntity({
 						sufix: (
 							<span>
 								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${aggregatedData.vaults[toAddress(vault.address)].address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)].hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-									{aggregatedData.vaults[toAddress(vault.address)].name}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${!aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+									{aggregatedData.vaults[toAddress(vault.address)]?.name}
 								</a>
 							</span>
 						)
