@@ -2,7 +2,7 @@ import React, {ReactElement, createContext, useCallback, useContext, useEffect, 
 import axios, {AxiosResponse} from 'axios';
 import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
-import {getUniqueLanguages} from 'components/utils/getUniqueLanguages';
+import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
@@ -224,15 +224,21 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** This function track the icon for a vault.
 	**********************************************************************/
 	function	onUpdateIconStatus(address: string, status: boolean): void {
-		set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
-			const	newData = {
-				...data,
-				[toAddress(address)]: {
-					...data.vaults[toAddress(address)],
-					hasValidIcon: status
-				}
-			};
-			return newData;
+		performBatchedUpdates((): void => {
+			set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
+				const	newData = {
+					...data,
+					vaults: {
+						...data.vaults,
+						[toAddress(address)]: {
+							...data.vaults[toAddress(address)],
+							hasValidIcon: status
+						}
+					}
+				};
+				return newData;
+			});
+			set_nonce((n): number => n + 1);
 		});
 	}
 
@@ -243,15 +249,21 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** This function track the underlying token for a vault.
 	**********************************************************************/
 	function	onUpdateTokenIconStatus(address: string, status: boolean): void {
-		set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
-			const	newData = {
-				...data,
-				[toAddress(address)]: {
-					...data.vaults[toAddress(address)],
-					hasValidTokenIcon: status
-				}
-			};
-			return newData;
+		performBatchedUpdates((): void => {
+			set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
+				const	newData = {
+					...data,
+					vaults: {
+						...data.vaults,
+						[toAddress(address)]: {
+							...data.vaults[toAddress(address)],
+							hasValidTokenIcon: status
+						}
+					}
+				};
+				return newData;
+			});
+			set_nonce((n): number => n + 1);
 		});
 	}
 

@@ -1,6 +1,6 @@
 import React, {ReactElement, ReactNode, useState} from 'react';
 import Image from 'next/image';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
 import {copyToClipboard, toAddress} from '@yearn-finance/web-lib/utils';
 import {AddressWithActions, Card} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
@@ -8,7 +8,7 @@ import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/VaultEntity.StatusLine';
 import ModalFix from 'components/modals/ModalFix';
 import type {TFixModalData, TSettings} from  'types/types';
-import {getChainExplorer}  from  'components/utils/getChainExplorer';
+import {Copy, LinkOut} from '@yearn-finance/web-lib/icons';
 
 const		defaultFixModalData: TFixModalData = {
 	isOpen: false,
@@ -27,6 +27,7 @@ function	VaultEntity({
 }: {vault: any, settings: TSettings, noStrategies?: boolean}): ReactElement | null {
 	const	{aggregatedData} = useYearn();
 	const	{chainID} = useWeb3();
+	const	{networks} = useSettings();
 	const	[fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
 
 	if (!vault) {
@@ -171,6 +172,7 @@ function	VaultEntity({
 	if (!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies) {
 		return null;
 	}
+
 	return (
 		<Card variant={'background'}>
 			<div className={'flex flex-row space-x-4'}>
@@ -223,11 +225,37 @@ function	VaultEntity({
 				anomalies={[{
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
 					prefix: 'Icon',
-					sufix: 'for vault'
+					sufix: (
+						<span className={'inline'}>
+							{'for vault '}
+							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+								{vault.symbol || 'not_set'}
+							</a>
+							<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
+								<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+							</button>
+							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} rel={'noreferrer'}>
+								<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+							</a>
+						</span>
+					)
 				}, {
 					isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
 					prefix: 'Icon',
-					sufix: 'for underlying token'
+					sufix: (
+						<span className={'inline'}>
+							{'for underlying token '}
+							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+								{vault.token.symbol || 'not_set'}
+							</a>
+							<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
+								<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+							</button>
+							<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} rel={'noreferrer'}>
+								<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+							</a>
+						</span>
+					)
 				}]} />
 
 			<AnomaliesSection
@@ -273,7 +301,7 @@ function	VaultEntity({
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer(chainID)}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -300,7 +328,7 @@ function	VaultEntity({
 								sufix={(
 									<span>
 										{'for strategy '}
-										<a href={`${getChainExplorer(chainID)}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 											{strategy.name}
 										</a>
 									</span>
@@ -338,7 +366,7 @@ function	VaultEntity({
 								sufix={(
 									<span>
 										{'for '}
-										<a href={`${getChainExplorer(chainID)}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
+										<a href={`${networks[chainID].explorerBaseURI}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>
 											{shortAddress}
 										</a>
 									</span>

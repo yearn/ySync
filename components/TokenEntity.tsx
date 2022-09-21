@@ -1,10 +1,9 @@
 import React, {ReactElement} from 'react';
 import Image from 'next/image';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
 import {AddressWithActions, Card} from '@yearn-finance/web-lib/components';
 import type {TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
-import {getChainExplorer}  from  'components/utils/getChainExplorer';
 import StatusLine from 'components/VaultEntity.StatusLine';
 import {TTokenData} from 'types/entities';
 
@@ -13,6 +12,7 @@ function	TokenEntity({
 	settings: statusSettings
 }: {tokenData: TTokenData, settings: TSettings}): ReactElement {
 	const	{chainID} = useWeb3();
+	const	{networks} = useSettings();
 
 	if (!tokenData) {
 		return <React.Fragment />;
@@ -71,7 +71,7 @@ function	TokenEntity({
 					sufix={(
 						<span>
 							{'for token '}
-							<a href={`${getChainExplorer(chainID)}/address/${tokenData.address}`} target={'_blank'} className={`underline ${!tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+							<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${!tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 								{tokenData.name}
 							</a>
 						</span>
