@@ -38,11 +38,18 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
+		const STRATEGIES_PROTOCOLS: Set<string> = new Set();
+		
 		// Mapping the strategies for ease of access
 		const STRATEGIES: {[key: string]: any} = {};
 		for (const strategyAddress of Object.keys(strategies.data)) {
 			STRATEGIES[toAddress(strategyAddress)] = strategies.data[strategyAddress];
+			for (const protocol of strategies.data[strategyAddress].protocols) {
+				if (!STRATEGIES_PROTOCOLS.has(protocol)) STRATEGIES_PROTOCOLS.add(protocol);
+			}
 		}
+
+		console.log(new Set(STRATEGIES_PROTOCOLS));
 		
 		// Mapping the tokens for ease of access
 		const TOKENS: {[key: string]: any} = {};
@@ -196,17 +203,18 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 			if (!english) {
 				missingProtocolsTranslations = PROTOCOLS_LANGUAGES;
-				continue;
-			}
-
-			for (const lang of PROTOCOLS_LANGUAGES) {
-				if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
-					missingProtocolsTranslations = missingProtocolsTranslations ? [...missingProtocolsTranslations, lang] : [lang];
+			} else {
+				for (const lang of PROTOCOLS_LANGUAGES) {
+					if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
+						missingProtocolsTranslations = missingProtocolsTranslations ? [...missingProtocolsTranslations, lang] : [lang];
+					}
 				}
 			}
 
-			_allData.protocols[protocol] = {missingTranslations: missingProtocolsTranslations};
+			_allData.protocols[protocol] = {missingTranslations: missingProtocolsTranslations, missingProtocolFile: false};
 		}
+
+		console.log(Object.keys(protocols.data));
 
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);

@@ -34,5 +34,6 @@ export type	TTokensData = {[key: string]: TTokenData}
 // Protocol entity
 export type	TProtocolData = {
 	missingTranslations: string[],
+	missingProtocolFile: boolean,
 }
 export type	TProtocolsData = {[key: string]: TProtocolData}
