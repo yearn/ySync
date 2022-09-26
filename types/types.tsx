@@ -39,7 +39,6 @@ export type	TFixModalData = {
 
 export type	TYearnContext = {
 	dataFromAPI: any[],
-	riskFramework: {}, // eslint-disable-line @typescript-eslint/ban-types
 	aggregatedData: TAllData,
 	onUpdateIconStatus: (address: string, status: boolean) => void,
 	onUpdateTokenIconStatus: (address: string, status: boolean, pureToken: boolean) => void,
@@ -69,6 +68,7 @@ export type TExternalTokensFromYDaemon = {
 
 
 export type	TRisk = {
+	riskGroup: string,
 	TVLImpact: number,
 	auditScore: number,
 	codeReviewScore: number,
