@@ -347,7 +347,7 @@ function	VaultEntity({
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
-							const	hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
+							const	hasRiskFramework = (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 							return (
 								<StatusLine
 									key={`${strategy.address}_risk`}

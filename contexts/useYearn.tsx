@@ -7,7 +7,6 @@ import type * as appTypes from 'types/types';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
-	riskFramework: {},
 	aggregatedData: {vaults: {}, tokens: {}, protocols: {}},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
@@ -19,7 +18,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	const	[nonce, set_nonce] = useState(0);
 	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {}});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
-	const	[riskFramework, set_riskFramework] = useState<any[]>([]);
 
 
 	/* 🔵 - Yearn Finance ******************************************************
@@ -28,15 +26,14 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _riskFramework, _metaFiles, strategies, tokens, protocols] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _metaFiles, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
-			axios.get('https://raw.githubusercontent.com/yearn/yearn-data-analytics/master/src/risk_framework/risks.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/protocols?loc=all`)
-		]) as [any, any, any, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
+		]) as [any, any, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
 
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
@@ -65,8 +62,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				));
 
 				const	hasValidStrategiesRisk = data.strategies.every((strategy: appTypes.TStrategy): boolean => {
-					const hasRiskFramework = ((strategy?.risk?.TVLImpact || 0) + (strategy?.risk?.auditScore || 0) + (strategy?.risk?.codeReviewScore || 0) + (strategy?.risk?.complexityScore || 0) + (strategy?.risk?.longevityImpact || 0) + (strategy?.risk?.protocolSafetyScore || 0) + (strategy?.risk?.teamKnowledgeScore || 0) + (strategy?.risk?.testingScore || 0)) > 0;
-					return hasRiskFramework;
+					return (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 				});
 
 				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
@@ -214,7 +210,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);
-			set_riskFramework(_riskFramework.data.filter((r: {network: number}): boolean => r.network === _chainID));
 			set_aggregatedData(_allData);
 			set_nonce((n): number => n + 1);
 		});
@@ -301,7 +296,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	return (
 		<YearnContext.Provider value={{
 			dataFromAPI,
-			riskFramework,
 			aggregatedData,
 			onUpdateIconStatus,
 			onUpdateTokenIconStatus,
