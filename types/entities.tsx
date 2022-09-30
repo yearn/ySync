@@ -33,7 +33,16 @@ export type	TTokensData = {[key: string]: TTokenData}
 
 // Protocol entity
 export type	TProtocolData = {
+	name?: string;
 	missingTranslations: string[],
 	missingProtocolFile: boolean,
 }
 export type	TProtocolsData = {[key: string]: TProtocolData}
+
+export type	TStrategy = {
+	address: string,
+	name: string,
+	description?: string,
+	protocols?: string[],
+}
+export type	TStrategiesData = {[key: string]: TStrategy}

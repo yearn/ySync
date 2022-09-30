@@ -1,7 +1,7 @@
 import {ReactElement} from 'react';
-import {TProtocolsData, TTokensData, TVaultsData} from './entities';
+import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
 
-export type TEntity = 'vaults' | 'tokens' | 'protocols'
+export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies'
 export type TVersions = 'all' | 'v2' | 'v3' | 'v4'
 export type TSettings = {
 	shouldShowOnlyAnomalies: boolean,
@@ -91,4 +91,5 @@ export type	TAllData = {
 	vaults: TVaultsData,
 	tokens: TTokensData,
 	protocols: TProtocolsData,
+	strategies: TStrategiesData,
 }

@@ -1,14 +1,14 @@
 import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'react';
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {toAddress} from '@yearn-finance/web-lib/utils';
-import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
+import {AddressWithActions, Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
 import type {TEntity, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
-import {TTokensData} from 'types/entities';
+import {TStrategiesData, TTokensData} from 'types/entities';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -23,7 +23,8 @@ type 	TOption = {label: string; value: TEntity};
 const	OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
 	{label: 'Tokens', value: 'tokens'},
-	{label: 'Protocols', value: 'protocols'}
+	{label: 'Protocols', value: 'protocols'},
+	{label: 'Strategies', value: 'strategies'}
 ];
 
 function	Filters({appSettings, set_appSettings}: {
@@ -197,6 +198,8 @@ function	Index(): ReactNode {
 	const	[vaults, set_vaults] = useState<any[]>([]);
 	const	[tokens, set_tokens] = useState<TTokensData>({});
 	const	[protocols, set_protocols] = useState<any>();
+	const	[protocolNames, set_protocolNames] = useState<string[]>([]);
+	const	[strategies, set_strategies] = useState<TStrategiesData>();
 	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
 	const	[selectedOption, set_selectedOption] = useState(OPTIONS[0]);
 
@@ -216,11 +219,11 @@ function	Index(): ReactNode {
 			set_vaults(_vaults);
 		}
 		set_tokens(aggregatedData.tokens);
+		set_protocols(aggregatedData.protocols);
+		set_strategies(aggregatedData.strategies);
+	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols, aggregatedData.strategies]);
 
-		if (appSettings.shouldShowEntity === 'protocols') {
-			set_protocols(aggregatedData.protocols);
-		}
-	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols]);
+	useMemo((): void => set_protocolNames(Object.keys(protocols || {}).map((key: string): string => protocols[key].name)), [protocols]);
 
 	const	errorCount = useMemo((): number => {
 		if (appSettings.shouldShowEntity === 'tokens') {
@@ -288,6 +291,12 @@ function	Index(): ReactNode {
 						<Filters appSettings={appSettings} set_appSettings={set_appSettings} />
 					</div>
 				</div>
+				{appSettings.shouldShowEntity === 'strategies' && 
+					<div className={'flex flex-col space-y-2 pb-6'}>
+						<b className={'text-lg'}>{'Protocols'}</b>
+						<span>{protocolNames.join(', ')}</span>
+					</div>
+				}
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
 					<div className={'mt-4 grid w-full grid-cols-1 gap-4 lg:grid-cols-2'}>
@@ -336,6 +345,62 @@ function	Index(): ReactNode {
 											key={`${protocol}_translation`}
 											isValid={false}
 											content={missingTranslations.join(', ')} />
+									</section>
+								</Card>
+							);
+						})}
+
+						{appSettings.shouldShowEntity === 'strategies' && strategies && Object.keys(strategies).map((strategyAddress: string): ReactNode => {
+							if (!aggregatedData.strategies[strategyAddress]) {
+								return null;
+							}
+
+							const protocols = strategies[strategyAddress].protocols?.map((protocol): {isValid: boolean; name: string} => ({
+								isValid: protocolNames.includes(protocol),
+								name: protocol
+							}));
+
+							const validProtocols = protocols?.filter(({isValid}): boolean => isValid);
+							const invalidProtocols = protocols?.filter(({isValid}): boolean => !isValid);
+
+							if (!invalidProtocols?.length) {
+								return null;
+							}
+
+							return (
+								<Card variant={'background'} key={strategyAddress}>
+									<div className={'flex flex-row space-x-4'}>
+										<div className={'-mt-1 flex flex-col'}>
+											<div className={'flex flex-row items-center space-x-2'}>
+												<h4 className={'text-lg font-bold text-neutral-700'}>{strategies[strategyAddress].name}</h4>
+											</div>
+											<div className={'hidden md:flex'}>
+												<AddressWithActions
+													className={'text-sm font-normal'}
+													truncate={0}
+													address={strategyAddress} />
+											</div>
+											<div className={'flex md:hidden'}>
+												<AddressWithActions
+													className={'text-sm font-normal'}
+													truncate={8}
+													address={strategyAddress} />
+											</div>
+										</div>
+									</div>
+									{!!validProtocols?.length && <section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
+										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${validProtocols.length}) Valid Protocol${validProtocols.length > 1 ? 's' : ''}`}</b>
+										<TranslationStatusLine
+											key={`${strategyAddress}_protocols`}
+											isValid={true}
+											content={validProtocols.map(({name}): string => name).join(', ')} />
+									</section>}
+									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
+										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${invalidProtocols.length}) Invalid Protocol${invalidProtocols.length > 1 ? 's' : ''}`}</b>
+										<TranslationStatusLine
+											key={`${strategyAddress}_protocols`}
+											isValid={false}
+											content={invalidProtocols.map(({name}): string => name).join(', ')} />
 									</section>
 								</Card>
 							);
