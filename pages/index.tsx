@@ -1,7 +1,7 @@
 import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'react';
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {toAddress} from '@yearn-finance/web-lib/utils';
-import {AddressWithActions, Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
+import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
@@ -9,6 +9,7 @@ import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
 import type {TEntity, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 import {TStrategiesData, TTokensData} from 'types/entities';
+import StrategyEntity from 'components/StrategyEntity';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -30,7 +31,7 @@ const	OPTIONS: TOption[] = [
 function	Filters({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
-}): ReactElement {
+}): ReactElement | null {
 	if (appSettings.shouldShowEntity === 'vaults') {
 		return (
 			<>
@@ -151,6 +152,7 @@ function	Filters({appSettings, set_appSettings}: {
 			</>
 		);
 	}
+
 	if (appSettings.shouldShowEntity === 'tokens') {
 		return (
 			<>
@@ -189,7 +191,29 @@ function	Filters({appSettings, set_appSettings}: {
 			</>
 		);
 	}
-	return <React.Fragment />;
+
+	if (appSettings.shouldShowEntity === 'strategies') {
+		return (
+			<label
+				htmlFor={'checkbox-anomalies'}
+				className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+				<p className={'pr-4'}>{'Anomalies only'}</p>
+				<input
+					type={'checkbox'}
+					id={'checkbox-anomalies'}
+					className={'ml-2 rounded-lg'}
+					checked={appSettings.shouldShowOnlyAnomalies}
+					onChange={(): void => {
+						set_appSettings({
+							...appSettings,
+							shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
+						});
+					}} />
+			</label>
+		);
+	}
+
+	return null;
 }
 
 function	Index(): ReactNode {
@@ -293,8 +317,8 @@ function	Index(): ReactNode {
 				</div>
 				{appSettings.shouldShowEntity === 'strategies' && 
 					<div className={'flex flex-col space-y-2 pb-6'}>
-						<b className={'text-lg'}>{'Protocols'}</b>
-						<span>{protocolNames.join(', ')}</span>
+						<b className={'text-lg'}>{'Valid Protocol Names'}</b>
+						<small>{protocolNames.join(', ')}</small>
 					</div>
 				}
 				<div className={'flex flex-col space-y-2 pb-6'}>
@@ -351,58 +375,12 @@ function	Index(): ReactNode {
 						})}
 
 						{appSettings.shouldShowEntity === 'strategies' && strategies && Object.keys(strategies).map((strategyAddress: string): ReactNode => {
-							if (!aggregatedData.strategies[strategyAddress]) {
-								return null;
-							}
-
-							const protocols = strategies[strategyAddress].protocols?.map((protocol): {isValid: boolean; name: string} => ({
-								isValid: protocolNames.includes(protocol),
-								name: protocol
-							}));
-
-							const validProtocols = protocols?.filter(({isValid}): boolean => isValid);
-							const invalidProtocols = protocols?.filter(({isValid}): boolean => !isValid);
-
-							if (!invalidProtocols?.length) {
-								return null;
-							}
-
 							return (
-								<Card variant={'background'} key={strategyAddress}>
-									<div className={'flex flex-row space-x-4'}>
-										<div className={'-mt-1 flex flex-col'}>
-											<div className={'flex flex-row items-center space-x-2'}>
-												<h4 className={'text-lg font-bold text-neutral-700'}>{strategies[strategyAddress].name}</h4>
-											</div>
-											<div className={'hidden md:flex'}>
-												<AddressWithActions
-													className={'text-sm font-normal'}
-													truncate={0}
-													address={strategyAddress} />
-											</div>
-											<div className={'flex md:hidden'}>
-												<AddressWithActions
-													className={'text-sm font-normal'}
-													truncate={8}
-													address={strategyAddress} />
-											</div>
-										</div>
-									</div>
-									{!!validProtocols?.length && <section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
-										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${validProtocols.length}) Valid Protocol${validProtocols.length > 1 ? 's' : ''}`}</b>
-										<TranslationStatusLine
-											key={`${strategyAddress}_protocols`}
-											isValid={true}
-											content={validProtocols.map(({name}): string => name).join(', ')} />
-									</section>}
-									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
-										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${invalidProtocols.length}) Invalid Protocol${invalidProtocols.length > 1 ? 's' : ''}`}</b>
-										<TranslationStatusLine
-											key={`${strategyAddress}_protocols`}
-											isValid={false}
-											content={invalidProtocols.map(({name}): string => name).join(', ')} />
-									</section>
-								</Card>
+								<StrategyEntity
+									key={strategyAddress}
+									statusSettings={appSettings}
+									protocolNames={protocolNames}
+									strategyData={aggregatedData.strategies[strategyAddress]} />
 							);
 						})}
 					</div>

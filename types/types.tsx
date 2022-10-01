@@ -14,9 +14,9 @@ export type TSettings = {
 export type	TAnomalies = {
 	isValid: boolean,
 	isWarning?: boolean
-	prefix: string,
+	prefix: string | ReactElement,
 	errorMessage?: string,
-	sufix: string | ReactElement,
+	suffix: string | ReactElement,
 	onClick?: () => void
 }
 

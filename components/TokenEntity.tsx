@@ -71,7 +71,7 @@ function	TokenEntity({
 					anomalies={[{
 						isValid: tokenData?.hasValidTokenIcon,
 						prefix: 'Icon',
-						sufix: (
+						suffix: (
 							<span className={'inline'}>
 								{'for underlying token '}
 								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
@@ -93,7 +93,7 @@ function	TokenEntity({
 					anomalies={[{
 						isValid: tokenData?.hasValidPrice,
 						prefix: 'Price',
-						sufix: (
+						suffix: (
 							<span>
 								{'for token '}
 								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
