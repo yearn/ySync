@@ -63,27 +63,25 @@ function StrategyEntity({strategyData, protocolNames, statusSettings}: TStrategy
 				</div>
 			</div>
 			<div className={'flex flex-col p-4 pt-0'}>
-				{!hasAnomalies && statusSettings.shouldShowOnlyAnomalies ? null : (
-					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Protocol Validity'}</b>
-						{protocolsStatus.map(({isValid, name}: TProtocolStatus): ReactElement => {
-							return (
-								<StatusLine
-									key={`${name}_protocol`}
-									settings={statusSettings}
-									isValid={isValid}
-									prefix={(<span>
-										{'Name '}
-										{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>
-											{name}
-										</span>{'"'}
-									</span>)}
-									suffix={'for protocol'} />
-									
-							);
-						})}
-					</section>
-				)}
+				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
+					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Protocol Validity'}</b>
+					{protocolsStatus.map(({isValid, name}: TProtocolStatus): ReactElement => {
+						return (
+							<StatusLine
+								key={`${name}_protocol`}
+								settings={statusSettings}
+								isValid={isValid}
+								prefix={(<span>
+									{'Name '}
+									{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>
+										{name}
+									</span>{'"'}
+								</span>)}
+								suffix={'for protocol'} />
+								
+						);
+					})}
+				</section>
 			</div>
 		</div>
 	);
