@@ -8,7 +8,8 @@ import TokenEntity from 'components/TokenEntity';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
 import type {TEntity, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
-import {TTokensData} from 'types/entities';
+import {TStrategiesData, TTokensData} from 'types/entities';
+import StrategyEntity from 'components/StrategyEntity';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -23,13 +24,14 @@ type 	TOption = {label: string; value: TEntity};
 const	OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
 	{label: 'Tokens', value: 'tokens'},
-	{label: 'Protocols', value: 'protocols'}
+	{label: 'Protocols', value: 'protocols'},
+	{label: 'Strategies', value: 'strategies'}
 ];
 
 function	Filters({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
-}): ReactElement {
+}): ReactElement | null {
 	if (appSettings.shouldShowEntity === 'vaults') {
 		return (
 			<>
@@ -150,6 +152,7 @@ function	Filters({appSettings, set_appSettings}: {
 			</>
 		);
 	}
+
 	if (appSettings.shouldShowEntity === 'tokens') {
 		return (
 			<>
@@ -188,7 +191,29 @@ function	Filters({appSettings, set_appSettings}: {
 			</>
 		);
 	}
-	return <React.Fragment />;
+
+	if (appSettings.shouldShowEntity === 'strategies') {
+		return (
+			<label
+				htmlFor={'checkbox-anomalies'}
+				className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+				<p className={'pr-4'}>{'Anomalies only'}</p>
+				<input
+					type={'checkbox'}
+					id={'checkbox-anomalies'}
+					className={'ml-2 rounded-lg'}
+					checked={appSettings.shouldShowOnlyAnomalies}
+					onChange={(): void => {
+						set_appSettings({
+							...appSettings,
+							shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
+						});
+					}} />
+			</label>
+		);
+	}
+
+	return null;
 }
 
 function	Index(): ReactNode {
@@ -197,6 +222,8 @@ function	Index(): ReactNode {
 	const	[vaults, set_vaults] = useState<any[]>([]);
 	const	[tokens, set_tokens] = useState<TTokensData>({});
 	const	[protocols, set_protocols] = useState<any>();
+	const	[protocolNames, set_protocolNames] = useState<string[]>([]);
+	const	[strategies, set_strategies] = useState<TStrategiesData>();
 	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
 	const	[selectedOption, set_selectedOption] = useState(OPTIONS[0]);
 
@@ -216,11 +243,11 @@ function	Index(): ReactNode {
 			set_vaults(_vaults);
 		}
 		set_tokens(aggregatedData.tokens);
+		set_protocols(aggregatedData.protocols);
+		set_strategies(aggregatedData.strategies);
+	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols, aggregatedData.strategies]);
 
-		if (appSettings.shouldShowEntity === 'protocols') {
-			set_protocols(aggregatedData.protocols);
-		}
-	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols]);
+	useMemo((): void => set_protocolNames(Object.keys(protocols || {}).map((key: string): string => protocols[key].name)), [protocols]);
 
 	const	errorCount = useMemo((): number => {
 		if (appSettings.shouldShowEntity === 'tokens') {
@@ -288,6 +315,12 @@ function	Index(): ReactNode {
 						<Filters appSettings={appSettings} set_appSettings={set_appSettings} />
 					</div>
 				</div>
+				{appSettings.shouldShowEntity === 'strategies' && 
+					<div className={'flex flex-col space-y-2 pb-6'}>
+						<b className={'text-lg'}>{'Valid Protocol Names'}</b>
+						<small>{protocolNames.join(', ')}</small>
+					</div>
+				}
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
 					<div className={'mt-4 grid w-full grid-cols-1 gap-4 lg:grid-cols-2'}>
@@ -338,6 +371,16 @@ function	Index(): ReactNode {
 											content={missingTranslations.join(', ')} />
 									</section>
 								</Card>
+							);
+						})}
+
+						{appSettings.shouldShowEntity === 'strategies' && strategies && Object.keys(strategies).map((strategyAddress: string): ReactNode => {
+							return (
+								<StrategyEntity
+									key={strategyAddress}
+									statusSettings={appSettings}
+									protocolNames={protocolNames}
+									strategyData={aggregatedData.strategies[strategyAddress]} />
 							);
 						})}
 					</div>

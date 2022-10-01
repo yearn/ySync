@@ -265,7 +265,7 @@ function	VaultEntity({
 						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
 						onClick: onTriggerModalForMetaFileMissing,
 						prefix: 'Yearn Meta File',
-						sufix: 'for vault'
+						suffix: 'for vault'
 					}]} />
 
 				<AnomaliesSection
@@ -274,7 +274,7 @@ function	VaultEntity({
 					anomalies={[{
 						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
 						prefix: 'Icon',
-						sufix: (
+						suffix: (
 							<span className={'inline'}>
 								{'for vault '}
 								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
@@ -291,7 +291,7 @@ function	VaultEntity({
 					}, {
 						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
 						prefix: 'Icon',
-						sufix: (
+						suffix: (
 							<span className={'inline'}>
 								{'for underlying token '}
 								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
@@ -314,7 +314,7 @@ function	VaultEntity({
 						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
 						onClick: onTriggerModalForLedger,
 						prefix: 'Ledger integration',
-						sufix: 'for vault'
+						suffix: 'for vault'
 					}]} />
 
 				<AnomaliesSection
@@ -323,7 +323,7 @@ function	VaultEntity({
 					anomalies={[{
 						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
 						prefix: 'Price',
-						sufix: (
+						suffix: (
 							<span>
 								{'for vault '}
 								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
@@ -340,7 +340,7 @@ function	VaultEntity({
 						isValid: !noStrategies,
 						prefix: 'No strategies for this vault',
 						errorMessage: '',
-						sufix: ''
+						suffix: ''
 					}]} />
 
 				{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
@@ -354,7 +354,7 @@ function	VaultEntity({
 									settings={vaultSettings}
 									isValid={hasRiskFramework}
 									prefix={'Risk'}
-									sufix={(
+									suffix={(
 										<span>
 											{'for strategy '}
 											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
@@ -381,7 +381,7 @@ function	VaultEntity({
 									settings={vaultSettings}
 									isValid={!isMissingDescription}
 									prefix={'Description'}
-									sufix={(
+									suffix={(
 										<span>
 											{'for strategy '}
 											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
@@ -401,13 +401,13 @@ function	VaultEntity({
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
 						prefix: 'APY is set to ',
 						errorMessage: '[ ERROR ]',
-						sufix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
+						suffix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
 					}, {
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
 						isWarning: true,
 						prefix: 'APY is set to ',
 						errorMessage: '[ NEW ]',
-						sufix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
+						suffix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
 					}]} />
 
 
@@ -424,7 +424,7 @@ function	VaultEntity({
 									settings={vaultSettings}
 									isValid={false}
 									prefix={missingTranslation[strategyAddress].join(', ')}
-									sufix={(
+									suffix={(
 										<span>
 											{'for '}
 											<a href={`${networks[chainID].explorerBaseURI}/address/${strategyAddress}`} className={'text-red-900 underline'} rel={'noreferrer'}>

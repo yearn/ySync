@@ -7,7 +7,7 @@ import type * as appTypes from 'types/types';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
-	aggregatedData: {vaults: {}, tokens: {}, protocols: {}},
+	aggregatedData: {vaults: {}, tokens: {}, protocols: {}, strategies: {}},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
 	nonce: 0
@@ -16,7 +16,7 @@ const	YearnContext = createContext<appTypes.TYearnContext>({
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = useState(0);
-	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {}});
+	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {}, strategies: {}});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
 
 
@@ -38,12 +38,20 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
+		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {}, strategies: {}};
+
 		// Mapping the strategies for ease of access
 		const STRATEGIES: {[key: string]: any} = {};
 		for (const strategyAddress of Object.keys(strategies.data)) {
 			STRATEGIES[toAddress(strategyAddress)] = strategies.data[strategyAddress];
+			_allData.strategies[toAddress(strategyAddress)] = {
+				address: toAddress(strategyAddress),
+				name: strategies.data[strategyAddress].name,
+				description: strategies.data[strategyAddress].description,
+				protocols: strategies.data[strategyAddress].protocols
+			};
 		}
-		
+
 		// Mapping the tokens for ease of access
 		const TOKENS: {[key: string]: any} = {};
 		for (const tokenAddress of Object.keys(tokens.data)) {
@@ -54,7 +62,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** Processing data from the yDaemon API.
 		** This is the base data for the app.
 		**********************************************************************/
-		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {}};
 		for (const data of fromAPI.data) {
 			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: appTypes.TStrategy): boolean => (
@@ -191,21 +198,25 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const PROTOCOLS_LANGUAGES = getUniqueLanguages(protocols.data);
 		for (const protocol of Object.keys(protocols.data)) {
 			let missingProtocolsTranslations: string[] = [];
+			const name = protocols.data[protocol]?.name;
 			const localizations = protocols.data[protocol]?.localization;
 			const english = localizations?.en;
 
 			if (!english) {
 				missingProtocolsTranslations = PROTOCOLS_LANGUAGES;
-				continue;
-			}
-
-			for (const lang of PROTOCOLS_LANGUAGES) {
-				if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
-					missingProtocolsTranslations = missingProtocolsTranslations ? [...missingProtocolsTranslations, lang] : [lang];
+			} else {
+				for (const lang of PROTOCOLS_LANGUAGES) {
+					if (lang !== 'en' && (!localizations[lang]?.description || localizations[lang]?.description === english.description)) {
+						missingProtocolsTranslations = missingProtocolsTranslations ? [...missingProtocolsTranslations, lang] : [lang];
+					}
 				}
 			}
 
-			_allData.protocols[protocol] = {missingTranslations: missingProtocolsTranslations};
+			_allData.protocols[protocol] = {
+				name,
+				missingTranslations: missingProtocolsTranslations,
+				missingProtocolFile: false
+			};
 		}
 
 		performBatchedUpdates((): void => {
