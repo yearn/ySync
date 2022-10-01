@@ -38,7 +38,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
-		// const STRATEGIES_PROTOCOLS: Set<string> = new Set();
 		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {}, strategies: {}};
 
 		// Mapping the strategies for ease of access
