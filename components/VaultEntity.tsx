@@ -401,13 +401,13 @@ function	VaultEntity({
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
 						prefix: 'APY is set to ',
 						errorMessage: '[ ERROR ]',
-						suffix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
+						suffix: `for vault - (Net APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}% | Gross APR: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}, {
 						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
 						isWarning: true,
 						prefix: 'APY is set to ',
 						errorMessage: '[ NEW ]',
-						suffix: `for vault - (APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}%)`
+						suffix: `for vault - (Net APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}% | Gross APR: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}]} />
 
 
