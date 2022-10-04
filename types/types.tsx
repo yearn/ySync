@@ -46,8 +46,16 @@ export type	TYearnContext = {
 }
 
 export type	TGHFile = {
-	name: string
+	name: string;
+	html_url: string;
 }
+
+export type TFile = {
+	name: string;
+	originalName: string;
+	url: string;
+}
+
 export type TExternalTokensFromYDaemon = {
 	address: string,
 	name: string,

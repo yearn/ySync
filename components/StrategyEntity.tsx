@@ -1,21 +1,27 @@
 import React, {ReactElement} from 'react';
 import {AddressWithActions} from '@yearn-finance/web-lib/components';
-import type {TSettings} from 'types/types';
+import type {TFile, TSettings} from 'types/types';
 import {TStrategy} from 'types/entities';
 import StatusLine from './VaultEntity.StatusLine';
 
 type TProtocolStatus = {
-	isValid: boolean;
 	name: string;
+	isValid: boolean;
+	file?: TFile;
 }
 
 type TStrategyEntity = {
 	strategyData: TStrategy;
 	protocolNames: string[];
+	protocolFiles: TFile[];
 	statusSettings: TSettings;
 }
 
-function StrategyEntity({strategyData, protocolNames, statusSettings}: TStrategyEntity): ReactElement | null {
+function findFile(filename: string, files: TFile[]): TFile | undefined {
+	return files.find(({name}): boolean => name === filename.replace(/[^a-zA-Z0-9]/g, '').toUpperCase());
+}
+
+function StrategyEntity({strategyData, protocolNames, protocolFiles, statusSettings}: TStrategyEntity): ReactElement | null {
 	if (!strategyData) {
 		return null;
 	}
@@ -27,8 +33,9 @@ function StrategyEntity({strategyData, protocolNames, statusSettings}: TStrategy
 	}
 
 	const protocolsStatus = protocols.map((protocol): TProtocolStatus => ({
+		name: protocol,
 		isValid: protocolNames.includes(protocol),
-		name: protocol
+		file: findFile(protocol, protocolFiles)
 	}));
 
 	const hasAnomalies = protocolsStatus.some(({isValid}): boolean => !isValid);
@@ -65,20 +72,32 @@ function StrategyEntity({strategyData, protocolNames, statusSettings}: TStrategy
 			<div className={'flex flex-col p-4 pt-0'}>
 				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Protocol Validity'}</b>
-					{protocolsStatus.map(({isValid, name}: TProtocolStatus): ReactElement => {
+					{protocolsStatus.map(({name, isValid, file}: TProtocolStatus): ReactElement => {
 						return (
-							<StatusLine
-								key={`${name}_protocol`}
-								settings={statusSettings}
-								isValid={isValid}
-								prefix={(<span>
-									{'Name '}
-									{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>
-										{name}
-									</span>{'"'}
-								</span>)}
-								suffix={'for protocol'} />
-								
+							<>
+								<StatusLine
+									key={`${name}_protocol_file`}
+									settings={statusSettings}
+									isValid={!!file}
+									prefix={(<span>
+										{'File '}
+										<a href={file?.originalName ? file?.url : '#'} target={file?.originalName ? '_blank' : ''} className={`tabular-nums text-red-900 ${file?.originalName ? 'underline' : ''}`} rel={'noreferrer'}>
+											{file?.originalName ?? `${name.replace(/[^a-zA-Z0-9]/g, '')}.json`}
+										</a>
+									</span>)}
+									suffix={'for strategy\'s protocol'} />
+								{!!file && <StatusLine
+									key={`${name}_protocol`}
+									settings={statusSettings}
+									isValid={isValid}
+									prefix={(<span>
+										{'Name '}
+										{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>
+											{name}
+										</span>{'"'}
+									</span>)}
+									suffix={'for strategy\'s protocol'} />}
+							</>
 						);
 					})}
 				</section>

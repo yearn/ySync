@@ -247,7 +247,11 @@ function	Index(): ReactNode {
 		set_strategies(aggregatedData.strategies);
 	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols, aggregatedData.strategies]);
 
-	useMemo((): void => set_protocolNames(Object.keys(protocols || {}).map((key: string): string => protocols[key].name)), [protocols]);
+	useMemo((): void => {
+		if (protocols?.protocol) {
+			set_protocolNames(Object.keys(protocols.protocol).map((key: string): string => protocols.protocol[key].name));
+		}
+	}, [protocols?.protocol]);
 
 	const	errorCount = useMemo((): number => {
 		if (appSettings.shouldShowEntity === 'tokens') {
@@ -343,12 +347,12 @@ function	Index(): ReactNode {
 							);
 						})}
 
-						{appSettings.shouldShowEntity === 'protocols' && protocols && Object.keys(protocols).map((protocol: string): ReactNode => {
-							if (!aggregatedData.protocols[protocol]) {
+						{appSettings.shouldShowEntity === 'protocols' && protocols.protocol && Object.keys(protocols.protocol).map((protocol: string): ReactNode => {
+							if (!protocols.protocol[protocol]) {
 								return null;
 							}
 							
-							const {missingTranslations} = aggregatedData.protocols[protocol];
+							const {missingTranslations} = protocols.protocol[protocol];
 
 							if (!missingTranslations) {
 								return null;
@@ -379,6 +383,7 @@ function	Index(): ReactNode {
 								<StrategyEntity
 									key={strategyAddress}
 									statusSettings={appSettings}
+									protocolFiles={protocols.files}
 									protocolNames={protocolNames}
 									strategyData={aggregatedData.strategies[strategyAddress]} />
 							);

@@ -4,10 +4,11 @@ import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
+import {TFile} from 'types/types';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
-	aggregatedData: {vaults: {}, tokens: {}, protocols: {}, strategies: {}},
+	aggregatedData: {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
 	nonce: 0
@@ -16,7 +17,7 @@ const	YearnContext = createContext<appTypes.TYearnContext>({
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = useState(0);
-	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {}, strategies: {}});
+	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
 
 
@@ -26,19 +27,27 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _metaFiles, strategies, tokens, protocols] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _metaVaultFiles, _metaProtocolFiles, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
+			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/protocols/${_chainID}`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/protocols?loc=all`)
-		]) as [any, any, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
+		]) as [any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
 
-		const YEARN_META_FILES = _metaFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
+		const YEARN_META_VAULT_FILES = _metaVaultFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		const YEARN_META_PROTOCOL_FILES = _metaProtocolFiles.data.map(({name, html_url}): TFile => ({
+			name: name.split('.')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+			originalName: name,
+			url: html_url
+		}));
+		
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
-		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {}, strategies: {}};
+		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}};
 
 		// Mapping the strategies for ease of access
 		const STRATEGIES: {[key: string]: any} = {};
@@ -72,7 +81,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					return (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 				});
 
-				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
+				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				const	missingTranslations: {[key: string]: string[]} = {};
 				const	strategiesAddresses = data.strategies.map(({address}: appTypes.TStrategy): string => toAddress(address));
 				for (const strategyAddress of strategiesAddresses) {
@@ -120,7 +129,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		**********************************************************************/
 		for (const data of _ledgerSupport?.data?.contracts || []) {
 			if (!_allData.vaults[toAddress(data.address) as string]) {
-				const	hasYearnMetaFile = YEARN_META_FILES.includes(data.address);
+				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				_allData.vaults[toAddress(data.address) as string] = {
 					hasLedgerIntegration: true,
 					hasValidStrategiesDescriptions: false,
@@ -212,12 +221,14 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				}
 			}
 
-			_allData.protocols[protocol] = {
+			_allData.protocols.protocol[protocol] = {
 				name,
 				missingTranslations: missingProtocolsTranslations,
 				missingProtocolFile: false
 			};
 		}
+
+		_allData.protocols.files = YEARN_META_PROTOCOL_FILES;
 
 		performBatchedUpdates((): void => {
 			set_dataFromAPI(fromAPI.data);
