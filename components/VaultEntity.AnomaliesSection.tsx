@@ -6,6 +6,7 @@ import type {TAnomalies, TAnomaliesSection} from 'types/types';
 function	AnomaliesSection({
 	label,
 	anomalies,
+	errorMessage,
 	settings: anomaliesSettings
 }: TAnomaliesSection): ReactElement {
 	const	[hasAnomalies, set_hasAnomalies] = useState<boolean>(false);
@@ -27,6 +28,7 @@ function	AnomaliesSection({
 			{localAnomalies.map((e: TAnomalies, i: number): ReactNode => (
 				<StatusLine
 					key={`${e.prefix}-${i}`}
+					errorMessage={errorMessage}
 					settings={anomaliesSettings}
 					{...e} />
 			))}

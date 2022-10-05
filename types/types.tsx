@@ -23,7 +23,8 @@ export type	TAnomalies = {
 export type	TAnomaliesSection = {
 	label: string,
 	anomalies: TAnomalies[],
-	settings: TSettings
+	settings: TSettings,
+	errorMessage?: string,
 }
 
 export type	TFixModalData = {
