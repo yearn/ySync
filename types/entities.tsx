@@ -2,7 +2,10 @@ import {TFile} from './types';
 
 // Vault entity
 export type	TVaultData = {
-	hasLedgerIntegration: boolean;
+	hasLedgerIntegration: {
+		incoming?: boolean;
+		deployed?: boolean;
+	};
 	hasValidStrategiesDescriptions: boolean;
 	hasValidStrategiesTranslations: boolean;
 	hasValidStrategiesRisk: boolean;

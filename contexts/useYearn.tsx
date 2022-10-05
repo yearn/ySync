@@ -27,15 +27,16 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _metaVaultFiles, _metaProtocolFiles, strategies, tokens, protocols] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _metaVaultFiles, _metaProtocolFiles, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
+			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
 			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/protocols/${_chainID}`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/protocols?loc=all`)
-		]) as [any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
+		]) as [any, any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
 
 		const YEARN_META_VAULT_FILES = _metaVaultFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,8 +100,12 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					}
 				}
 
-				_allData.vaults[toAddress(data.address) as string] = {
-					hasLedgerIntegration: _chainID === 1 ? false : true, //Ledger live integration only for mainnet
+				_allData.vaults[toAddress(data.address)] = {
+					// Ledger live integration only for mainnet
+					hasLedgerIntegration: {
+						incoming: _chainID !== 1, 
+						deployed: _chainID !== 1
+					},
 					hasValidStrategiesDescriptions,
 					hasValidStrategiesTranslations: false, //unused
 					hasValidStrategiesRisk,
@@ -128,10 +133,12 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** Only for mainnet.
 		**********************************************************************/
 		for (const data of _ledgerSupport?.data?.contracts || []) {
-			if (!_allData.vaults[toAddress(data.address) as string]) {
+			if (!_allData.vaults[toAddress(data.address)]) {
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
-				_allData.vaults[toAddress(data.address) as string] = {
-					hasLedgerIntegration: true,
+				_allData.vaults[toAddress(data.address)] = {
+					hasLedgerIntegration: {
+						deployed: true
+					},
 					hasValidStrategiesDescriptions: false,
 					hasValidStrategiesTranslations: false,
 					hasValidStrategiesRisk: false,
@@ -149,12 +156,51 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					strategies: []
 
 				};
-			} else {
-				_allData.vaults[toAddress(data.address) as string] = {
-					..._allData.vaults[toAddress(data.address) as string],
-					hasLedgerIntegration: true
-				};
+				continue;
 			}
+
+			_allData.vaults[toAddress(data.address)] = {
+				..._allData.vaults[toAddress(data.address)],
+				hasLedgerIntegration: {
+					deployed: true
+				}
+			};
+		}
+
+		for (const data of _ledgerSupportFork?.data?.contracts || []) {
+			if (!_allData.vaults[toAddress(data.address)]) {
+				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
+				_allData.vaults[toAddress(data.address)] = {
+					hasLedgerIntegration: {
+						incoming: true
+					},
+					hasValidStrategiesDescriptions: false,
+					hasValidStrategiesTranslations: false,
+					hasValidStrategiesRisk: false,
+					hasValidIcon: false,
+					hasValidTokenIcon: false,
+					hasValidPrice: false,
+					hasNewAPY: false,
+					hasErrorAPY: false,
+					hasYearnMetaFile,
+					missingTranslations: {},
+					address: toAddress(data.address),
+					name: data?.contractName || '',
+					icon: '',
+					version: 'Unknown',
+					strategies: []
+
+				};
+				continue;
+			}
+
+			_allData.vaults[toAddress(data.address)] = {
+				..._allData.vaults[toAddress(data.address)],
+				hasLedgerIntegration: {
+					..._allData.vaults[toAddress(data.address)].hasLedgerIntegration,
+					incoming: true
+				}
+			};
 		}
 
 		/* 🔵 - Yearn Finance **************************************************
@@ -169,7 +215,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 			if (!english) {
 				missingTokensTranslations[address] = LANGUAGES;
-				_allData.tokens[toAddress(address) as string] = {
+				_allData.tokens[toAddress(address)] = {
 					address: toAddress(address),
 					name: TOKENS[address]?.name,
 					symbol: TOKENS[address]?.symbol,
@@ -188,7 +234,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 				}
 			}
 
-			_allData.tokens[toAddress(address) as string] = {
+			_allData.tokens[toAddress(address)] = {
 				address: toAddress(address),
 				name: TOKENS[address]?.name,
 				symbol: TOKENS[address]?.symbol,

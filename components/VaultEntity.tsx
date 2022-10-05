@@ -32,20 +32,22 @@ function	VaultEntity({
 	const	[fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
 
 	if (!vault) {
-		return <React.Fragment />;
+		return null;
 	}
+
+	const vaultData = aggregatedData.vaults[toAddress(vault.address)];
 
 	const		hasAnomalies = (
 		(vault?.strategies?.length || 0) === 0
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
-		|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
-		|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY
-		|| aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY
+		|| !vaultData?.hasValidPrice
+		|| !vaultData?.hasValidIcon
+		|| !vaultData?.hasValidTokenIcon
+		|| !vaultData?.hasLedgerIntegration
+		|| !vaultData?.hasValidStrategiesDescriptions
+		|| !vaultData?.hasValidStrategiesRisk
+		|| !vaultData?.hasYearnMetaFile
+		|| vaultData?.hasErrorAPY
+		|| vaultData?.hasNewAPY
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -262,7 +264,7 @@ function	VaultEntity({
 					label={'Yearn Meta File'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile,
+						isValid: vaultData?.hasYearnMetaFile,
 						onClick: onTriggerModalForMetaFileMissing,
 						prefix: 'Yearn Meta File',
 						suffix: 'for vault'
@@ -272,12 +274,12 @@ function	VaultEntity({
 					label={'Icon'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon,
+						isValid: vaultData?.hasValidIcon,
 						prefix: 'Icon',
 						suffix: (
 							<span className={'inline'}>
 								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
 									{vault.symbol || 'not_set'}
 								</a>
 								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
@@ -289,12 +291,12 @@ function	VaultEntity({
 							</span>
 						)
 					}, {
-						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon,
+						isValid: vaultData?.hasValidTokenIcon,
 						prefix: 'Icon',
 						suffix: (
 							<span className={'inline'}>
 								{'for underlying token '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
 									{vault.token.symbol || 'not_set'}
 								</a>
 								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
@@ -310,8 +312,10 @@ function	VaultEntity({
 				<AnomaliesSection
 					label={'Ledger Live'}
 					settings={vaultSettings}
+					errorMessage={vaultData?.hasLedgerIntegration.incoming ? 'PENDING' : undefined}
 					anomalies={[{
-						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration,
+						isValid: vaultData?.hasLedgerIntegration.deployed ?? false,
+						isWarning: !vaultData?.hasLedgerIntegration.deployed && vaultData?.hasLedgerIntegration.incoming,
 						onClick: onTriggerModalForLedger,
 						prefix: 'Ledger integration',
 						suffix: 'for vault'
@@ -321,13 +325,13 @@ function	VaultEntity({
 					label={'Price'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice,
+						isValid: vaultData?.hasValidPrice,
 						prefix: 'Price',
 						suffix: (
 							<span>
 								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-									{aggregatedData.vaults[toAddress(vault.address)]?.name}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+									{vaultData?.name}
 								</a>
 							</span>
 						)
@@ -343,7 +347,7 @@ function	VaultEntity({
 						suffix: ''
 					}]} />
 
-				{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
+				{vaultData?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
@@ -368,7 +372,7 @@ function	VaultEntity({
 					</section>
 				)}
 
-				{aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
+				{vaultData?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
@@ -398,12 +402,12 @@ function	VaultEntity({
 					label={'APY'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY,
+						isValid: !vaultData?.hasErrorAPY,
 						prefix: 'APY is set to ',
 						errorMessage: '[ ERROR ]',
 						suffix: `for vault - (Net APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}% | Gross APR: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}, {
-						isValid: !aggregatedData.vaults[toAddress(vault.address)]?.hasNewAPY,
+						isValid: !vaultData?.hasNewAPY,
 						isWarning: true,
 						prefix: 'APY is set to ',
 						errorMessage: '[ NEW ]',
@@ -414,8 +418,8 @@ function	VaultEntity({
 				{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
-						{Object.keys(aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations).map((strategyAddress: any): ReactNode => {
-							const missingTranslation = aggregatedData.vaults[toAddress(vault.address)]?.missingTranslations;
+						{Object.keys(vaultData?.missingTranslations).map((strategyAddress: any): ReactNode => {
+							const missingTranslation = vaultData?.missingTranslations;
 							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
 
 							return (

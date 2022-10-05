@@ -13,10 +13,10 @@ function	StatusLine({
 	prefix,
 	errorMessage = 'KO',
 	suffix
-}: {settings: TSettings} & TAnomalies): ReactElement {
+}: {settings: TSettings} & TAnomalies): ReactElement | null {
 	if (isValid) {
 		if (statusSettings.shouldShowOnlyAnomalies) {
-			return <div />;
+			return null;
 		}
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
