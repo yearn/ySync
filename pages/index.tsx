@@ -6,10 +6,11 @@ import {useYearn}  from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
-import type {TEntity, TSettings} from 'types/types';
+import type {TEntity, TPartner, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 import {TStrategiesData, TTokensData} from 'types/entities';
 import StrategyEntity from 'components/StrategyEntity';
+import StatusLine from 'components/VaultEntity.StatusLine';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -25,7 +26,8 @@ const	OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
 	{label: 'Tokens', value: 'tokens'},
 	{label: 'Protocols', value: 'protocols'},
-	{label: 'Strategies', value: 'strategies'}
+	{label: 'Strategies', value: 'strategies'},
+	{label: 'Partners', value: 'partners'}
 ];
 
 function	Filters({appSettings, set_appSettings}: {
@@ -222,6 +224,7 @@ function	Index(): ReactNode {
 	const	[vaults, set_vaults] = useState<any[]>([]);
 	const	[tokens, set_tokens] = useState<TTokensData>({});
 	const	[protocols, set_protocols] = useState<any>();
+	const	[partners, set_partners] = useState<any>();
 	const	[protocolNames, set_protocolNames] = useState<string[]>([]);
 	const	[strategies, set_strategies] = useState<TStrategiesData>();
 	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
@@ -245,7 +248,8 @@ function	Index(): ReactNode {
 		set_tokens(aggregatedData.tokens);
 		set_protocols(aggregatedData.protocols);
 		set_strategies(aggregatedData.strategies);
-	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols, aggregatedData.strategies]);
+		set_partners(aggregatedData.partners);
+	}, [dataFromAPI, appSettings, chainID, aggregatedData.tokens, aggregatedData.protocols, aggregatedData.strategies, aggregatedData.partners]);
 
 	useMemo((): void => {
 		if (protocols?.protocol) {
@@ -373,6 +377,38 @@ function	Index(): ReactNode {
 											key={`${protocol}_translation`}
 											isValid={false}
 											content={missingTranslations.join(', ')} />
+									</section>
+								</Card>
+							);
+						})}
+
+						{appSettings.shouldShowEntity === 'partners'  && [...partners].map(([partner, status]): ReactElement => {
+							return (
+								<Card variant={'background'} key={partner}>
+									<div className={'flex flex-row space-x-4'}>
+										<div className={'-mt-1 flex flex-col'}>
+											<div className={'flex flex-row items-center space-x-2'}>
+												<h4 className={'text-lg font-bold text-neutral-700'}>{partner}</h4>
+											</div>
+										</div>
+									</div>
+									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
+										{['exporter', 'yDaemon'].map((src): ReactElement => {
+											const currentPartner = status.find(({source}: TPartner): boolean => src === source);
+											return <StatusLine
+												key={`${src}_${partner}_state`}
+												settings={{
+													shouldShowOnlyAnomalies: false,
+													shouldShowOnlyEndorsed: true,
+													shouldShowVersion: 'v4',
+													shouldShowMissingTranslations: false,
+													shouldShowEntity: 'vaults'
+												}}
+												isValid={src === currentPartner?.source}
+												prefix={''}
+												suffix={`in ${src}`} />;
+
+										})}
 									</section>
 								</Card>
 							);
