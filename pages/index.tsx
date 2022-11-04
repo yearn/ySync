@@ -10,7 +10,7 @@ import type {TEntity, TPartner, TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 import {TStrategiesData, TTokensData} from 'types/entities';
 import StrategyEntity from 'components/StrategyEntity';
-import StatusLine from 'components/VaultEntity.StatusLine';
+import PartnerEntity from 'components/PartnerEntity';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -30,6 +30,50 @@ const	OPTIONS: TOption[] = [
 	{label: 'Partners', value: 'partners'}
 ];
 
+const AnomaliesCheckbox = ({appSettings, set_appSettings}: {
+	appSettings: TSettings,
+	set_appSettings: (s: TSettings) => void
+}): ReactElement | null => {
+	return <label
+		htmlFor={'checkbox-anomalies'}
+		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+		<p className={'pr-4'}>{'Anomalies only'}</p>
+		<input
+			type={'checkbox'}
+			id={'checkbox-anomalies'}
+			className={'ml-2 rounded-lg'}
+			checked={appSettings.shouldShowOnlyAnomalies}
+			onChange={(): void => {
+				set_appSettings({
+					...appSettings,
+					shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
+				});
+			}} />
+	</label>;
+};
+
+const TranslationsCheckbox = ({appSettings, set_appSettings}: {
+	appSettings: TSettings,
+	set_appSettings: (s: TSettings) => void
+}): ReactElement | null => {
+	return <label
+		htmlFor={'checkbox-translations'}
+		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+		<p className={'pr-4'}>{'Missing translations'}</p>
+		<input
+			type={'checkbox'}
+			id={'checkbox-translations'}
+			className={'ml-2 rounded-lg'}
+			checked={appSettings.shouldShowMissingTranslations}
+			onChange={(): void => {
+				set_appSettings({
+					...appSettings,
+					shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
+				});
+			}} />
+	</label>;
+};
+
 function	Filters({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
@@ -37,54 +81,8 @@ function	Filters({appSettings, set_appSettings}: {
 	if (appSettings.shouldShowEntity === 'vaults') {
 		return (
 			<>
-				<label
-					htmlFor={'checkbox-endorsed'}
-					className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-					<p className={'pr-4'}>{'Endorsed only'}</p>
-					<input
-						type={'checkbox'}
-						id={'checkbox-endorsed'}
-						className={'ml-2 rounded-lg'}
-						checked={appSettings.shouldShowOnlyEndorsed}
-						onChange={(): void => {
-							set_appSettings({
-								...appSettings,
-								shouldShowOnlyEndorsed: !appSettings.shouldShowOnlyEndorsed
-							});
-						}} />
-				</label>
-				<label
-					htmlFor={'checkbox-anomalies'}
-					className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-					<p className={'pr-4'}>{'Anomalies only'}</p>
-					<input
-						type={'checkbox'}
-						id={'checkbox-anomalies'}
-						className={'ml-2 rounded-lg'}
-						checked={appSettings.shouldShowOnlyAnomalies}
-						onChange={(): void => {
-							set_appSettings({
-								...appSettings,
-								shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
-							});
-						}} />
-				</label>
-				<label
-					htmlFor={'checkbox-translations'}
-					className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-					<p className={'pr-4'}>{'Missing translations'}</p>
-					<input
-						type={'checkbox'}
-						id={'checkbox-translations'}
-						className={'ml-2 rounded-lg'}
-						checked={appSettings.shouldShowMissingTranslations}
-						onChange={(): void => {
-							set_appSettings({
-								...appSettings,
-								shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
-							});
-						}} />
-				</label>
+				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<span
 					className={'col-span-2 flex w-full flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
 					<p className={'pr-4 pl-2'}>{'Version'}</p>
@@ -158,61 +156,14 @@ function	Filters({appSettings, set_appSettings}: {
 	if (appSettings.shouldShowEntity === 'tokens') {
 		return (
 			<>
-				<label
-					htmlFor={'checkbox-anomalies'}
-					className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-					<p className={'pr-4'}>{'Anomalies only'}</p>
-					<input
-						type={'checkbox'}
-						id={'checkbox-anomalies'}
-						className={'ml-2 rounded-lg'}
-						checked={appSettings.shouldShowOnlyAnomalies}
-						onChange={(): void => {
-							set_appSettings({
-								...appSettings,
-								shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
-							});
-						}} />
-				</label>
-				<label
-					htmlFor={'checkbox-translations'}
-					className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-					<p className={'pr-4'}>{'Missing translations'}</p>
-					<input
-						type={'checkbox'}
-						id={'checkbox-translations'}
-						className={'ml-2 rounded-lg'}
-						checked={appSettings.shouldShowMissingTranslations}
-						onChange={(): void => {
-							set_appSettings({
-								...appSettings,
-								shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
-							});
-						}} />
-				</label>
+				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 			</>
 		);
 	}
 
-	if (appSettings.shouldShowEntity === 'strategies') {
-		return (
-			<label
-				htmlFor={'checkbox-anomalies'}
-				className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-				<p className={'pr-4'}>{'Anomalies only'}</p>
-				<input
-					type={'checkbox'}
-					id={'checkbox-anomalies'}
-					className={'ml-2 rounded-lg'}
-					checked={appSettings.shouldShowOnlyAnomalies}
-					onChange={(): void => {
-						set_appSettings({
-							...appSettings,
-							shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
-						});
-					}} />
-			</label>
-		);
+	if (['strategies', 'partners'].includes(appSettings.shouldShowEntity)) {
+		return <AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />;
 	}
 
 	return null;
@@ -224,7 +175,7 @@ function	Index(): ReactNode {
 	const	[vaults, set_vaults] = useState<any[]>([]);
 	const	[tokens, set_tokens] = useState<TTokensData>({});
 	const	[protocols, set_protocols] = useState<any>();
-	const	[partners, set_partners] = useState<any>();
+	const	[partners, set_partners] = useState<Map<string, TPartner[]>>();
 	const	[protocolNames, set_protocolNames] = useState<string[]>([]);
 	const	[strategies, set_strategies] = useState<TStrategiesData>();
 	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
@@ -382,36 +333,8 @@ function	Index(): ReactNode {
 							);
 						})}
 
-						{appSettings.shouldShowEntity === 'partners'  && [...partners].map(([partner, status]): ReactElement => {
-							return (
-								<Card variant={'background'} key={partner}>
-									<div className={'flex flex-row space-x-4'}>
-										<div className={'-mt-1 flex flex-col'}>
-											<div className={'flex flex-row items-center space-x-2'}>
-												<h4 className={'text-lg font-bold text-neutral-700'}>{partner}</h4>
-											</div>
-										</div>
-									</div>
-									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
-										{['exporter', 'yDaemon'].map((src): ReactElement => {
-											const currentPartner = status.find(({source}: TPartner): boolean => src === source);
-											return <StatusLine
-												key={`${src}_${partner}_state`}
-												settings={{
-													shouldShowOnlyAnomalies: false,
-													shouldShowOnlyEndorsed: true,
-													shouldShowVersion: 'v4',
-													shouldShowMissingTranslations: false,
-													shouldShowEntity: 'vaults'
-												}}
-												isValid={src === currentPartner?.source}
-												prefix={''}
-												suffix={`in ${src}`} />;
-
-										})}
-									</section>
-								</Card>
-							);
+						{appSettings.shouldShowEntity === 'partners'  && partners && [...partners].map(([partner, status]): ReactElement => {
+							return <PartnerEntity key={partner} partner={partner} status={status} settings={appSettings} />;
 						})}
 
 						{appSettings.shouldShowEntity === 'strategies' && strategies && Object.keys(strategies).map((strategyAddress: string): ReactNode => {

@@ -5,7 +5,7 @@ import {copyToClipboard, format, toAddress} from '@yearn-finance/web-lib/utils';
 import {AddressWithActions} from '@yearn-finance/web-lib/components';
 import {useYearn}  from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
-import StatusLine from 'components/VaultEntity.StatusLine';
+import StatusLine from 'components/StatusLine';
 import ModalFix from 'components/modals/ModalFix';
 import Code from 'components/Code';
 import type {TFixModalData, TSettings} from  'types/types';
