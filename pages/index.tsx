@@ -223,6 +223,14 @@ function	Index(): ReactNode {
 			return _errorCount / (Object.keys(tokens).length || 1) * 100;
 
 		}
+		if (appSettings.shouldShowEntity === 'partners') {
+			const values = Array.from(partners?.values() || []);
+			const _errorCount = values.filter((partner: TPartner[]): boolean => {
+				return partner.length < 2;
+			}).length;
+			return _errorCount / (values.length || 1) * 100;
+
+		}
 		const	_errorCount = (
 			vaults
 				.filter((vault): boolean => {
@@ -242,7 +250,7 @@ function	Index(): ReactNode {
 		);
 		return _errorCount / (vaults.length || 1) * 100;
 
-	}, [vaults, tokens, appSettings.shouldShowEntity, aggregatedData]);
+	}, [appSettings.shouldShowEntity, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
 
 	return (
 		<div>
