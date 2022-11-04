@@ -402,7 +402,9 @@ export const getExporterPartners = (exporterPartnersRawData: string): {
 }[] => {
 	const networkMap = new Map();
 	networkMap.set('Mainnet', 1);
+	networkMap.set('Optimism', 10);
 	networkMap.set('Fantom', 250);
+	networkMap.set('Arbitrum', 42161);
 
 	const partnerNameRegex = /Partner\(name=['"]+(.*?)['"]+/gm;
 
