@@ -2,7 +2,7 @@ import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'reac
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {toAddress} from '@yearn-finance/web-lib/utils';
 import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
-import {useYearn}  from 'contexts/useYearn';
+import {partnerSupportedNetworksMap, useYearn}  from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
@@ -224,6 +224,10 @@ function	Index(): ReactNode {
 
 		}
 		if (appSettings.shouldShowEntity === 'partners') {
+			if (![...partnerSupportedNetworksMap.values()].includes(chainID)) {
+				return 0;
+			}
+
 			const values = Array.from(partners?.values() || []);
 			const _errorCount = values.filter((partner: TPartner[]): boolean => {
 				return partner.length < 2;

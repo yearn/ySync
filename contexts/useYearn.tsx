@@ -15,6 +15,11 @@ const	YearnContext = createContext<appTypes.TYearnContext>({
 	nonce: 0
 });
 
+
+export const partnerSupportedNetworksMap = new Map();
+partnerSupportedNetworksMap.set('Mainnet', 1);
+partnerSupportedNetworksMap.set('Fantom', 250);
+
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = useState(0);
@@ -400,11 +405,9 @@ export const getExporterPartners = (exporterPartnersRawData: string): {
 	network: number;
 	partners: string[];
 }[] => {
-	const networkMap = new Map();
-	networkMap.set('Mainnet', 1);
-	networkMap.set('Optimism', 10);
-	networkMap.set('Fantom', 250);
-	networkMap.set('Arbitrum', 42161);
+	if (!exporterPartnersRawData) {
+		return [];
+	}
 
 	const partnerNameRegex = /Partner\(name=['"]+(.*?)['"]+/gm;
 
@@ -419,7 +422,7 @@ export const getExporterPartners = (exporterPartnersRawData: string): {
 			partners.push(match[1]);
 			match = partnerNameRegex.exec(str);
 		}
-		result.push({network: networkMap.get(networkRaw.split(':')[0]), partners});
+		result.push({network: partnerSupportedNetworksMap.get(networkRaw.split(':')[0]), partners});
 	}
 	
 	return result;

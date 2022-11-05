@@ -3,6 +3,7 @@ import {Card} from '@yearn-finance/web-lib/components';
 import type {TPartner, TSettings} from 'types/types';
 import StatusLine from './StatusLine';
 import {useWeb3} from '@yearn-finance/web-lib';
+import {partnerSupportedNetworksMap} from 'contexts/useYearn';
 
 type TPartnerEntityProps = {partner: string; status: TPartner[] ;settings: TSettings};
 
@@ -28,6 +29,10 @@ const getSuffix = (src: string, chainID: string, hasAnomalies: boolean, partner:
 function PartnerEntity({partner, status, settings: statusSettings}: TPartnerEntityProps): ReactElement | null {
 	const	{chainID} = useWeb3();
 
+	if (![...partnerSupportedNetworksMap.values()].includes(chainID)) {
+		return null;
+	}
+	
 	const hasAnomalies = (status.length < 2);
 
 	if (!hasAnomalies && statusSettings.shouldShowOnlyAnomalies) {
