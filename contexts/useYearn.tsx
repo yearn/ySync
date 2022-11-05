@@ -5,21 +5,28 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
+import {cleanString} from 'utils/cleanString';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
-	aggregatedData: {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}},
+	aggregatedData: {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()},
 	onUpdateIconStatus: (): void => undefined,
 	onUpdateTokenIconStatus: (): void => undefined,
 	nonce: 0
 });
 
+
+export const partnerSupportedNetworksMap = new Map();
+partnerSupportedNetworksMap.set('Mainnet', 1);
+partnerSupportedNetworksMap.set('Fantom', 250);
+
 export const YearnContextApp = ({children}: {children: ReactElement}): ReactElement => {
 	const	{chainID} = useWeb3();
 	const	[nonce, set_nonce] = useState(0);
-	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}});
+	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
 
+	const YDAEMON_GH_API_ENDPOINT = 'https://api.github.com/repos/yearn/ydaemon/contents/data';
 
 	/* 🔵 - Yearn Finance ******************************************************
 	** Main function to get and deal with the data from the different
@@ -27,28 +34,48 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** anomalies.
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
-		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _metaVaultFiles, _metaProtocolFiles, strategies, tokens, protocols] = await Promise.all([
+		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
-			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/vaults/${_chainID}`),
-			axios.get(`https://api.github.com/repos/yearn/ydaemon/contents/data/meta/protocols/${_chainID}`),
+			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
+			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/vaults/${_chainID}`),
+			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/protocols/${_chainID}`),
+			axios.get(`${YDAEMON_GH_API_ENDPOINT}/partners/networks/${_chainID}`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
 			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/protocols?loc=all`)
-		]) as [any, any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
+		]) as [any, any, any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
+
+		const yDaemonPartners = _yDaemonPartners.data.map(({name}: { name: string }): appTypes.TPartner => {
+			return {source: 'yDaemon', name: cleanString(name.split('.')[0])};
+		});
+
+		const allExporterPartners = getExporterPartners(_exporterPartners.data);
+		const exporterPatnersForChain = allExporterPartners.find(({network}): boolean => network === chainID);
+		const exporterPartners = exporterPatnersForChain?.partners.map((name: string): appTypes.TPartner => {
+			return {source: 'exporter', name: cleanString(name)};
+		});
+
+		const partners = new Map<string, appTypes.TPartner[]>();
+		[...yDaemonPartners, ...(exporterPartners ? exporterPartners : [])].map((partner: appTypes.TPartner): Map<string, appTypes.TPartner[]> => {
+			const p = partners.get(partner.name);
+			partners.set(partner.name, p ? [...p, partner] : [partner]);
+			return partners;
+		});
 
 		const YEARN_META_VAULT_FILES = _metaVaultFiles.data.map((meta): string => toAddress(meta.name.split('.')[0]));
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		const YEARN_META_PROTOCOL_FILES = _metaProtocolFiles.data.map(({name, html_url}): TFile => ({
-			name: name.split('.')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+			name: cleanString(name.split('.')[0]),
 			originalName: name,
 			url: html_url
 		}));
 		
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
-		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}};
+		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()};
+		_allData.partners = partners;
 
 		// Mapping the strategies for ease of access
 		const STRATEGIES: {[key: string]: any} = {};
@@ -374,6 +401,32 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	);
 };
 
+export const getExporterPartners = (exporterPartnersRawData: string): {
+	network: number;
+	partners: string[];
+}[] => {
+	if (!exporterPartnersRawData) {
+		return [];
+	}
+
+	const partnerNameRegex = /Partner\(name=['"]+(.*?)['"]+/gm;
+
+	const [, ...networksRaw] = exporterPartnersRawData.split(/Network\./);
+
+	const result = [];
+	for (const networkRaw of networksRaw) {
+		const partners: string[] = [];
+		const str = networkRaw.replace(/\s/g, '');
+		let match = partnerNameRegex.exec(str);
+		while (match != null) {
+			partners.push(match[1]);
+			match = partnerNameRegex.exec(str);
+		}
+		result.push({network: partnerSupportedNetworksMap.get(networkRaw.split(':')[0]), partners});
+	}
+	
+	return result;
+};
 
 export const useYearn = (): appTypes.TYearnContext => useContext(YearnContext);
 export default useYearn;

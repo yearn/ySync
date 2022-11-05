@@ -1,6 +1,6 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils';
-import StatusLine from 'components/VaultEntity.StatusLine';
+import StatusLine from 'components/StatusLine';
 import type {TAnomalies, TAnomaliesSection} from 'types/types';
 
 function	AnomaliesSection({
