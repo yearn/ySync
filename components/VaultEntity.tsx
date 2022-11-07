@@ -48,6 +48,7 @@ function	VaultEntity({
 		|| !vaultData?.hasYearnMetaFile
 		|| vaultData?.hasErrorAPY
 		|| vaultData?.hasNewAPY
+		|| !vaultData?.token.description
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -440,6 +441,28 @@ function	VaultEntity({
 						})}
 					</section>
 				) : null}
+
+				<AnomaliesSection
+					label={'Want Token Description'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: !!vaultData?.token.description,
+						prefix: 'Description',
+						suffix: (
+							<span className={'inline'}>
+								{'for want token '}
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vaultData?.token.address}`} target={'_blank'} className={'tabular-nums text-red-900 underline'} rel={'noreferrer'}>
+									{vaultData?.token.symbol || 'not_set'}
+								</a>
+								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vaultData?.token.address}`)}>
+									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</button>
+								<a href={`${networks[chainID].explorerBaseURI}/address/${vaultData?.token.address}`} target={'_blank'} rel={'noreferrer'}>
+									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+								</a>
+							</span>
+						)
+					}]} />
 			</div>
 			<ModalFix
 				fix={fixModalData.fix}
