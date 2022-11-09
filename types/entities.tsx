@@ -26,7 +26,7 @@ export type	TVaultData = {
 	hasNewAPY: boolean;
 	hasErrorAPY: boolean;
 	missingTranslations: {[key: string]: string[]};
-	token: TVaultToken;
+	token?: TVaultToken;
 	address: string;
 	name: string;
 	icon: string;
