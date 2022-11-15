@@ -1,5 +1,15 @@
 import {TFile} from './types';
 
+export type TVaultToken = {
+	address: string;
+	name: string;
+	display_name: string;
+	symbol: string;
+	description?: string;
+	decimals: number;
+	icon: string;
+}
+
 // Vault entity
 export type	TVaultData = {
 	hasLedgerIntegration: {
@@ -16,6 +26,7 @@ export type	TVaultData = {
 	hasNewAPY: boolean;
 	hasErrorAPY: boolean;
 	missingTranslations: {[key: string]: string[]};
+	token?: TVaultToken;
 	address: string;
 	name: string;
 	icon: string;
