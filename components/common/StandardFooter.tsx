@@ -23,7 +23,7 @@ function	Footer(): ReactElement {
 				<span className={'sr-only'}>{'Access Yearn\'s Twitter account'}</span>
 				{'Twitter'}
 			</a>
-			<a href={'/settings'} target={'_blank'} className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
+			<a href={'/settings'} className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
 				<span className={'sr-only'}>{'Open settings'}</span>
 				{'Settings'}
 			</a>
