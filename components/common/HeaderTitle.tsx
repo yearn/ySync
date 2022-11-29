@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 function	HeaderTitle(): ReactElement {
 	return (
-		<Link href='/' >
+		<Link href={'/'} >
 			<a className={'flex-row-center space-x-4'}>
 				<LogoYearn className={'h-10 w-10'} />
 				<h1 className={'mr-2 font-bold text-neutral-700 md:mr-4'}>
