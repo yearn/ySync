@@ -2,6 +2,7 @@ import React, {ReactElement} from 'react';
 import {SwitchTheme} from '@yearn-finance/web-lib/components';
 import {useUI} from '@yearn-finance/web-lib/contexts';
 import meta from 'public/manifest.json';
+import Link from 'next/link';
 
 function	Footer(): ReactElement {
 	const	{theme, switchTheme} = useUI();
@@ -23,6 +24,12 @@ function	Footer(): ReactElement {
 				<span className={'sr-only'}>{'Access Yearn\'s Twitter account'}</span>
 				{'Twitter'}
 			</a>
+			<Link href={'/settings'}>
+				<a className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
+					<span className={'sr-only'}>{'Open settings'}</span>
+					{'Settings'}
+				</a>
+			</Link>
 
 			<div className={'ml-auto px-3'}>
 				<SwitchTheme theme={theme} switchTheme={switchTheme} />

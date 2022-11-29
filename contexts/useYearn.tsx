@@ -6,6 +6,7 @@ import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
 import {cleanString} from 'utils/cleanString';
+import {useSettings} from '@yearn-finance/web-lib/contexts';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
@@ -25,6 +26,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	const	[nonce, set_nonce] = useState(0);
 	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
+	const	{settings} = useSettings();
 
 	const YDAEMON_GH_API_ENDPOINT = 'https://api.github.com/repos/yearn/ydaemon/contents/data';
 
@@ -35,16 +37,16 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
-			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
+			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/vaults/${_chainID}`),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/protocols/${_chainID}`),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/partners/networks/${_chainID}`),
-			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/strategies?loc=all`),
-			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/tokens/all?loc=all`),
-			axios.get(`${process.env.YDAEMON_ENDPOINT}/${_chainID}/meta/protocols?loc=all`)
+			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/meta/strategies?loc=all`),
+			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/tokens/all?loc=all`),
+			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/meta/protocols?loc=all`)
 		]) as [any, any, any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
 
 		const yDaemonPartners = _yDaemonPartners.data.map(({name}: { name: string }): appTypes.TPartner => {
