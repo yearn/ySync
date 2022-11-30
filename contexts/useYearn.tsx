@@ -36,7 +36,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
-			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?strategiesDetails=withDetails&strategiesRisk=withRisk&strategiesCondition=all`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
@@ -102,15 +102,15 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		**********************************************************************/
 		for (const data of fromAPI.data) {
 			if (!_allData.vaults[toAddress(data.address) as string]) {
-				const	hasValidStrategiesDescriptions = data.strategies.every((strategy: appTypes.TStrategy): boolean => (
+				const	hasValidStrategiesDescriptions = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => (
 					strategy.description !== ''
 				));
 
-				const	hasValidStrategiesRisk = data.strategies.every((strategy: appTypes.TStrategy): boolean => {
+				const	hasValidStrategiesRisk = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => {
 					return (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 				});
 
-				const	hasValidStrategiesRiskScore = data.strategies.every((strategy: appTypes.TStrategy): boolean => {
+				const	hasValidStrategiesRiskScore = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => {
 					const sum = (
 						(strategy?.risk?.TVLImpact || 0)
 						+ (strategy?.risk?.auditScore || 0)
@@ -126,7 +126,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				const	missingTranslations: {[key: string]: string[]} = {};
-				const	strategiesAddresses = data.strategies.map(({address}: appTypes.TStrategy): string => toAddress(address));
+				const	strategiesAddresses = (data?.strategies || []).map(({address}: appTypes.TStrategy): string => toAddress(address));
 				for (const strategyAddress of strategiesAddresses) {
 					const localizations = STRATEGIES[strategyAddress]?.localization;
 					const english = localizations?.en;
