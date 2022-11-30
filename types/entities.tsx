@@ -19,6 +19,7 @@ export type	TVaultData = {
 	hasValidStrategiesDescriptions: boolean;
 	hasValidStrategiesTranslations: boolean;
 	hasValidStrategiesRisk: boolean;
+	hasValidStrategiesRiskScore: boolean,
 	hasValidIcon: boolean;
 	hasValidTokenIcon: boolean;
 	hasYearnMetaFile: boolean;

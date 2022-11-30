@@ -3,7 +3,7 @@ import Image from 'next/image';
 import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
 import {copyToClipboard, format, toAddress} from '@yearn-finance/web-lib/utils';
 import {AddressWithActions} from '@yearn-finance/web-lib/components';
-import {useYearn}  from 'contexts/useYearn';
+import {useYearn} from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/StatusLine';
 import ModalFix from 'components/modals/ModalFix';
@@ -45,6 +45,7 @@ function	VaultEntity({
 		|| !vaultData?.hasLedgerIntegration
 		|| !vaultData?.hasValidStrategiesDescriptions
 		|| !vaultData?.hasValidStrategiesRisk
+		|| !vaultData?.hasValidStrategiesRiskScore
 		|| !vaultData?.hasYearnMetaFile
 		|| vaultData?.hasErrorAPY
 		|| vaultData?.hasNewAPY
@@ -365,6 +366,41 @@ function	VaultEntity({
 											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${hasRiskFramework ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 												{strategy.name}
 											</a>
+										</span>
+									)} />
+								
+							);
+						})}
+					</section>
+				)}
+
+				{vaultData?.hasValidStrategiesRiskScore && vaultSettings.shouldShowOnlyAnomalies ? null : (
+					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
+						{vault.strategies.map((strategy: any): ReactNode => {
+							const sum = (
+								(strategy?.risk?.TVLImpact || 0)
+								+ (strategy?.risk?.auditScore || 0)
+								+ (strategy?.risk?.codeReviewScore || 0)
+								+ (strategy?.risk?.complexityScore || 0)
+								+ (strategy?.risk?.longevityImpact || 0)
+								+ (strategy?.risk?.protocolSafetyScore || 0)
+								+ (strategy?.risk?.teamKnowledgeScore || 0)
+								+ (strategy?.risk?.testingScore || 0)
+							);
+							return (
+								<StatusLine
+									key={`${strategy.address}_risk`}
+									settings={vaultSettings}
+									isValid={sum > 0 && sum < 40}
+									prefix={'Risk Score '}
+									suffix={(
+										<span>
+											{'for strategy '}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${sum > 0 && sum < 40 ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+												{strategy.name}
+											</a>
+											{` (${sum})`}
 										</span>
 									)} />
 								

@@ -1,12 +1,11 @@
 import React, {ReactElement, createContext, useCallback, useContext, useEffect, useState} from 'react';
 import axios, {AxiosResponse} from 'axios';
 import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
+import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
 import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
 import {cleanString} from 'utils/cleanString';
-import {useSettings} from '@yearn-finance/web-lib/contexts';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
@@ -26,7 +25,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	const	[nonce, set_nonce] = useState(0);
 	const	[aggregatedData, set_aggregatedData] = useState<appTypes.TAllData>({vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()});
 	const	[dataFromAPI, set_dataFromAPI] = useState<any[]>([]);
-	const	{settings} = useSettings();
+	const	{settings: web3Settings} = useSettings();
 
 	const YDAEMON_GH_API_ENDPOINT = 'https://api.github.com/repos/yearn/ydaemon/contents/data';
 
@@ -37,16 +36,16 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
-			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?classification=any&strategiesRisk=withRisk`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/vaults/${_chainID}`),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/protocols/${_chainID}`),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/partners/networks/${_chainID}`),
-			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/meta/strategies?loc=all`),
-			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/tokens/all?loc=all`),
-			axios.get(`${settings.yDaemonBaseURI}/${_chainID}/meta/protocols?loc=all`)
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/meta/strategies?loc=all`),
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/tokens/all?loc=all`),
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/meta/protocols?loc=all`)
 		]) as [any, any, any, any, AxiosResponse<appTypes.TGHFile[]>, AxiosResponse<appTypes.TGHFile[]>, any, any, AxiosResponse<{[key: string]: appTypes.TExternalTokensFromYDaemon}>, any];
 
 		const yDaemonPartners = _yDaemonPartners.data.map(({name}: { name: string }): appTypes.TPartner => {
@@ -111,6 +110,20 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					return (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 				});
 
+				const	hasValidStrategiesRiskScore = data.strategies.every((strategy: appTypes.TStrategy): boolean => {
+					const sum = (
+						(strategy?.risk?.TVLImpact || 0)
+						+ (strategy?.risk?.auditScore || 0)
+						+ (strategy?.risk?.codeReviewScore || 0)
+						+ (strategy?.risk?.complexityScore || 0)
+						+ (strategy?.risk?.longevityImpact || 0)
+						+ (strategy?.risk?.protocolSafetyScore || 0)
+						+ (strategy?.risk?.teamKnowledgeScore || 0)
+						+ (strategy?.risk?.testingScore || 0)
+					);
+					return sum > 0 && sum < 40;
+				});
+
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				const	missingTranslations: {[key: string]: string[]} = {};
 				const	strategiesAddresses = data.strategies.map(({address}: appTypes.TStrategy): string => toAddress(address));
@@ -138,6 +151,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesDescriptions,
 					hasValidStrategiesTranslations: false, //unused
 					hasValidStrategiesRisk,
+					hasValidStrategiesRiskScore,
 					hasValidIcon: true,
 					hasValidTokenIcon: true,
 					hasValidPrice: data.tvl.price > 0,
@@ -172,6 +186,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesDescriptions: false,
 					hasValidStrategiesTranslations: false,
 					hasValidStrategiesRisk: false,
+					hasValidStrategiesRiskScore: false,
 					hasValidIcon: false,
 					hasValidTokenIcon: false,
 					hasValidPrice: false,
@@ -208,6 +223,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidStrategiesDescriptions: false,
 					hasValidStrategiesTranslations: false,
 					hasValidStrategiesRisk: false,
+					hasValidStrategiesRiskScore: false,
 					hasValidIcon: false,
 					hasValidTokenIcon: false,
 					hasValidPrice: false,
