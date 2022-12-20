@@ -85,6 +85,9 @@ function	MyApp(props: AppProps): ReactElement {
 				shouldUseStrictChainMode: false,
 				defaultChainID: 1,
 				supportedChainID: [1, 10, 250, 42161, 1337, 31337]
+			},
+			baseSettings: {
+				yDaemonBaseURI: process.env.YDAEMON_BASE_URI as string
 			}
 		}}>
 			<YearnContextApp>

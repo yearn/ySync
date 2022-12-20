@@ -78,14 +78,16 @@ export type TExternalTokensFromYDaemon = {
 
 export type	TRisk = {
 	riskGroup: string,
-	TVLImpact: number,
-	auditScore: number,
-	codeReviewScore: number,
-	complexityScore: number,
-	longevityImpact: number,
-	protocolSafetyScore: number,
-	teamKnowledgeScore: number,
-	testingScore: number,
+	riskDetails: {
+		TVLImpact: number,
+		auditScore: number,
+		codeReviewScore: number,
+		complexityScore: number,
+		longevityImpact: number,
+		protocolSafetyScore: number,
+		teamKnowledgeScore: number,
+		testingScore: number,
+	}
 }
 
 export type	TStrategy = {

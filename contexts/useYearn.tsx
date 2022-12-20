@@ -36,7 +36,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	**************************************************************************/
 	const getYearnDataSync = useCallback(async (_chainID: number): Promise<void> => {
 		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
-			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?strategiesDetails=withDetails&strategiesRisk=withRisk&strategiesCondition=all`),
+			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?strategiesDetails=withDetails&strategiesCondition=all`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
@@ -112,14 +112,14 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 
 				const	hasValidStrategiesRiskScore = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => {
 					const sum = (
-						(strategy?.risk?.TVLImpact || 0)
-						+ (strategy?.risk?.auditScore || 0)
-						+ (strategy?.risk?.codeReviewScore || 0)
-						+ (strategy?.risk?.complexityScore || 0)
-						+ (strategy?.risk?.longevityImpact || 0)
-						+ (strategy?.risk?.protocolSafetyScore || 0)
-						+ (strategy?.risk?.teamKnowledgeScore || 0)
-						+ (strategy?.risk?.testingScore || 0)
+						(strategy?.risk?.riskDetails?.TVLImpact || 0)
+						+ (strategy?.risk?.riskDetails?.auditScore || 0)
+						+ (strategy?.risk?.riskDetails?.codeReviewScore || 0)
+						+ (strategy?.risk?.riskDetails?.complexityScore || 0)
+						+ (strategy?.risk?.riskDetails?.longevityImpact || 0)
+						+ (strategy?.risk?.riskDetails?.protocolSafetyScore || 0)
+						+ (strategy?.risk?.riskDetails?.teamKnowledgeScore || 0)
+						+ (strategy?.risk?.riskDetails?.testingScore || 0)
 					);
 					return sum > 0 && sum < 40;
 				});
