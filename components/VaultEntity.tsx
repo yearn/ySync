@@ -50,7 +50,7 @@ function	VaultEntity({
 		|| vaultData?.hasErrorAPY
 		|| vaultData?.hasNewAPY
 		|| !vaultData?.token?.description
-		|| !isRetirementValid(vault)
+		|| !vaultData?.hasValidRetirement
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -267,11 +267,11 @@ function	VaultEntity({
 					label={'Retirement'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: isRetirementValid(vault),
+						isValid: vaultData?.hasValidRetirement,
 						prefix: 'Retirement',
 						suffix: (
 							<span>
-								{isRetirementValid(vault) ? 'for vault' : 'for vault, it should be retired=true'}
+								{vaultData?.hasValidRetirement ? 'for vault' : 'for vault, it should be retired=true'}
 							</span>
 						)
 					}]} />
@@ -522,8 +522,6 @@ function	VaultEntity({
 	);
 }
 
-function isRetirementValid(vault: any): boolean {
-	return Number(vault.details.depositLimit) === 0 && vault.details.retired;
-}
+
 
 export default VaultEntity;

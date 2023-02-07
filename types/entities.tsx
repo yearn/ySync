@@ -26,6 +26,7 @@ export type	TVaultData = {
 	hasValidPrice: boolean;
 	hasNewAPY: boolean;
 	hasErrorAPY: boolean;
+	hasValidRetirement: boolean;
 	missingTranslations: {[key: string]: string[]};
 	token?: TVaultToken;
 	address: string;
