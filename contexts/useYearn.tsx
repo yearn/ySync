@@ -6,6 +6,7 @@ import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
 import {cleanString} from 'utils/cleanString';
+import {BigNumber} from 'ethers';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],
@@ -453,7 +454,7 @@ export const getExporterPartners = (exporterPartnersRawData: string): {
 };
 
 function isRetirementValid(vault: any): boolean {
-	return Number(vault?.details?.depositLimit) === 0 && vault?.details?.retired;
+	return !(BigNumber.from(vault?.details?.depositLimit || 0).isZero() && !vault?.details?.retired);
 }
 
 export const useYearn = (): appTypes.TYearnContext => useContext(YearnContext);
