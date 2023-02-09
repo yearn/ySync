@@ -50,6 +50,7 @@ function	VaultEntity({
 		|| vaultData?.hasErrorAPY
 		|| vaultData?.hasNewAPY
 		|| !vaultData?.token?.description
+		|| !vaultData?.hasValidRetirement
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -262,6 +263,19 @@ function	VaultEntity({
 				</div>
 			</div>
 			<div className={'flex flex-col p-4 pt-0'}>
+				<AnomaliesSection
+					label={'Retirement'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: vaultData?.hasValidRetirement,
+						prefix: 'Retirement',
+						suffix: (
+							<span>
+								{vaultData?.hasValidRetirement ? 'for vault' : 'for vault, it should be retired=true'}
+							</span>
+						)
+					}]} />
+
 				<AnomaliesSection
 					label={'Yearn Meta File'}
 					settings={vaultSettings}
@@ -507,5 +521,7 @@ function	VaultEntity({
 		</div>
 	);
 }
+
+
 
 export default VaultEntity;

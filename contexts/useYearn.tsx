@@ -156,6 +156,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasValidTokenIcon: true,
 					hasValidPrice: data.tvl.price > 0,
 					hasYearnMetaFile,
+					hasValidRetirement: isRetirementValid(data),
 					hasErrorAPY: data.apy.type === 'error',
 					hasNewAPY: data.apy.type === 'new',
 					missingTranslations,
@@ -193,6 +194,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasNewAPY: false,
 					hasErrorAPY: false,
 					hasYearnMetaFile,
+					hasValidRetirement: isRetirementValid(data),
 					missingTranslations: {},
 					token: data?.token,
 					address: toAddress(data.address),
@@ -230,6 +232,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasNewAPY: false,
 					hasErrorAPY: false,
 					hasYearnMetaFile,
+					hasValidRetirement: isRetirementValid(data),
 					missingTranslations: {},
 					token: data?.token,
 					address: toAddress(data.address),
@@ -448,6 +451,10 @@ export const getExporterPartners = (exporterPartnersRawData: string): {
 	
 	return result;
 };
+
+function isRetirementValid(vault: any): boolean {
+	return Number(vault?.details?.depositLimit) === 0 && vault?.details?.retired;
+}
 
 export const useYearn = (): appTypes.TYearnContext => useContext(YearnContext);
 export default useYearn;
