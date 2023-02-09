@@ -1,6 +1,8 @@
-import	React, {ReactElement}	from	'react';
-import	{Card, Modal}			from	'@yearn-finance/web-lib/components';
-import	type {TFixModalData}	from	'types/types';
+import React from 'react';
+import {Modal} from '@yearn-finance/web-lib/components/Modal';
+
+import type {ReactElement} from 'react';
+import type {TFixModalData} from 'types/types';
 
 type		TModalFix = {
 	fix: TFixModalData['fix'],
@@ -13,8 +15,8 @@ function	ModalFix({fix, isOpen, onClose}: TModalFix): ReactElement {
 		<Modal
 			isOpen={isOpen}
 			onClose={onClose}>
-			<Card>
-				<h1 className={'mb-4 text-3xl text-neutral-700'}>{'Fix this issue'}</h1>
+			<div className={'bg-neutral-100 p-6'}>
+				<h1 className={'mb-4 text-3xl text-neutral-900'}>{'Fix this issue'}</h1>
 				<div className={'mb-4 space-y-2'}>
 					<p>{'In order to fix this issue, please, follow the instructions:'}</p>
 					<ul className={'space-y-2'}>
@@ -23,7 +25,7 @@ function	ModalFix({fix, isOpen, onClose}: TModalFix): ReactElement {
 						))}
 					</ul>
 				</div>
-			</Card>
+			</div>
 		</Modal>
 	);
 }

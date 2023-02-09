@@ -1,7 +1,8 @@
-import React, {ReactElement, useMemo, useState} from 'react';
-import {Button} from '@yearn-finance/web-lib/components';
-import {Card} from '@yearn-finance/web-lib/components';
-import {useSettings} from '@yearn-finance/web-lib/contexts';
+import React, {useMemo, useState} from 'react';
+import {Button} from '@yearn-finance/web-lib/components/Button';
+import {useSettings} from '@yearn-finance/web-lib/contexts/useSettings';
+
+import type {ReactElement} from 'react';
 
 type TWrappedInput = {
 	title: string;
@@ -18,7 +19,7 @@ function	WrappedInput({title, initialValue, onSave}: TWrappedInput): ReactElemen
 	return (
 		<label>
 			<p className={'pb-1 text-neutral-900'}>{title}</p>
-			<div className={'flex flex-row space-x-2 items-center'}>
+			<div className={'flex flex-row items-center space-x-2'}>
 				<div data-focused={isFocused} className={'yearn--input relative w-full'}>
 					<input
 						onFocus={(): void => set_isFocused(true)}
@@ -45,11 +46,11 @@ function	SectionYearnAPIBaseURI(): ReactElement {
 	const	{onUpdateBaseSettings, settings: baseAPISettings} = useSettings();
 
 	return (
-		<Card>
+		<div className={'bg-neutral-100 p-6'}>
 			<div className={'flex w-full flex-row justify-between pb-4'}>
 				<h4 className={'text-lg font-bold'}>{'Yearn\'s APIs'}</h4>
 			</div>
-			<div className={'text-justify max-w-lg'}>
+			<div className={'max-w-lg text-justify'}>
 				<p>
 					{'The Yearn\'s API endpoints are used to get some specific Yearn\'s related information about the vaults, the strategies and much more.'}
 				</p>
@@ -64,7 +65,7 @@ function	SectionYearnAPIBaseURI(): ReactElement {
 						})} />
 				</div>
 			</div>
-		</Card>
+		</div>
 	);
 }
 

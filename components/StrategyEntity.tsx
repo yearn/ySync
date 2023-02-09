@@ -1,8 +1,14 @@
-import React, {ReactElement} from 'react';
-import {AddressWithActions} from '@yearn-finance/web-lib/components';
-import type {TFile, TSettings} from 'types/types';
-import {TStrategy} from 'types/entities';
+import React from 'react';
+import {AddressWithActions} from '@yearn-finance/web-lib/components/AddressWithActions';
+import {useSettings} from '@yearn-finance/web-lib/contexts/useSettings';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+
 import StatusLine from './StatusLine';
+
+import type {ReactElement} from 'react';
+import type {TStrategy} from 'types/entities';
+import type {TFile, TSettings} from 'types/types';
 
 type TProtocolStatus = {
 	name: string;
@@ -22,6 +28,9 @@ function findFile(filename: string, files: TFile[]): TFile | undefined {
 }
 
 function StrategyEntity({strategyData, protocolNames, protocolFiles, statusSettings}: TStrategyEntity): ReactElement | null {
+	const	{chainID} = useWeb3();
+	const	{networks} = useSettings();
+
 	if (!strategyData) {
 		return null;
 	}
@@ -45,11 +54,11 @@ function StrategyEntity({strategyData, protocolNames, protocolFiles, statusSetti
 	}
 
 	return (
-		<div className={'rounded-lg bg-neutral-200'} key={name}>
-			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
+		<div className={'rounded-default bg-neutral-100'} key={name}>
+			<div className={'rounded-t-default flex flex-row space-x-4 border-b border-neutral-300 p-4'}>
 				<div className={'-mt-1 flex flex-col'}>
 					<div className={'flex flex-row items-baseline space-x-2'}>
-						<h4 className={'text-lg font-bold text-neutral-700'}>
+						<h4 className={'text-lg font-bold text-neutral-900'}>
 							{name}
 						</h4>
 					</div>
@@ -57,21 +66,23 @@ function StrategyEntity({strategyData, protocolNames, protocolFiles, statusSetti
 						<AddressWithActions
 							className={'text-sm font-normal'}
 							truncate={0}
-							address={address}
+							address={toAddress(address)}
+							explorer={networks[chainID].explorerBaseURI || ''}
 						/>
 					</div>
 					<div className={'flex md:hidden'}>
 						<AddressWithActions
 							className={'text-sm font-normal'}
 							truncate={8}
-							address={address}
+							address={toAddress(address)}
+							explorer={networks[chainID].explorerBaseURI || ''}
 						/>
 					</div>
 				</div>
 			</div>
 			<div className={'flex flex-col p-4 pt-0'}>
 				<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-					<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Protocol Validity'}</b>
+					<b className={'mb-1 font-mono text-sm text-neutral-900'}>{'Protocol Validity'}</b>
 					{protocolsStatus.map(({name, isValid, file}: TProtocolStatus): ReactElement => {
 						return (
 							<>
@@ -79,23 +90,29 @@ function StrategyEntity({strategyData, protocolNames, protocolFiles, statusSetti
 									key={`${name}_protocol_file`}
 									settings={statusSettings}
 									isValid={!!file}
-									prefix={(<span>
-										{'File '}
-										<a href={file?.originalName ? file?.url : '#'} target={file?.originalName ? '_blank' : ''} className={`tabular-nums text-red-900 ${file?.originalName ? 'underline' : ''}`} rel={'noreferrer'}>
-											{file?.originalName ?? `${name.replace(/[^a-zA-Z0-9]/g, '')}.json`}
-										</a>
-									</span>)}
+									prefix={(
+										<span>
+											{'File '}
+											<a
+												href={file?.originalName ? file?.url : '#'}
+												target={file?.originalName ? '_blank' : ''}
+												className={`tabular-nums text-red-900 ${file?.originalName ? 'underline' : ''}`}
+												rel={'noreferrer'}>
+												{file?.originalName ?? `${name.replace(/[^a-zA-Z0-9]/g, '')}.json`}
+											</a>
+										</span>
+									)}
 									suffix={'for strategy\'s protocol'} />
 								{!!file && <StatusLine
 									key={`${name}_protocol`}
 									settings={statusSettings}
 									isValid={isValid}
-									prefix={(<span>
-										{'Name '}
-										{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>
-											{name}
-										</span>{'"'}
-									</span>)}
+									prefix={(
+										<span>
+											{'Name '}
+											{'"'}<span className={`underline ${isValid ? '' : 'text-red-900'}`}>{name}</span>{'"'}
+										</span>)
+									}
 									suffix={'for strategy\'s protocol'} />}
 							</>
 						);

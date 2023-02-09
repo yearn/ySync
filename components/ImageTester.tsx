@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import React, {ReactElement} from 'react';
-import {useYearn}  from 'contexts/useYearn';
-import {TTokenData, TTokensData} from 'types/entities';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
-import {toAddress} from '@yearn-finance/web-lib/utils';
+import React from 'react';
+import {useYearn} from 'contexts/useYearn';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+
+import type {ReactElement} from 'react';
+import type {TTokenData, TTokensData} from 'types/entities';
 
 function	VaultImageTester({vaults}: {vaults: any[]}): ReactElement {
 	const	{onUpdateIconStatus, onUpdateTokenIconStatus} = useYearn();
@@ -61,4 +63,4 @@ function	TokensImageTester({tokens}: {tokens: TTokensData}): ReactElement {
 	);
 }
 
-export {VaultImageTester, TokensImageTester};
+export {TokensImageTester, VaultImageTester};

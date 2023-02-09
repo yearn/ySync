@@ -1,4 +1,4 @@
-import {TFile} from './types';
+import type {TFile} from './types';
 
 export type TVaultToken = {
 	address: string;

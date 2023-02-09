@@ -1,14 +1,14 @@
-import	React, {ReactElement, forwardRef, useMemo}		from	'react';
-import {
-	ActionId,
-	ActionImpl,
-	KBarAnimator,
+import	React, {forwardRef, useMemo}		from	'react';
+import {KBarAnimator,
 	KBarPortal,
 	KBarPositioner,
 	KBarResults,
 	KBarSearch,
-	useMatches
-} from 'kbar';
+	useMatches} from 'kbar';
+
+import type {ActionId,
+	ActionImpl} from 'kbar';
+import type {ReactElement} from 'react';
 
 const searchStyle = {
 	padding: '12px 16px',
@@ -20,7 +20,7 @@ const searchStyle = {
 	background: 'hsl(var(--color-neutral-0))',
 	color: 'var(--foreground)'
 };
-  
+
 const animatorStyle = {
 	maxWidth: '600px',
 	width: '100%',
@@ -31,7 +31,7 @@ const animatorStyle = {
 	overflow: 'hidden',
 	boxShadow: 'var(--shadow)'
 };
-  
+
 const groupNameStyle = {
 	padding: '8px 16px',
 	fontSize: '10px',
@@ -46,7 +46,9 @@ const ResultItem = forwardRef((
 	ref: React.Ref<HTMLDivElement>
 ): ReactElement => {
 	const ancestors = useMemo((): unknown => {
-		if (!currentRootActionId) return action.ancestors;
+		if (!currentRootActionId) {
+			return action.ancestors;
+		}
 		const index = action.ancestors.findIndex((ancestor: any): any => ancestor.id === currentRootActionId);
 		// +1 removes the currentRootAction; e.g.
 		// if we are on the "Set theme" parent action,
@@ -54,7 +56,7 @@ const ResultItem = forwardRef((
 		// but rather just "Dark"
 		return action.ancestors.slice(index + 1);
 	}, [action.ancestors, currentRootActionId]);
-	
+
 	return (
 		<div
 			ref={ref}
@@ -82,7 +84,7 @@ const ResultItem = forwardRef((
 								</span>
 							</React.Fragment>
 						))}
-						<span className={'text-base text-neutral-700'}>{action.name}</span>
+						<span className={'text-base text-neutral-900'}>{action.name}</span>
 					</div>
 					{action.subtitle && (
 						<span className={'text-xs text-neutral-500'}>{action.subtitle}</span>
@@ -97,7 +99,7 @@ const ResultItem = forwardRef((
 					{action.shortcut.map((sc: any): ReactElement => (
 						<kbd
 							key={sc}
-							className={'flex h-6 w-6 items-center justify-center rounded-[4px] bg-neutral-900/10 p-1 text-center text-sm'}>
+							className={'rounded-default flex h-6 w-6 items-center justify-center bg-neutral-900/10 p-1 text-center text-sm'}>
 							{sc}
 						</kbd>
 					))}
@@ -107,11 +109,11 @@ const ResultItem = forwardRef((
 	);
 }
 );
-  
+
 
 function RenderResults(): ReactElement {
 	const {results, rootActionId} = useMatches();
-  
+
 	return (
 		<KBarResults
 			items={results}

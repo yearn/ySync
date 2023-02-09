@@ -1,7 +1,9 @@
-import React, {ReactElement} from 'react';
+import React from 'react';
 import Head from 'next/head';
 import {DefaultSeo} from 'next-seo';
 import meta from 'public/manifest.json';
+
+import type {ReactElement} from 'react';
 
 function	Meta(): ReactElement {
 	return (
@@ -25,18 +27,53 @@ function	Meta(): ReactElement {
 				<meta name={'msapplication-tap-highlight'} content={'no'} />
 
 				<link rel={'manifest'} href={'/manifest.json'} />
-				<link rel={'mask-icon'} href={'/favicons/safari-pinned-tab.svg'} color={meta.theme_color} />
+				<link
+					rel={'mask-icon'}
+					href={'/favicons/safari-pinned-tab.svg'}
+					color={meta.theme_color} />
 
-				<link rel={'shortcut icon'} type={'image/x-icon'} href={'/favicons/favicon.ico'} />
-				<link rel={'icon'} type={'image/png'} sizes={'32x32'} href={'/favicons/favicon-32x32.png'} />
-				<link rel={'icon'} type={'image/png'} sizes={'16x16'} href={'/favicons/favicon-16x16.png'} />
-				<link rel={'icon'} type={'image/png'} sizes={'512x512'} href={'/favicons/favicon-512x512.png'} />
-				<link rel={'icon'} type={'image/png'} sizes={'192x192'} href={'/favicons/android-icon-192x192.png'} />
-				<link rel={'icon'} type={'image/png'} sizes={'144x144'} href={'/favicons/android-icon-144x144.png'} />
+				<link
+					rel={'shortcut icon'}
+					type={'image/x-icon'}
+					href={'/favicons/favicon.ico'} />
+				<link
+					rel={'icon'}
+					type={'image/png'}
+					sizes={'32x32'}
+					href={'/favicons/favicon-32x32.png'} />
+				<link
+					rel={'icon'}
+					type={'image/png'}
+					sizes={'16x16'}
+					href={'/favicons/favicon-16x16.png'} />
+				<link
+					rel={'icon'}
+					type={'image/png'}
+					sizes={'512x512'}
+					href={'/favicons/favicon-512x512.png'} />
+				<link
+					rel={'icon'}
+					type={'image/png'}
+					sizes={'192x192'}
+					href={'/favicons/android-icon-192x192.png'} />
+				<link
+					rel={'icon'}
+					type={'image/png'}
+					sizes={'144x144'}
+					href={'/favicons/android-icon-144x144.png'} />
 				<link rel={'apple-touch-icon'} href={'/favicons/apple-icon.png'} />
-				<link rel={'apple-touch-icon'} sizes={'152x152'} href={'/favicons/apple-icon-152x152.png'} />
-				<link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicons/apple-icon-180x180.png'} />
-				<link rel={'apple-touch-icon'} sizes={'167x167'} href={'/favicons/apple-icon-167x167.png'} />
+				<link
+					rel={'apple-touch-icon'}
+					sizes={'152x152'}
+					href={'/favicons/apple-icon-152x152.png'} />
+				<link
+					rel={'apple-touch-icon'}
+					sizes={'180x180'}
+					href={'/favicons/apple-icon-180x180.png'} />
+				<link
+					rel={'apple-touch-icon'}
+					sizes={'167x167'}
+					href={'/favicons/apple-icon-167x167.png'} />
 
 
 				<meta name={'robots'} content={'index,nofollow'} />

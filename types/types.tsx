@@ -1,5 +1,5 @@
-import {ReactElement} from 'react';
-import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
+import type {ReactElement} from 'react';
+import type {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
 
 export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies' | 'partners';
 export type TVersions = 'all' | 'v2' | 'v3' | 'v4'

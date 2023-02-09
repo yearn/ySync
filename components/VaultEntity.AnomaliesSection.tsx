@@ -1,6 +1,8 @@
-import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils';
+import React, {useEffect, useState} from 'react';
 import StatusLine from 'components/StatusLine';
+import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+
+import type {ReactElement, ReactNode} from 'react';
 import type {TAnomalies, TAnomaliesSection} from 'types/types';
 
 function	AnomaliesSection({
@@ -24,7 +26,7 @@ function	AnomaliesSection({
 	}
 	return (
 		<section aria-label={'data source check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-			<b className={'mb-1 font-mono text-sm text-neutral-500'}>{label}</b>
+			<b className={'mb-1 font-mono text-sm text-neutral-900'}>{label}</b>
 			{localAnomalies.map((e: TAnomalies, i: number): ReactNode => (
 				<StatusLine
 					key={`${e.prefix}-${i}`}

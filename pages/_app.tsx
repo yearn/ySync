@@ -1,102 +1,76 @@
-import React, {ReactElement} from 'react';
-import {AppProps} from 'next/app';
-import {AnimatePresence, motion} from 'framer-motion';
-import {KBarProvider} from 'kbar';
-import {WithYearn} from '@yearn-finance/web-lib/contexts';
-import {YearnContextApp} from 'contexts/useYearn';
-import Footer from 'components/common/StandardFooter';
-import Header from 'components/common/Header';
-import HeaderTitle from 'components/common/HeaderTitle';
+import React from 'react';
+import AppWrapper from 'components/common/AppWrapper';
 import KBar from 'components/common/Kbar';
-import KBarButton from 'components/common/KBarButton';
-import Meta from 'components/common/Meta';
+import {MenuContextApp} from 'contexts/useMenu';
+import {YearnContextApp} from 'contexts/useYearn';
+import {KBarProvider} from 'kbar';
+import localFont from '@next/font/local';
+import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
+
+import type {AppProps} from 'next/app';
+import type {ReactElement} from 'react';
 
 import	'../style.css';
 
-const transition = {duration: 0.3, ease: [0.17, 0.67, 0.83, 0.67]};
-const thumbnailVariants = {
-	initial: {y: 20, opacity: 0, transition},
-	enter: {y: 0, opacity: 1, transition},
-	exit: {y: -20, opacity: 0, transition}
-};
+const aeonik = localFont({
+	variable: '--font-aeonik',
+	display: 'swap',
+	src: [
+		{
+			path: '../public/fonts/Aeonik-Regular.woff2',
+			weight: '400',
+			style: 'normal'
+		}, {
+			path: '../public/fonts/Aeonik-Bold.woff2',
+			weight: '700',
+			style: 'normal'
+		}
+	]
+});
 
-function	WithLayout(props: AppProps): ReactElement {
+function	MyApp(props: AppProps): ReactElement {
 	const	{Component, pageProps, router} = props;
-
-	return (
-		<div id={'app'} className={'mx-auto mb-0 flex w-full max-w-6xl flex-col'}>
-			<Header shouldUseNetworks={true} shouldUseWallets={false}>
-				<div className={'mr-4 flex w-full items-center justify-between'}>
-					<HeaderTitle />
-					<div className={'mx-auto hidden md:block'}>
-						<KBarButton />
-					</div>
-				</div>
-			</Header>
-			<AnimatePresence mode={'wait'}>
-				<motion.div
-					key={router.asPath}
-					initial={'initial'}
-					animate={'enter'}
-					exit={'exit'}
-					variants={thumbnailVariants}>
-					<Component
-						key={router.route}
-						router={props.router}
-						{...pageProps} />
-					<Footer />
-				</motion.div>
-			</AnimatePresence>
-		</div>
-	);
-}
-
-function	AppWrapper(props: AppProps): ReactElement {
-	const	{router} = props;
-	const	initialActions = [{
-		id: 'homeAction',
-		name: 'Home',
-		shortcut: ['h'],
-		keywords: 'home',
-		section: 'Navigation',
-		perform: async (): Promise<boolean> => router.push('/')
-	}];
+	const	initialActions = [
+		{
+			id: 'homeAction',
+			name: 'Home',
+			shortcut: ['h'],
+			keywords: 'home',
+			section: 'Navigation',
+			perform: async (): Promise<boolean> => router.push('/')
+		}
+	];
 
 	return (
 		<>
-			<Meta />
-			<KBarProvider actions={initialActions}>
-				<div className={'z-[9999]'}>
-					<KBar />
-				</div>
-				<WithLayout {...props} />
-			</KBarProvider>
-		</>
-	);
-}
+			<style jsx global>{`html {font-family: ${aeonik.style.fontFamily};}`}</style>
+			<WithYearn
+				options={{
+					web3: {
+						shouldUseWallets: false,
+						defaultChainID: 1,
+						supportedChainID: [1, 10, 250, 42161, 1337, 31337]
+					},
+					baseSettings: {
+						yDaemonBaseURI: process.env.YDAEMON_BASE_URI as string
+					}
+				}}>
 
-function	MyApp(props: AppProps): ReactElement {
-	const	{Component, pageProps} = props;
-	
-	return (
-		<WithYearn options={{
-			web3: {
-				shouldUseWallets: false,
-				shouldUseStrictChainMode: false,
-				defaultChainID: 1,
-				supportedChainID: [1, 10, 250, 42161, 1337, 31337]
-			},
-			baseSettings: {
-				yDaemonBaseURI: process.env.YDAEMON_BASE_URI as string
-			}
-		}}>
-			<YearnContextApp>
-				<AppWrapper
-					Component={Component}
-					pageProps={pageProps}
-					router={props.router} />
-			</YearnContextApp>
-		</WithYearn>
+				<MenuContextApp>
+					<YearnContextApp>
+						<KBarProvider actions={initialActions}>
+							<div className={'z-[9999]'}>
+								<KBar />
+							</div>
+							<AppWrapper
+								Component={Component}
+								pageProps={pageProps}
+								router={props.router} />
+						</KBarProvider>
+					</YearnContextApp>
+				</MenuContextApp>
+			</WithYearn>
+		</>
 	);
 }
 

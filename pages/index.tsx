@@ -1,16 +1,22 @@
-import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'react';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
-import {toAddress} from '@yearn-finance/web-lib/utils';
-import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
-import {useYearn}  from 'contexts/useYearn';
-import VaultEntity from 'components/VaultEntity';
-import TokenEntity from 'components/TokenEntity';
+import React, {useEffect, useMemo, useState} from 'react';
+import Header from 'components/common/Header';
+import HeaderTitle from 'components/common/HeaderTitle';
+import KBarButton from 'components/common/KBarButton';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
-import type {TEntity, TPartner, TSettings} from 'types/types';
-import TranslationStatusLine  from 'components/TranslationStatusLine';
-import {TStrategiesData, TTokensData} from 'types/entities';
-import StrategyEntity from 'components/StrategyEntity';
 import PartnerEntity from 'components/PartnerEntity';
+import StrategyEntity from 'components/StrategyEntity';
+import TokenEntity from 'components/TokenEntity';
+import TranslationStatusLine from 'components/TranslationStatusLine';
+import VaultEntity from 'components/VaultEntity';
+import {useYearn} from 'contexts/useYearn';
+import {Dropdown} from '@yearn-finance/web-lib/components/Dropdown';
+import {StatisticCard} from '@yearn-finance/web-lib/components/StatisticCard';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+
+import type {ReactElement, ReactNode} from 'react';
+import type {TStrategiesData, TTokensData} from 'types/entities';
+import type {TEntity, TPartner, TSettings} from 'types/types';
 
 const	defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
@@ -34,44 +40,48 @@ const AnomaliesCheckbox = ({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
 }): ReactElement | null => {
-	return <label
-		htmlFor={'checkbox-anomalies'}
-		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-		<p className={'pr-4'}>{'Anomalies only'}</p>
-		<input
-			type={'checkbox'}
-			id={'checkbox-anomalies'}
-			className={'ml-2 rounded-lg'}
-			checked={appSettings.shouldShowOnlyAnomalies}
-			onChange={(): void => {
-				set_appSettings({
-					...appSettings,
-					shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
-				});
-			}} />
-	</label>;
+	return (
+		<label
+			htmlFor={'checkbox-anomalies'}
+			className={'rounded-default flex w-fit cursor-pointer flex-row items-center bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+			<p className={'pr-4'}>{'Anomalies only'}</p>
+			<input
+				type={'checkbox'}
+				id={'checkbox-anomalies'}
+				className={'rounded-default ml-2'}
+				checked={appSettings.shouldShowOnlyAnomalies}
+				onChange={(): void => {
+					set_appSettings({
+						...appSettings,
+						shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
+					});
+				}} />
+		</label>
+	);
 };
 
 const TranslationsCheckbox = ({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
 }): ReactElement | null => {
-	return <label
-		htmlFor={'checkbox-translations'}
-		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-		<p className={'pr-4'}>{'Missing translations'}</p>
-		<input
-			type={'checkbox'}
-			id={'checkbox-translations'}
-			className={'ml-2 rounded-lg'}
-			checked={appSettings.shouldShowMissingTranslations}
-			onChange={(): void => {
-				set_appSettings({
-					...appSettings,
-					shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
-				});
-			}} />
-	</label>;
+	return (
+		<label
+			htmlFor={'checkbox-translations'}
+			className={'rounded-default flex w-fit cursor-pointer flex-row items-center bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+			<p className={'pr-4'}>{'Missing translations'}</p>
+			<input
+				type={'checkbox'}
+				id={'checkbox-translations'}
+				className={'rounded-default ml-2'}
+				checked={appSettings.shouldShowMissingTranslations}
+				onChange={(): void => {
+					set_appSettings({
+						...appSettings,
+						shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
+					});
+				}} />
+		</label>
+	);
 };
 
 function	Filters({appSettings, set_appSettings}: {
@@ -84,7 +94,7 @@ function	Filters({appSettings, set_appSettings}: {
 				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<span
-					className={'col-span-2 flex w-full flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
+					className={'rounded-default col-span-2 flex w-full flex-row items-center overflow-hidden bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
 					<p className={'pr-4 pl-2'}>{'Version'}</p>
 
 					<div className={'flex flex-row divide-primary'}>
@@ -93,7 +103,7 @@ function	Filters({appSettings, set_appSettings}: {
 							<input
 								type={'checkbox'}
 								id={'checkbox-vaults-all'}
-								className={'ml-2 rounded-lg'}
+								className={'rounded-default ml-2'}
 								checked={appSettings.shouldShowVersion === 'all'}
 								onChange={(): void => {
 									set_appSettings({
@@ -108,7 +118,7 @@ function	Filters({appSettings, set_appSettings}: {
 							<input
 								type={'checkbox'}
 								id={'checkbox-vaults-v2'}
-								className={'ml-2 rounded-lg'}
+								className={'rounded-default ml-2'}
 								checked={appSettings.shouldShowVersion === 'v2'}
 								onChange={(): void => {
 									set_appSettings({
@@ -123,7 +133,7 @@ function	Filters({appSettings, set_appSettings}: {
 							<input
 								type={'checkbox'}
 								id={'checkbox-vaults-v3'}
-								className={'ml-2 rounded-lg'}
+								className={'rounded-default ml-2'}
 								checked={appSettings.shouldShowVersion === 'v3'}
 								onChange={(): void => {
 									set_appSettings({
@@ -138,7 +148,7 @@ function	Filters({appSettings, set_appSettings}: {
 							<input
 								type={'checkbox'}
 								id={'checkbox-vaults-v4'}
-								className={'ml-2 rounded-lg'}
+								className={'rounded-default ml-2'}
 								checked={appSettings.shouldShowVersion === 'v4'}
 								onChange={(): void => {
 									set_appSettings({
@@ -257,24 +267,43 @@ function	Index(): ReactNode {
 			{appSettings.shouldShowEntity === 'vaults' ? <VaultImageTester vaults={vaults} /> : null}
 			{appSettings.shouldShowEntity === 'tokens' ? <TokensImageTester tokens={aggregatedData.tokens} /> : null}
 
-			<div className={'mb-4'}>
-				<StatisticCard.Wrapper>
-					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Vaults count'} value={vaults.length} />
-					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Tokens count'} value={Object.values(tokens || {}).length} />
-					<StatisticCard className={'col-span-6 md:col-span-3'} label={'Error ratio'} value={`${errorCount.toFixed(2)} %`} />
-				</StatisticCard.Wrapper>
-			</div>
+			<Header shouldUseNetworks={true} shouldUseWallets={false}>
+				<div className={'flex w-full flex-col'}>
+					<div className={'mr-4 flex w-full items-center justify-between'}>
+						<HeaderTitle />
+						<div className={'mx-auto hidden md:block'}>
+							<KBarButton />
+						</div>
+					</div>
+					<div className={'mt-16'}>
+						<StatisticCard.Wrapper>
+							<StatisticCard
+								className={'col-span-6 !bg-neutral-0 md:col-span-3'}
+								label={'Vaults count'}
+								value={vaults.length} />
+							<StatisticCard
+								className={'col-span-6 !bg-neutral-0 md:col-span-3'}
+								label={'Tokens count'}
+								value={Object.values(tokens || {}).length} />
+							<StatisticCard
+								className={'col-span-6 !bg-neutral-0 md:col-span-3'}
+								label={'Error ratio'}
+								value={`${errorCount.toFixed(2)} %`} />
+						</StatisticCard.Wrapper>
+					</div>
+				</div>
+			</Header>
 
-			<Card>
+
+			<div className={'bg-neutral-0 p-0'}>
 				<div className={'flex flex-col space-y-2 pb-6'}>
-					<b className={'text-lg'}>{'Filters'}</b>
 					<div className={'grid grid-cols-2 flex-row gap-4 space-x-0 md:flex md:gap-0 md:space-x-4'}>
 						<div className={'relative z-10'}>
 							<Dropdown
 								defaultOption={OPTIONS[0]}
 								options={OPTIONS}
 								selected={selectedOption}
-								onSelect={(option: TOption): void => {
+								onSelect={(option: any): void => {
 									set_selectedOption(option);
 									set_appSettings({...appSettings, shouldShowEntity: option.value});
 								}} />
@@ -282,7 +311,7 @@ function	Index(): ReactNode {
 						<Filters appSettings={appSettings} set_appSettings={set_appSettings} />
 					</div>
 				</div>
-				{appSettings.shouldShowEntity === 'strategies' && 
+				{appSettings.shouldShowEntity === 'strategies' &&
 					<div className={'flex flex-col space-y-2 pb-6'}>
 						<b className={'text-lg'}>{'Valid Protocol Names'}</b>
 						<small>{protocolNames.join(', ')}</small>
@@ -290,7 +319,7 @@ function	Index(): ReactNode {
 				}
 				<div className={'flex flex-col space-y-2 pb-6'}>
 					<b className={'text-lg'}>{'Results'}</b>
-					<div className={'mt-4 grid w-full grid-cols-1 gap-4 lg:grid-cols-2'}>
+					<div className={'mt-4 grid w-full grid-cols-1 gap-6 pb-20 lg:grid-cols-2'}>
 						{appSettings.shouldShowEntity === 'vaults' && vaults.map((vault: any, index: number): ReactNode => {
 							return (
 								<VaultEntity
@@ -314,35 +343,39 @@ function	Index(): ReactNode {
 							if (!protocols.protocol[protocol]) {
 								return null;
 							}
-							
+
 							const {missingTranslations} = protocols.protocol[protocol];
 
 							if (!missingTranslations) {
 								return null;
 							}
-							
+
 							return (
-								<Card variant={'background'} key={protocol}>
+								<div className={'bg-neutral-100 p-4'} key={protocol}>
 									<div className={'flex flex-row space-x-4'}>
 										<div className={'-mt-1 flex flex-col'}>
 											<div className={'flex flex-row items-center space-x-2'}>
-												<h4 className={'text-lg font-bold text-neutral-700'}>{protocol}</h4>
+												<h4 className={'text-lg font-bold text-neutral-900'}>{protocol}</h4>
 											</div>
 										</div>
 									</div>
 									<section aria-label={'strategies check'} className={'mt-3 flex flex-col pl-0'}>
-										<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${missingTranslations.length}) Missing Translations`}</b>
+										<b className={'mb-1 font-mono text-sm text-neutral-900'}>{`(${missingTranslations.length}) Missing Translations`}</b>
 										<TranslationStatusLine
 											key={`${protocol}_translation`}
 											isValid={false}
 											content={missingTranslations.join(', ')} />
 									</section>
-								</Card>
+								</div>
 							);
 						})}
 
-						{appSettings.shouldShowEntity === 'partners'  && partners && [...partners].map(([partner, status]): ReactElement => {
-							return <PartnerEntity key={partner} partner={partner} status={status} settings={appSettings} />;
+						{appSettings.shouldShowEntity === 'partners' && partners && [...partners].map(([partner, status]): ReactElement => {
+							return <PartnerEntity
+								key={partner}
+								partner={partner}
+								status={status}
+								settings={appSettings} />;
 						})}
 
 						{appSettings.shouldShowEntity === 'strategies' && strategies && Object.keys(strategies).map((strategyAddress: string): ReactNode => {
@@ -357,7 +390,7 @@ function	Index(): ReactNode {
 						})}
 					</div>
 				</div>
-			</Card>
+			</div>
 		</div>
 	);
 }
