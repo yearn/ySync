@@ -143,6 +143,18 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					}
 				}
 
+				
+				const	migrationTargetVaultAddress = data.migration.address;
+				const	migrationTargetVault = fromAPI.data.find((vault: { address: string }): boolean => {
+					return toAddress(vault.address) === toAddress(migrationTargetVaultAddress);
+				});
+
+				let		hasValidMigrationTargetVault = true;
+				if (migrationTargetVault) {
+					const	{depositsDisabled, depositLimit} = migrationTargetVault?.details || {};
+					hasValidMigrationTargetVault = !(depositsDisabled && BigNumber.from(depositLimit).eq(0));
+				}
+				
 				_allData.vaults[toAddress(data.address)] = {
 					// Ledger live integration only for mainnet
 					hasLedgerIntegration: {
@@ -166,7 +178,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					name: data.display_name || data.name,
 					icon: data.icon,
 					version: data.version,
-					strategies: data.strategies
+					strategies: data.strategies,
+					hasValidMigrationTargetVault
 				};
 			}
 		}
@@ -202,7 +215,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					name: data?.contractName || '',
 					icon: '',
 					version: 'Unknown',
-					strategies: []
+					strategies: [],
+					hasValidMigrationTargetVault: false
 
 				};
 				continue;
@@ -240,7 +254,8 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					name: data?.contractName || '',
 					icon: '',
 					version: 'Unknown',
-					strategies: []
+					strategies: [],
+					hasValidMigrationTargetVault: false
 
 				};
 				continue;

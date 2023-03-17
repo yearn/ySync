@@ -51,6 +51,7 @@ function	VaultEntity({
 		|| vaultData?.hasNewAPY
 		|| !vaultData?.token?.description
 		|| !vaultData?.hasValidRetirement
+		|| !vaultData?.hasValidMigrationTargetVault
 	);
 
 	function	onTriggerModalForLedger(): void {
@@ -334,6 +335,15 @@ function	VaultEntity({
 						isWarning: !vaultData?.hasLedgerIntegration.deployed && vaultData?.hasLedgerIntegration.incoming,
 						onClick: onTriggerModalForLedger,
 						prefix: 'Ledger integration',
+						suffix: 'for vault'
+					}]} />
+
+				<AnomaliesSection
+					label={'Migrations'}
+					settings={vaultSettings}
+					anomalies={[{
+						isValid: vaultData?.hasValidMigrationTargetVault,
+						prefix: 'Migration\'s vault',
 						suffix: 'for vault'
 					}]} />
 

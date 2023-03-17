@@ -34,6 +34,7 @@ export type	TVaultData = {
 	icon: string;
 	version: string;
 	strategies: any[];
+	hasValidMigrationTargetVault: boolean,
 }
 
 export type	TVaultsData = {[key: string]: TVaultData}
