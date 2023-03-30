@@ -393,14 +393,14 @@ function	VaultEntity({
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
 							const sum = (
-								(strategy?.risk?.TVLImpact || 0)
-								+ (strategy?.risk?.auditScore || 0)
-								+ (strategy?.risk?.codeReviewScore || 0)
-								+ (strategy?.risk?.complexityScore || 0)
-								+ (strategy?.risk?.longevityImpact || 0)
-								+ (strategy?.risk?.protocolSafetyScore || 0)
-								+ (strategy?.risk?.teamKnowledgeScore || 0)
-								+ (strategy?.risk?.testingScore || 0)
+								(strategy?.risk?.riskDetails?.TVLImpact || 0)
+								+ (strategy?.risk?.riskDetails?.auditScore || 0)
+								+ (strategy?.risk?.riskDetails?.codeReviewScore || 0)
+								+ (strategy?.risk?.riskDetails?.complexityScore || 0)
+								+ (strategy?.risk?.riskDetails?.longevityImpact || 0)
+								+ (strategy?.risk?.riskDetails?.protocolSafetyScore || 0)
+								+ (strategy?.risk?.riskDetails?.teamKnowledgeScore || 0)
+								+ (strategy?.risk?.riskDetails?.testingScore || 0)
 							);
 							return (
 								<StatusLine
