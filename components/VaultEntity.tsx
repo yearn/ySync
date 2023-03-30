@@ -365,7 +365,7 @@ function	VaultEntity({
 
 				{vaultData?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
 							const	hasRiskFramework = (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 							return (
