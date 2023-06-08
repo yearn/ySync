@@ -12,3 +12,7 @@ The main data source is the [yDaemon](https://github.com/yearn/ydaemon), accessi
 2. Run `yarn`  
 3. Run `yarn run dev`  
 4. Access `http://localhost:3000`  
+
+## How to run via docker
+1. Build the docker image `docker build -t ysync .`
+2. Run docker container `docker run -p 3000:3000 ysync`
