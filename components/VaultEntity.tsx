@@ -286,44 +286,47 @@ function	VaultEntity({
 						suffix: 'for vault'
 					}]} />
 
-				<AnomaliesSection
-					label={'Icon'}
-					settings={vaultSettings}
-					anomalies={[{
-						isValid: vaultData?.hasValidIcon,
-						prefix: 'Icon',
-						suffix: (
-							<span className={'inline'}>
-								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
-									{vault.symbol || 'not_set'}
-								</a>
-								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
-									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</button>
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} rel={'noreferrer'}>
-									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</a>
-							</span>
-						)
-					}, {
-						isValid: vaultData?.hasValidTokenIcon,
-						prefix: 'Icon',
-						suffix: (
-							<span className={'inline'}>
-								{'for underlying token '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
-									{vault.token.symbol || 'not_set'}
-								</a>
-								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
-									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</button>
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} rel={'noreferrer'}>
-									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</a>
-							</span>
-						)
-					}]} />
+				{vaultSettings.shouldShowIcons && (
+					<AnomaliesSection
+						label={'Icon'}
+						settings={vaultSettings}
+						anomalies={[{
+							isValid: vaultData?.hasValidIcon,
+							prefix: 'Icon',
+							suffix: (
+								<span className={'inline'}>
+									{'for vault '}
+									<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+										{vault.symbol || 'not_set'}
+									</a>
+									<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.address}`)}>
+										<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</button>
+									<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} rel={'noreferrer'}>
+										<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</a>
+								</span>
+							)
+						}, {
+							isValid: vaultData?.hasValidTokenIcon,
+							prefix: 'Icon',
+							suffix: (
+								<span className={'inline'}>
+									{'for underlying token '}
+									<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+										{vault.token.symbol || 'not_set'}
+									</a>
+									<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`)}>
+										<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</button>
+									<a href={`${networks[chainID].explorerBaseURI}/address/${vault.token.address}`} target={'_blank'} rel={'noreferrer'}>
+										<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</a>
+								</span>
+							)
+						}]}
+					/>
+				)}
 
 				<AnomaliesSection
 					label={'Ledger Live'}
@@ -337,21 +340,24 @@ function	VaultEntity({
 						suffix: 'for vault'
 					}]} />
 
-				<AnomaliesSection
-					label={'Price'}
-					settings={vaultSettings}
-					anomalies={[{
-						isValid: vaultData?.hasValidPrice,
-						prefix: 'Price',
-						suffix: (
-							<span>
-								{'for vault '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-									{vaultData?.name}
-								</a>
-							</span>
-						)
-					}]} />
+				{vaultSettings.shouldShowPrice && (
+					<AnomaliesSection
+						label={'Price'}
+						settings={vaultSettings}
+						anomalies={[{
+							isValid: vaultData?.hasValidPrice,
+							prefix: 'Price',
+							suffix: (
+								<span>
+									{'for vault '}
+									<a href={`${networks[chainID].explorerBaseURI}/address/${vault.address}`} target={'_blank'} className={`underline ${vaultData?.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										{vaultData?.name}
+									</a>
+								</span>
+							)
+						}]}
+					/>
+				)}
 
 				<AnomaliesSection
 					label={'Strategies'}
@@ -468,7 +474,7 @@ function	VaultEntity({
 
 				{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing stst'}</b>
 						{Object.keys(vaultData?.missingTranslations).map((strategyAddress: any): ReactNode => {
 							const missingTranslation = vaultData?.missingTranslations;
 							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 

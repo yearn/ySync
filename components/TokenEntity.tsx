@@ -12,30 +12,38 @@ import {TTokenData} from 'types/entities';
 function	TokenEntity({
 	tokenData,
 	settings: statusSettings
-}: {tokenData: TTokenData, settings: TSettings}): ReactElement {
+}: {tokenData: TTokenData, settings: TSettings}): ReactElement | null {
 	const	{chainID} = useWeb3();
 	const	{networks} = useSettings();
 
 	if (!tokenData) {
-		return <React.Fragment />;
+		return null;
 	}
 	const {name, symbol, missingTranslations} = tokenData;
 
-	if (!missingTranslations) {
-		return <React.Fragment />;
-	}
+	const {shouldShowMissingTranslations, shouldShowIcons, shouldShowPrice} = statusSettings;
 
-	const		hasAnomalies = (
-		((missingTranslations[tokenData.address].length || 0) > 0 && statusSettings.shouldShowMissingTranslations)
-		|| !tokenData?.hasValidPrice
-	);
+	const hasMissingTranslationsAnomaly = (missingTranslations[tokenData.address]?.length || 0) > 0;
+	const hasMissingIconAnomaly = !tokenData.hasValidTokenIcon;
+	const hasMissingPriceAnomaly = !tokenData.hasValidPrice;
 
-	if (!hasAnomalies && statusSettings.shouldShowOnlyAnomalies) {
-		return <React.Fragment />;
+	const shouldRenderDueToMissingTranslations = hasMissingTranslationsAnomaly && shouldShowMissingTranslations;
+	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
+	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
+
+	if (!shouldRenderDueToMissingTranslations && !shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice) {
+		return null;
 	}
 
 	return (
 		<div className={'rounded-lg bg-neutral-200'} key={tokenData.address}>
+			<pre>
+				{JSON.stringify({
+					shouldRenderDueToMissingTranslations,
+					shouldRenderDueToMissingIcon,
+					shouldRenderDueToMissingPrice
+				}, null, 2)}
+			</pre>
 			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
 				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 					<Image
@@ -65,44 +73,50 @@ function	TokenEntity({
 			</div>
 
 			<div className={'flex flex-col p-4 pt-0'}>
-				<AnomaliesSection
-					label={'Icon'}
-					settings={statusSettings}
-					anomalies={[{
-						isValid: tokenData?.hasValidTokenIcon,
-						prefix: 'Icon',
-						suffix: (
-							<span className={'inline'}>
-								{'for underlying token '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
-									{tokenData.symbol || 'not_set'}
-								</a>
-								<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`)}>
-									<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</button>
-								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} rel={'noreferrer'}>
-									<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
-								</a>
-							</span>
-						)
-					}]} />
+				{statusSettings.shouldShowIcons && (
+					<AnomaliesSection
+						label={'Icon'}
+						settings={statusSettings}
+						anomalies={[{
+							isValid: tokenData?.hasValidTokenIcon,
+							prefix: 'Icon',
+							suffix: (
+								<span className={'inline'}>
+									{'for underlying token '}
+									<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData?.hasValidTokenIcon ? 'tabular-nums' : 'tabular-nums text-red-900'}`} rel={'noreferrer'}>
+										{tokenData.symbol || 'not_set'}
+									</a>
+									<button onClick={(): void => copyToClipboard(`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`)}>
+										<Copy className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</button>
+									<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} rel={'noreferrer'}>
+										<LinkOut className={'ml-2 inline h-4 w-4 text-neutral-500/40 transition-colors hover:text-neutral-500'} />
+									</a>
+								</span>
+							)
+						}]}
+					/>
+				)}
 
-				<AnomaliesSection
-					label={'Price'}
-					settings={statusSettings}
-					anomalies={[{
-						isValid: tokenData?.hasValidPrice,
-						prefix: 'Price',
-						suffix: (
-							<span>
-								{'for token '}
-								<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-									{tokenData.name}
-								</a>
-								{tokenData?.hasValidPrice ? ` (${tokenData.price}$)` : ''}
-							</span>
-						)
-					}]} />
+				{statusSettings.shouldShowPrice && (
+					<AnomaliesSection
+						label={'Price'}
+						settings={statusSettings}
+						anomalies={[{
+							isValid: tokenData?.hasValidPrice,
+							prefix: 'Price',
+							suffix: (
+								<span>
+									{'for token '}
+									<a href={`${networks[chainID].explorerBaseURI}/address/${tokenData.address}`} target={'_blank'} className={`underline ${tokenData.hasValidPrice ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+										{tokenData.name}
+									</a>
+									{tokenData?.hasValidPrice ? ` (${tokenData.price}$)` : ''}
+								</span>
+							)
+						}]}
+					/>
+				)}
 		
 				{statusSettings.shouldShowMissingTranslations ? (
 					<section aria-label={'localization check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>

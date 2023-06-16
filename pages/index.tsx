@@ -17,6 +17,8 @@ const	defaultSettings: TSettings = {
 	shouldShowOnlyEndorsed: true,
 	shouldShowVersion: 'v4',
 	shouldShowMissingTranslations: false,
+	shouldShowIcons: true,
+	shouldShowPrice: true,
 	shouldShowEntity: 'vaults'
 };
 
@@ -74,6 +76,50 @@ const TranslationsCheckbox = ({appSettings, set_appSettings}: {
 	</label>;
 };
 
+const IconsCheckbox = ({appSettings, set_appSettings}: {
+	appSettings: TSettings,
+	set_appSettings: (s: TSettings) => void
+}): ReactElement | null => {
+	return <label
+		htmlFor={'checkbox-icons'}
+		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+		<p className={'pr-4'}>{'Icons'}</p>
+		<input
+			type={'checkbox'}
+			id={'checkbox-icons'}
+			className={'ml-2 rounded-lg'}
+			checked={appSettings.shouldShowIcons}
+			onChange={(): void => {
+				set_appSettings({
+					...appSettings,
+					shouldShowIcons: !appSettings.shouldShowIcons
+				});
+			}} />
+	</label>;
+};
+
+const PriceCheckbox = ({appSettings, set_appSettings}: {
+	appSettings: TSettings,
+	set_appSettings: (s: TSettings) => void
+}): ReactElement | null => {
+	return <label
+		htmlFor={'checkbox-price'}
+		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+		<p className={'pr-4'}>{'Price'}</p>
+		<input
+			type={'checkbox'}
+			id={'checkbox-price'}
+			className={'ml-2 rounded-lg'}
+			checked={appSettings.shouldShowPrice}
+			onChange={(): void => {
+				set_appSettings({
+					...appSettings,
+					shouldShowPrice: !appSettings.shouldShowPrice
+				});
+			}} />
+	</label>;
+};
+
 function	Filters({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
@@ -83,6 +129,8 @@ function	Filters({appSettings, set_appSettings}: {
 			<>
 				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<IconsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<PriceCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<span
 					className={'col-span-2 flex w-full flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
 					<p className={'pr-4 pl-2'}>{'Version'}</p>
@@ -158,6 +206,8 @@ function	Filters({appSettings, set_appSettings}: {
 			<>
 				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<IconsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
+				<PriceCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 			</>
 		);
 	}
