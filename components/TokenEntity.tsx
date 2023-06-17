@@ -37,13 +37,6 @@ function	TokenEntity({
 
 	return (
 		<div className={'rounded-lg bg-neutral-200'} key={tokenData.address}>
-			<pre>
-				{JSON.stringify({
-					shouldRenderDueToMissingTranslations,
-					shouldRenderDueToMissingIcon,
-					shouldRenderDueToMissingPrice
-				}, null, 2)}
-			</pre>
 			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
 				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 					<Image
