@@ -474,7 +474,7 @@ function	VaultEntity({
 
 				{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
-						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing stst'}</b>
+						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
 						{Object.keys(vaultData?.missingTranslations).map((strategyAddress: any): ReactNode => {
 							const missingTranslation = vaultData?.missingTranslations;
 							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
