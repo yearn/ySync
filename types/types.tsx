@@ -7,6 +7,8 @@ export type TSettings = {
 	shouldShowOnlyAnomalies: boolean,
 	shouldShowOnlyEndorsed: boolean,
 	shouldShowMissingTranslations: boolean,
+	shouldShowIcons: boolean,
+	shouldShowPrice: boolean,
 	shouldShowVersion: TVersions,
 	shouldShowEntity: TEntity,
 }

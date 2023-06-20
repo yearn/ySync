@@ -15,7 +15,8 @@ module.exports = (phase) => withPWA({
 	images: {
 		domains: [
 			'rawcdn.githack.com',
-			'raw.githubusercontent.com'
+			'raw.githubusercontent.com',
+			'assets.smold.app'
 		]
 	},
 	env: {
