@@ -38,6 +38,6 @@ module.exports = (phase) => withPWA({
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
 		INFURA_KEY: process.env.INFURA_KEY,
 		// YDAEMON_ENDPOINT: 'http://localhost:8080'
-		YDAEMON_BASE_URI: 'https://ydaemon-dev.yearn.finance'
+		YDAEMON_BASE_URI: 'https://ydaemon.ycorpo.com'
 	}
 });
