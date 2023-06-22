@@ -461,7 +461,7 @@ function	VaultEntity({
 					anomalies={[{
 						isValid: !vaultData?.hasErrorAPY,
 						prefix: 'APY is set to ',
-						errorMessage: '[ ERROR ]',
+						errorMessage: `[ ERROR: ${vault?.apy?.error || 'unknown'} ]`,
 						suffix: `for vault - (Net APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}% | Gross APR: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
 					}, {
 						isValid: !vaultData?.hasNewAPY,
