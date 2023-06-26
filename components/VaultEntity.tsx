@@ -227,6 +227,18 @@ function	VaultEntity({
 		return null;
 	}
 
+	const {shouldShowIcons, shouldShowPrice} = vaultSettings;
+
+	const hasMissingIconAnomaly = !vaultData.hasValidTokenIcon;
+	const hasMissingPriceAnomaly = !vaultData.hasValidPrice;
+
+	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
+	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
+
+	if (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice) {
+		return null;
+	}
+
 	return (
 		<div className={'rounded-lg bg-neutral-200'}>
 			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
