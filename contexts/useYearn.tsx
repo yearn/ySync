@@ -39,7 +39,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		const	[fromAPI, _ledgerSupport, _ledgerSupportFork, _exporterPartners, _metaVaultFiles, _metaProtocolFiles, _yDaemonPartners, strategies, tokens, protocols] = await Promise.all([
 			axios.get(`${web3Settings.yDaemonBaseURI}/${_chainID}/vaults/all?strategiesDetails=withDetails&strategiesCondition=all`),
 			axios.get('https://raw.githubusercontent.com/LedgerHQ/app-plugin-yearn/develop/tests/networks/ethereum/yearn/b2c.json'),
-			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/yearn/b2c.json'),
+			axios.get('https://raw.githubusercontent.com/yearn/app-plugin-yearn/main/tests/networks/ethereum/yearn/b2c.json'),
 			axios.get('https://raw.githubusercontent.com/yearn/yearn-exporter/master/yearn/partners/partners.py'),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/vaults/${_chainID}`),
 			axios.get(`${YDAEMON_GH_API_ENDPOINT}/meta/protocols/${_chainID}`),
