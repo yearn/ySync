@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:14-alpine AS deps
+FROM node:16-alpine AS deps
 RUN apk add git
 WORKDIR /app
 COPY package.json yarn.lock ./
@@ -14,7 +14,7 @@ COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build
 
 # Production image, copy all the files and run next
-FROM node:14-alpine AS runner
+FROM node:16-alpine AS runner
 RUN apk add git
 WORKDIR /app
 
@@ -32,9 +32,9 @@ COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3005
 
-ENV PORT 3000
+ENV PORT 3005
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
