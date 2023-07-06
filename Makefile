@@ -1,10 +1,10 @@
 .PHONY: build up down
 
 build:
-	docker build -t your-app .
+	docker build -t ysync .
 
 up:
-	docker run -d -p 3005:3005 --name your-app-instance your-app
+	docker run -d -p 3005:3005 ysync
 
 down:
-	docker stop your-app-instance && docker rm your-app-instance
+	docker stop ysync && docker rm ysync
