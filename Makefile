@@ -7,7 +7,7 @@ up:
 	docker run -d -p 3005:3005 --name ysync ysync
 
 deploy:
-	git pull --rebase && make down && make up
+	git pull --rebase && make down && make build && make up
 
 down:
 	docker stop ysync && docker rm ysync
