@@ -102,6 +102,10 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** This is the base data for the app.
 		**********************************************************************/
 		for (const data of fromAPI.data) {
+			if (!_allData.vaults) {
+				continue;
+			}
+
 			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasValidStrategiesDescriptions = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => (
 					strategy.description !== ''
@@ -179,6 +183,10 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** Only for mainnet.
 		**********************************************************************/
 		for (const data of _ledgerSupport?.data?.contracts || []) {
+			if (!_allData.vaults) {
+				continue;
+			}
+			
 			if (!_allData.vaults[toAddress(data.address)]) {
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				_allData.vaults[toAddress(data.address)] = {
@@ -217,6 +225,10 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		}
 
 		for (const data of _ledgerSupportFork?.data?.contracts || []) {
+			if (!_allData.vaults) {
+				continue;
+			}
+			
 			if (!_allData.vaults[toAddress(data.address)]) {
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				_allData.vaults[toAddress(data.address)] = {
@@ -353,7 +365,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					vaults: {
 						...data.vaults,
 						[toAddress(address)]: {
-							...data.vaults[toAddress(address)],
+							...data.vaults?.[toAddress(address)],
 							hasValidIcon: status
 						}
 					}
@@ -395,7 +407,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					vaults: {
 						...data.vaults,
 						[toAddress(address)]: {
-							...data.vaults[toAddress(address)],
+							...data.vaults?.[toAddress(address)],
 							hasValidTokenIcon: status
 						}
 					},
