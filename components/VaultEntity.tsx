@@ -235,7 +235,7 @@ function	VaultEntity({
 	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
 	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
 
-	if (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice) {
+	if (!hasAnomalies && (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice)) {
 		return null;
 	}
 
