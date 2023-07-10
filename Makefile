@@ -10,4 +10,5 @@ deploy:
 	git pull --rebase && make down && make build && make up
 
 down:
-	docker stop ysync && docker rm ysync
+	-docker stop ysync
+	-docker rm ysync
