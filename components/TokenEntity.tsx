@@ -23,7 +23,7 @@ function	TokenEntity({
 
 	const {shouldShowMissingTranslations, shouldShowIcons, shouldShowPrice} = statusSettings;
 
-	const hasMissingTranslationsAnomaly = (missingTranslations[tokenData.address]?.length || 0) > 0;
+	const hasMissingTranslationsAnomaly = (missingTranslations?.[tokenData.address]?.length || 0) > 0;
 	const hasMissingIconAnomaly = !tokenData.hasValidTokenIcon;
 	const hasMissingPriceAnomaly = !tokenData.hasValidPrice;
 
@@ -111,7 +111,7 @@ function	TokenEntity({
 					/>
 				)}
 		
-				{statusSettings.shouldShowMissingTranslations ? (
+				{statusSettings.shouldShowMissingTranslations && missingTranslations ? (
 					<section aria-label={'localization check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{`(${missingTranslations[tokenData.address].length || 0}) Missing Translations`}</b>
 						<TranslationStatusLine

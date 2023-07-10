@@ -35,7 +35,7 @@ function	VaultEntity({
 		return null;
 	}
 
-	const vaultData = aggregatedData.vaults[toAddress(vault.address)];
+	const vaultData = aggregatedData.vaults?.[toAddress(vault.address)];
 
 	const		hasAnomalies = (
 		(vault?.strategies?.length || 0) === 0
@@ -229,8 +229,8 @@ function	VaultEntity({
 
 	const {shouldShowIcons, shouldShowPrice} = vaultSettings;
 
-	const hasMissingIconAnomaly = !vaultData.hasValidTokenIcon;
-	const hasMissingPriceAnomaly = !vaultData.hasValidPrice;
+	const hasMissingIconAnomaly = !vaultData?.hasValidTokenIcon;
+	const hasMissingPriceAnomaly = !vaultData?.hasValidPrice;
 
 	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
 	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
@@ -279,7 +279,7 @@ function	VaultEntity({
 					label={'Retirement'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: vaultData?.hasValidRetirement,
+						isValid: !!vaultData?.hasValidRetirement,
 						prefix: 'Retirement',
 						suffix: (
 							<span>
@@ -292,7 +292,7 @@ function	VaultEntity({
 					label={'Yearn Meta File'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: vaultData?.hasYearnMetaFile,
+						isValid: !!vaultData?.hasYearnMetaFile,
 						onClick: onTriggerModalForMetaFileMissing,
 						prefix: 'Yearn Meta File',
 						suffix: 'for vault'
@@ -303,7 +303,7 @@ function	VaultEntity({
 						label={'Icon'}
 						settings={vaultSettings}
 						anomalies={[{
-							isValid: vaultData?.hasValidIcon,
+							isValid: !!vaultData?.hasValidIcon,
 							prefix: 'Icon',
 							suffix: (
 								<span className={'inline'}>
@@ -320,7 +320,7 @@ function	VaultEntity({
 								</span>
 							)
 						}, {
-							isValid: vaultData?.hasValidTokenIcon,
+							isValid:!!vaultData?.hasValidTokenIcon,
 							prefix: 'Icon',
 							suffix: (
 								<span className={'inline'}>
@@ -357,7 +357,7 @@ function	VaultEntity({
 						label={'Price'}
 						settings={vaultSettings}
 						anomalies={[{
-							isValid: vaultData?.hasValidPrice,
+							isValid: !!vaultData?.hasValidPrice,
 							prefix: 'Price',
 							suffix: (
 								<span>
@@ -484,10 +484,10 @@ function	VaultEntity({
 					}]} />
 
 
-				{Object.keys((aggregatedData?.vaults[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
+				{Object.keys((aggregatedData?.vaults?.[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
-						{Object.keys(vaultData?.missingTranslations).map((strategyAddress: any): ReactNode => {
+						{Object.keys(vaultData?.missingTranslations ?? []).map((strategyAddress: any): ReactNode => {
 							const missingTranslation = vaultData?.missingTranslations;
 							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
 
@@ -496,7 +496,7 @@ function	VaultEntity({
 									key={`${strategyAddress}_translation`}
 									settings={vaultSettings}
 									isValid={false}
-									prefix={missingTranslation[strategyAddress].join(', ')}
+									prefix={missingTranslation?.[strategyAddress].join(', ')}
 									suffix={(
 										<span>
 											{'for '}
