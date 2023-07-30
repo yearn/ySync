@@ -223,10 +223,6 @@ function	VaultEntity({
 		});
 	}
 
-	if (!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies) {
-		return null;
-	}
-
 	const {shouldShowIcons, shouldShowPrice} = vaultSettings;
 
 	const hasMissingIconAnomaly = !vaultData?.hasValidTokenIcon;
@@ -235,7 +231,7 @@ function	VaultEntity({
 	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
 	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
 
-	if (!hasAnomalies && (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice)) {
+	if ((!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies) && (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice)) {
 		return null;
 	}
 
