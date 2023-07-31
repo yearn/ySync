@@ -39,9 +39,6 @@ function	VaultEntity({
 
 	const		hasAnomalies = (
 		(vault?.strategies?.length || 0) === 0
-		|| !vaultData?.hasValidPrice
-		|| !vaultData?.hasValidIcon
-		|| !vaultData?.hasValidTokenIcon
 		|| !vaultData?.hasLedgerIntegration
 		|| !vaultData?.hasValidStrategiesDescriptions
 		|| !vaultData?.hasValidStrategiesRisk
@@ -223,19 +220,16 @@ function	VaultEntity({
 		});
 	}
 
-	if (!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies) {
-		return null;
-	}
+	const {shouldShowIcons, shouldShowPrice, shouldShowMissingTranslations} = vaultSettings;
 
-	const {shouldShowIcons, shouldShowPrice} = vaultSettings;
-
-	const hasMissingIconAnomaly = !vaultData?.hasValidTokenIcon;
+	const hasMissingIconAnomaly = !vaultData?.hasValidTokenIcon || !vaultData?.hasValidIcon;
 	const hasMissingPriceAnomaly = !vaultData?.hasValidPrice;
 
 	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
 	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
+	const shouldRenderDueToMissingTranslations = Object.keys((vaultData?.missingTranslations) || []).length !== 0 && shouldShowMissingTranslations;
 
-	if (!hasAnomalies && (!shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice)) {
+	if ((!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies && !shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice && !shouldRenderDueToMissingTranslations)) {
 		return null;
 	}
 
@@ -484,7 +478,7 @@ function	VaultEntity({
 					}]} />
 
 
-				{Object.keys((aggregatedData?.vaults?.[toAddress(vault.address)]?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations ? (
+				{shouldRenderDueToMissingTranslations ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
 						{Object.keys(vaultData?.missingTranslations ?? []).map((strategyAddress: any): ReactNode => {
