@@ -214,7 +214,7 @@ function VaultEntity({
 	const hasRetirementAnomaly = !vaultData?.hasValidRetirement;
 	const hasYearnMetaFileAnomaly = !vaultData?.hasYearnMetaFile;
 	const hasLedgerLiveAnomaly = !vaultData?.hasLedgerIntegration.deployed;
-	const hasStrategiesAnomaly = !noStrategies;
+	const hasStrategiesAnomaly = noStrategies;
 	const hasRiskAnomaly = vaultData?.strategies.some((strategy): boolean => (strategy?.risk?.riskGroup || 'Others') === 'Others');
 
 	const riskScores = vaultData?.strategies.map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
