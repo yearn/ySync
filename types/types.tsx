@@ -2,13 +2,22 @@ import {ReactElement} from 'react';
 import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
 
 export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies' | 'partners';
-export type TVersions = 'all' | 'v2' | 'v3' | 'v4'
+export type TVersions = 'all' | 'v2' | 'v3' | 'v4';
 export type TSettings = {
 	shouldShowOnlyAnomalies: boolean,
 	shouldShowOnlyEndorsed: boolean,
 	shouldShowMissingTranslations: boolean,
 	shouldShowIcons: boolean,
 	shouldShowPrice: boolean,
+	shouldShowRetirement: boolean,
+	shouldShowYearnMetaFile: boolean,
+	shouldShowLedgerLive: boolean,
+	shouldShowStrategies: boolean,
+	shouldShowRisk: boolean,
+	shouldShowRiskScore: boolean,
+	shouldShowDescriptions: boolean,
+	shouldShowAPY: boolean,
+	shouldShowWantTokenDescription: boolean,
 	shouldShowVersion: TVersions,
 	shouldShowEntity: TEntity,
 }

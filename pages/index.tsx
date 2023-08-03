@@ -2,29 +2,38 @@ import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'reac
 import {useWeb3} from '@yearn-finance/web-lib/contexts';
 import {toAddress} from '@yearn-finance/web-lib/utils';
 import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
-import {useYearn}  from 'contexts/useYearn';
+import {useYearn} from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
 import {TokensImageTester, VaultImageTester} from 'components/ImageTester';
-import type {TEntity, TPartner, TSettings} from 'types/types';
-import TranslationStatusLine  from 'components/TranslationStatusLine';
+import type {TEntity, TPartner, TSettings, TVersions} from 'types/types';
+import TranslationStatusLine from 'components/TranslationStatusLine';
 import {TStrategiesData, TTokensData} from 'types/entities';
 import StrategyEntity from 'components/StrategyEntity';
 import PartnerEntity from 'components/PartnerEntity';
 
-const	defaultSettings: TSettings = {
+const defaultSettings: TSettings = {
 	shouldShowOnlyAnomalies: true,
 	shouldShowOnlyEndorsed: true,
 	shouldShowVersion: 'v4',
 	shouldShowMissingTranslations: false,
 	shouldShowIcons: true,
 	shouldShowPrice: true,
+	shouldShowRetirement: true,
+	shouldShowYearnMetaFile: true,
+	shouldShowLedgerLive: true,
+	shouldShowStrategies: true,
+	shouldShowRisk: true,
+	shouldShowRiskScore: true,
+	shouldShowDescriptions: true,
+	shouldShowAPY: true,
+	shouldShowWantTokenDescription: true,
 	shouldShowEntity: 'vaults'
 };
 
-type 	TOption = {label: string; value: TEntity};
+type TOption = { label: string; value: TEntity };
 
-const	OPTIONS: TOption[] = [
+const OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
 	{label: 'Tokens', value: 'tokens'},
 	{label: 'Protocols', value: 'protocols'},
@@ -54,195 +63,113 @@ const AnomaliesCheckbox = ({appSettings, set_appSettings}: {
 	</label>;
 };
 
-const TranslationsCheckbox = ({appSettings, set_appSettings}: {
-	appSettings: TSettings,
+function convertToKebabCase(str: string): string {
+	return str
+		.trim()
+		.toLowerCase()
+		.replace(/\s+/g, '-');
+}
+
+type TBooleanKeys<T> = {
+	[K in keyof T]: T[K] extends boolean ? K : never;
+}[keyof T];
+
+const FilterCheckbox = ({label, appSettings, appSettingsKey, set_appSettings}: {
+	label: string; appSettings: TSettings; appSettingsKey: TBooleanKeys<TSettings>;
 	set_appSettings: (s: TSettings) => void
 }): ReactElement | null => {
+	const kebabCaseLabel = convertToKebabCase(label);
+
 	return <label
-		htmlFor={'checkbox-translations'}
+		htmlFor={`checkbox-${kebabCaseLabel}`}
 		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-		<p className={'pr-4'}>{'Missing translations'}</p>
+		<p className={'pr-4'}>{label}</p>
 		<input
 			type={'checkbox'}
-			id={'checkbox-translations'}
+			id={`checkbox-${kebabCaseLabel}`}
 			className={'ml-2 rounded-lg'}
-			checked={appSettings.shouldShowMissingTranslations}
+			checked={appSettings[appSettingsKey]}
 			onChange={(): void => {
 				set_appSettings({
 					...appSettings,
-					shouldShowMissingTranslations: !appSettings.shouldShowMissingTranslations
+					[appSettingsKey]: !appSettings[appSettingsKey]
 				});
 			}} />
 	</label>;
 };
 
-const IconsCheckbox = ({appSettings, set_appSettings}: {
-	appSettings: TSettings,
-	set_appSettings: (s: TSettings) => void
-}): ReactElement | null => {
-	return <label
-		htmlFor={'checkbox-icons'}
-		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-		<p className={'pr-4'}>{'Icons'}</p>
-		<input
-			type={'checkbox'}
-			id={'checkbox-icons'}
-			className={'ml-2 rounded-lg'}
-			checked={appSettings.shouldShowIcons}
-			onChange={(): void => {
-				set_appSettings({
-					...appSettings,
-					shouldShowIcons: !appSettings.shouldShowIcons
-				});
-			}} />
-	</label>;
-};
-
-const PriceCheckbox = ({appSettings, set_appSettings}: {
-	appSettings: TSettings,
-	set_appSettings: (s: TSettings) => void
-}): ReactElement | null => {
-	return <label
-		htmlFor={'checkbox-price'}
-		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
-		<p className={'pr-4'}>{'Price'}</p>
-		<input
-			type={'checkbox'}
-			id={'checkbox-price'}
-			className={'ml-2 rounded-lg'}
-			checked={appSettings.shouldShowPrice}
-			onChange={(): void => {
-				set_appSettings({
-					...appSettings,
-					shouldShowPrice: !appSettings.shouldShowPrice
-				});
-			}} />
-	</label>;
-};
-
-function	Filters({appSettings, set_appSettings}: {
+function Filters({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
 }): ReactElement | null {
 	if (appSettings.shouldShowEntity === 'vaults') {
+		const filters: { label: string; appSettingsKey: TBooleanKeys<TSettings> }[] = [
+			{label: 'Missing Translations', appSettingsKey: 'shouldShowMissingTranslations'},
+			{label: 'Icons', appSettingsKey: 'shouldShowIcons'},
+			{label: 'Price', appSettingsKey: 'shouldShowPrice'},
+			{label: 'Retirement', appSettingsKey: 'shouldShowRetirement'},
+			{label: 'Yearn Meta File', appSettingsKey: 'shouldShowYearnMetaFile'},
+			{label: 'Ledger Live', appSettingsKey: 'shouldShowLedgerLive'},
+			{label: 'Strategies', appSettingsKey: 'shouldShowStrategies'},
+			{label: 'Risk', appSettingsKey: 'shouldShowRisk'},
+			{label: 'Risk Score', appSettingsKey: 'shouldShowRiskScore'},
+			{label: 'Descriptions', appSettingsKey: 'shouldShowDescriptions'},
+			{label: 'APY', appSettingsKey: 'shouldShowAPY'},
+			{label: 'Want Token Description', appSettingsKey: 'shouldShowWantTokenDescription'}
+		];
+
 		return (
-			<>
-				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<IconsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<PriceCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<span
-					className={'col-span-2 flex w-full flex-row items-center overflow-hidden rounded-lg bg-neutral-200/60 font-mono text-sm text-neutral-500 transition-colors md:w-fit'}>
-					<p className={'pr-4 pl-2'}>{'Version'}</p>
-
-					<div className={'flex flex-row divide-primary'}>
-						<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-all'}>
-							{'All'}
-							<input
-								type={'checkbox'}
-								id={'checkbox-vaults-all'}
-								className={'ml-2 rounded-lg'}
-								checked={appSettings.shouldShowVersion === 'all'}
-								onChange={(): void => {
-									set_appSettings({
-										...appSettings,
-										shouldShowVersion: 'all'
-									});
-								}} />
-						</label>
-
-						<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v2'}>
-							{'>= v0.2.0'}
-							<input
-								type={'checkbox'}
-								id={'checkbox-vaults-v2'}
-								className={'ml-2 rounded-lg'}
-								checked={appSettings.shouldShowVersion === 'v2'}
-								onChange={(): void => {
-									set_appSettings({
-										...appSettings,
-										shouldShowVersion: 'v2'
-									});
-								}} />
-						</label>
-
-						<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v3'}>
-							{'>= v0.3.0'}
-							<input
-								type={'checkbox'}
-								id={'checkbox-vaults-v3'}
-								className={'ml-2 rounded-lg'}
-								checked={appSettings.shouldShowVersion === 'v3'}
-								onChange={(): void => {
-									set_appSettings({
-										...appSettings,
-										shouldShowVersion: 'v3'
-									});
-								}} />
-						</label>
-
-						<label className={'cursor-pointer p-2 transition-colors hover:bg-neutral-200'} htmlFor={'checkbox-vaults-v4'}>
-							{'>= v0.4.0'}
-							<input
-								type={'checkbox'}
-								id={'checkbox-vaults-v4'}
-								className={'ml-2 rounded-lg'}
-								checked={appSettings.shouldShowVersion === 'v4'}
-								onChange={(): void => {
-									set_appSettings({
-										...appSettings,
-										shouldShowVersion: 'v4'
-									});
-								}} />
-						</label>
-					</div>
-				</span>
-			</>
+			<div className={'flex flex-row flex-wrap gap-2'}>
+				{filters.map(({label, appSettingsKey}): ReactElement => (
+					<FilterCheckbox key={label} label={label} appSettings={appSettings} set_appSettings={set_appSettings} appSettingsKey={appSettingsKey} />
+				))}
+			</div>
 		);
 	}
 
 	if (appSettings.shouldShowEntity === 'tokens') {
-		return (
-			<>
-				<AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<TranslationsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<IconsCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-				<PriceCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
-			</>
-		);
-	}
+		const filters: { label: string; appSettingsKey: TBooleanKeys<TSettings> }[] = [
+			{label: 'Missing Translations', appSettingsKey: 'shouldShowMissingTranslations'},
+			{label: 'Icons', appSettingsKey: 'shouldShowIcons'},
+			{label: 'Price', appSettingsKey: 'shouldShowPrice'}
+		];
 
-	if (['strategies', 'partners'].includes(appSettings.shouldShowEntity)) {
-		return <AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />;
+		return (
+			<div className={'flex flex-row flex-wrap gap-2'}>
+				{filters.map(({label, appSettingsKey}): ReactElement => (
+					<FilterCheckbox key={label} label={label} appSettings={appSettings} set_appSettings={set_appSettings} appSettingsKey={appSettingsKey} />
+				))}
+			</div>
+		);
 	}
 
 	return null;
 }
 
-function	Index(): ReactNode {
-	const	{chainID} = useWeb3();
-	const	{dataFromAPI, aggregatedData} = useYearn();
-	const	[vaults, set_vaults] = useState<any[]>([]);
-	const	[tokens, set_tokens] = useState<TTokensData>({});
-	const	[protocols, set_protocols] = useState<any>();
-	const	[partners, set_partners] = useState<Map<string, TPartner[]>>();
-	const	[protocolNames, set_protocolNames] = useState<string[]>([]);
-	const	[strategies, set_strategies] = useState<TStrategiesData>();
-	const	[appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
-	const	[selectedOption, set_selectedOption] = useState(OPTIONS[0]);
+function Index(): ReactNode {
+	const {chainID} = useWeb3();
+	const {dataFromAPI, aggregatedData} = useYearn();
+	const [vaults, set_vaults] = useState<any[]>([]);
+	const [tokens, set_tokens] = useState<TTokensData>({});
+	const [protocols, set_protocols] = useState<any>();
+	const [partners, set_partners] = useState<Map<string, TPartner[]>>();
+	const [protocolNames, set_protocolNames] = useState<string[]>([]);
+	const [strategies, set_strategies] = useState<TStrategiesData>();
+	const [appSettings, set_appSettings] = useState<TSettings>(defaultSettings);
+	const [selectedOption, set_selectedOption] = useState(OPTIONS[0]);
 
 	useEffect((): void => {
 		if (appSettings.shouldShowEntity === 'vaults') {
-			let	_vaults = [...dataFromAPI] || [];
+			let _vaults = [...dataFromAPI] || [];
 			if (appSettings.shouldShowOnlyEndorsed) {
-				_vaults = _vaults.filter((vault: {endorsed: boolean}): boolean => vault.endorsed);
+				_vaults = _vaults.filter((vault: { endorsed: boolean }): boolean => vault.endorsed);
 			}
 			if (appSettings.shouldShowVersion === 'v2') {
-				_vaults = _vaults.filter((vault: {version: string}): boolean => Number(vault.version.replace('.', '')) >= 2);
+				_vaults = _vaults.filter((vault: { version: string }): boolean => Number(vault.version.replace('.', '')) >= 2);
 			} else if (appSettings.shouldShowVersion === 'v3') {
-				_vaults = _vaults.filter((vault: {version: string}): boolean => Number(vault.version.replace('.', '')) >= 3);
+				_vaults = _vaults.filter((vault: { version: string }): boolean => Number(vault.version.replace('.', '')) >= 3);
 			} else if (appSettings.shouldShowVersion === 'v4') {
-				_vaults = _vaults.filter((vault: {version: string}): boolean => Number(vault.version.replace('.', '')) >= 4);
+				_vaults = _vaults.filter((vault: { version: string }): boolean => Number(vault.version.replace('.', '')) >= 4);
 			}
 			set_vaults(_vaults);
 		}
@@ -258,12 +185,12 @@ function	Index(): ReactNode {
 		}
 	}, [protocols?.protocol]);
 
-	const	errorCount = useMemo((): number => {
+	const errorCount = useMemo((): number => {
 		if (appSettings.shouldShowEntity === 'tokens') {
 			const _errorCount = (
 				Object.keys(tokens)
 					.filter((tokenAddress: string): boolean => {
-						const	hasAnomalies = (
+						const hasAnomalies = (
 							!aggregatedData.tokens[toAddress(tokenAddress)]?.hasValidPrice
 						);
 
@@ -281,19 +208,19 @@ function	Index(): ReactNode {
 			return _errorCount / (values.length || 1) * 100;
 
 		}
-		const	_errorCount = (
+		const _errorCount = (
 			vaults
 				.filter((vault): boolean => {
-					const	hasAnomalies = (
+					const hasAnomalies = (
 						vault.strategies.length === 0
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
-					|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
-					|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY);
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
+						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
+						|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY);
 					return (hasAnomalies);
 				})
 				.length
@@ -301,6 +228,17 @@ function	Index(): ReactNode {
 		return _errorCount / (vaults.length || 1) * 100;
 
 	}, [appSettings.shouldShowEntity, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
+
+	const versions: { [K in TVersions]: { label: string; value: string } } = {
+		all: {label: 'All', value: 'all'},
+		v2: {label: '>= v0.2.0', value: 'v2'},
+		v3: {label: '>= v0.3.0', value: 'v3'},
+		v4: {label: '>= v0.4.0', value: 'v4'}
+	};
+
+	const versionsOptions = Object.keys(versions).map((key): { label: string; value: string } => (versions[key as TVersions]));
+
+	const shouldShowAnomaliesCheckbox = ['vaults', 'tokens', 'strategies', 'partners'].includes(appSettings.shouldShowEntity);
 
 	return (
 		<div>
@@ -328,11 +266,23 @@ function	Index(): ReactNode {
 									set_selectedOption(option);
 									set_appSettings({...appSettings, shouldShowEntity: option.value});
 								}} />
-						</div>
-						<Filters appSettings={appSettings} set_appSettings={set_appSettings} />
+						</div>				<span className={'grid-cols-2'}>
+							<Dropdown
+								defaultOption={versions.v4}
+								options={versionsOptions}
+								selected={versions[appSettings.shouldShowVersion]}
+								onSelect={(option: { label: string; value: TVersions; }): void => {
+									set_appSettings({...appSettings, shouldShowVersion: option.value});
+								}}
+							/>
+						</span>
+						{shouldShowAnomaliesCheckbox ? <AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} /> : null}
 					</div>
 				</div>
-				{appSettings.shouldShowEntity === 'strategies' && 
+				<div className={'flex flex-wrap pb-6'}>
+					<Filters appSettings={appSettings} set_appSettings={set_appSettings} />
+				</div>
+				{appSettings.shouldShowEntity === 'strategies' &&
 					<div className={'flex flex-col space-y-2 pb-6'}>
 						<b className={'text-lg'}>{'Valid Protocol Names'}</b>
 						<small>{protocolNames.join(', ')}</small>
@@ -347,7 +297,7 @@ function	Index(): ReactNode {
 									key={`${vault.address}_${index}`}
 									vault={vault}
 									settings={appSettings}
-									noStrategies={vault.strategies.length === 0}/>
+									noStrategies={vault.strategies.length === 0} />
 							);
 						})}
 
@@ -364,13 +314,13 @@ function	Index(): ReactNode {
 							if (!protocols.protocol[protocol]) {
 								return null;
 							}
-							
+
 							const {missingTranslations} = protocols.protocol[protocol];
 
 							if (!missingTranslations) {
 								return null;
 							}
-							
+
 							return (
 								<Card variant={'background'} key={protocol}>
 									<div className={'flex flex-row space-x-4'}>
@@ -391,7 +341,7 @@ function	Index(): ReactNode {
 							);
 						})}
 
-						{appSettings.shouldShowEntity === 'partners'  && partners && [...partners].map(([partner, status]): ReactElement => {
+						{appSettings.shouldShowEntity === 'partners' && partners && [...partners].map(([partner, status]): ReactElement => {
 							return <PartnerEntity key={partner} partner={partner} status={status} settings={appSettings} />;
 						})}
 
