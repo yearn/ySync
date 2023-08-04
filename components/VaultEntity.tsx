@@ -217,7 +217,7 @@ function VaultEntity({
 	const hasStrategiesAnomaly = noStrategies;
 	const hasRiskAnomaly = vaultData?.strategies.some((strategy): boolean => (strategy?.risk?.riskGroup || 'Others') === 'Others');
 
-	const riskScores = vaultData?.strategies.map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
+	const riskScores = (vaultData?.strategies ?? []).map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
 		const sum = (
 			(strategy?.risk?.riskDetails?.TVLImpact || 0)
 			+ (strategy?.risk?.riskDetails?.auditScore || 0)
@@ -238,13 +238,13 @@ function VaultEntity({
 			isValid: sum > 0 && sum < 40
 		};
 	});
-	const hasRiskScoreAnomaly = riskScores.some((isValid): boolean => !isValid);
+	const hasRiskScoreAnomaly = riskScores?.some((isValid): boolean => !isValid);
 
-	const descriptions = vaultData?.strategies.map((strategy): { strategy: any; isValid: boolean } => ({
+	const descriptions = (vaultData?.strategies ?? []).map((strategy): { strategy: any; isValid: boolean } => ({
 		strategy,
 		isValid: strategy.description !== ''
 	}));
-	const hasDescriptionsAnomaly = descriptions.some(({isValid}): boolean => !isValid);
+	const hasDescriptionsAnomaly = descriptions?.some(({isValid}): boolean => !isValid);
 
 	const hasAPYAnomaly = vaultData?.hasErrorAPY || vaultData?.hasNewAPY;
 	const hasWantTokenDescriptionAnomaly = !vaultData?.token?.description;
@@ -468,7 +468,7 @@ function VaultEntity({
 				{((vaultSettings.shouldShowRiskScore && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToRiskScoreAnomaly)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
-						{riskScores.map((riskScore): ReactNode => {
+						{riskScores?.map((riskScore): ReactNode => {
 							return (
 								<StatusLine
 									key={`${riskScore.strategy.address}_risk`}
@@ -493,7 +493,7 @@ function VaultEntity({
 				{((vaultSettings.shouldShowDescriptions && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToDescriptionsAnomaly)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
-						{descriptions.map((description): ReactNode => {
+						{descriptions?.map((description): ReactNode => {
 							return (
 								<StatusLine
 									key={`${description.strategy.address}_description`}
