@@ -8,10 +8,10 @@ import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/StatusLine';
 import ModalFix from 'components/modals/ModalFix';
 import Code from 'components/Code';
-import type {TFixModalData, TSettings} from  'types/types';
+import type {TFixModalData, TSettings} from 'types/types';
 import {Copy, LinkOut} from '@yearn-finance/web-lib/icons';
 
-const		defaultFixModalData: TFixModalData = {
+const defaultFixModalData: TFixModalData = {
 	isOpen: false,
 	fix: {
 		category: '',
@@ -21,15 +21,15 @@ const		defaultFixModalData: TFixModalData = {
 	}
 };
 
-function	VaultEntity({
+function VaultEntity({
 	vault,
 	settings: vaultSettings,
 	noStrategies
-}: {vault: any, settings: TSettings, noStrategies?: boolean}): ReactElement | null {
-	const	{aggregatedData} = useYearn();
-	const	{chainID} = useWeb3();
-	const	{networks} = useSettings();
-	const	[fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
+}: { vault: any, settings: TSettings, noStrategies?: boolean }): ReactElement | null {
+	const {aggregatedData} = useYearn();
+	const {chainID} = useWeb3();
+	const {networks} = useSettings();
+	const [fixModalData, set_fixModalData] = useState<TFixModalData>(defaultFixModalData);
 
 	if (!vault) {
 		return null;
@@ -37,29 +37,16 @@ function	VaultEntity({
 
 	const vaultData = aggregatedData.vaults?.[toAddress(vault.address)];
 
-	const		hasAnomalies = (
-		(vault?.strategies?.length || 0) === 0
-		|| !vaultData?.hasLedgerIntegration
-		|| !vaultData?.hasValidStrategiesDescriptions
-		|| !vaultData?.hasValidStrategiesRisk
-		|| !vaultData?.hasValidStrategiesRiskScore
-		|| !vaultData?.hasYearnMetaFile
-		|| vaultData?.hasErrorAPY
-		|| vaultData?.hasNewAPY
-		|| !vaultData?.token?.description
-		|| !vaultData?.hasValidRetirement
-	);
-
-	function	onTriggerModalForLedger(): void {
-		function	renderSnippetB2C(): string {
+	function onTriggerModalForLedger(): void {
+		function renderSnippetB2C(): string {
 			const ledgerSnippetB2C = '{\n\t"address": "0x0000000000000000000000000000000000000000",\n\t"contractName": "some-contract-name",\n\t"selectors": {\n\t\t"0x3ccfd60b": {"erc20OfInterest": [], "method": "withdraw_all", "plugin": "Yearn"},\n\t\t"0x2e1a7d4d": {"erc20OfInterest": [], "method": "withdraw", "plugin": "Yearn"},\n\t\t"0x00f714ce": {"erc20OfInterest": [], "method": "withdraw_to", "plugin": "Yearn"},\n\t\t"0xe63697c8": {"erc20OfInterest": [], "method": "withdraw_to_with_slippage", "plugin": "Yearn"}\n\t}\n}'.trim();
-			let	snippet = '';
+			let snippet = '';
 			snippet = ledgerSnippetB2C.replace('0x0000000000000000000000000000000000000000', vault.address.toLowerCase());
 			snippet = snippet.replace('some-contract-name', vault.name);
 			return snippet;
 		}
 
-		function	renderSnippetMain(): string {
+		function renderSnippetMain(): string {
 			let addressChunks = vault.address.toLowerCase().replace('0x', '');
 			addressChunks = addressChunks.match(/.{1,2}/g);
 			addressChunks = addressChunks.map((chunk: string): string => `0x${chunk}`);
@@ -69,7 +56,7 @@ function	VaultEntity({
 			addressChunks = addressChunks.join('').trim();
 
 			const ledgerSnippetMain = `{{${addressChunks}},\n "${vault.token.symbol}",\n "${vault.symbol}",\n ${vault.decimals}}`;
-			let	snippet = '';
+			let snippet = '';
 			snippet = ledgerSnippetMain.replace('0x0000000000000000000000000000000000000000', vault.address.toLowerCase());
 			snippet = snippet.replace('some-contract-name', vault.name);
 			return snippet;
@@ -150,7 +137,8 @@ function	VaultEntity({
 			}
 		});
 	}
-	function	onTriggerModalForDescription(currentStrategy: {name: string, address: string}): void {
+
+	function onTriggerModalForDescription(currentStrategy: { name: string, address: string }): void {
 		set_fixModalData({
 			isOpen: true,
 			fix: {
@@ -193,7 +181,8 @@ function	VaultEntity({
 			}
 		});
 	}
-	function	onTriggerModalForMetaFileMissing(): void {
+
+	function onTriggerModalForMetaFileMissing(): void {
 		set_fixModalData({
 			isOpen: true,
 			fix: {
@@ -220,16 +209,92 @@ function	VaultEntity({
 		});
 	}
 
-	const {shouldShowIcons, shouldShowPrice, shouldShowMissingTranslations} = vaultSettings;
+	const hasIconAnomaly = !vaultData?.hasValidTokenIcon || !vaultData?.hasValidIcon;
+	const hasPriceAnomaly = !vaultData?.hasValidPrice;
+	const hasRetirementAnomaly = !vaultData?.hasValidRetirement;
+	const hasYearnMetaFileAnomaly = !vaultData?.hasYearnMetaFile;
+	const hasLedgerLiveAnomaly = !vaultData?.hasLedgerIntegration.deployed;
+	const hasStrategiesAnomaly = noStrategies;
+	const hasRiskAnomaly = vaultData?.strategies.some((strategy): boolean => (strategy?.risk?.riskGroup || 'Others') === 'Others');
 
-	const hasMissingIconAnomaly = !vaultData?.hasValidTokenIcon || !vaultData?.hasValidIcon;
-	const hasMissingPriceAnomaly = !vaultData?.hasValidPrice;
+	const riskScores = (vaultData?.strategies ?? []).map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
+		const sum = (
+			(strategy?.risk?.riskDetails?.TVLImpact || 0)
+			+ (strategy?.risk?.riskDetails?.auditScore || 0)
+			+ (strategy?.risk?.riskDetails?.codeReviewScore || 0)
+			+ (strategy?.risk?.riskDetails?.complexityScore || 0)
+			+ (strategy?.risk?.riskDetails?.longevityImpact || 0)
+			+ (strategy?.risk?.riskDetails?.protocolSafetyScore || 0)
+			+ (strategy?.risk?.riskDetails?.teamKnowledgeScore || 0)
+			+ (strategy?.risk?.riskDetails?.testingScore || 0)
+		);
 
-	const shouldRenderDueToMissingIcon = hasMissingIconAnomaly && shouldShowIcons;
-	const shouldRenderDueToMissingPrice = hasMissingPriceAnomaly && shouldShowPrice;
-	const shouldRenderDueToMissingTranslations = Object.keys((vaultData?.missingTranslations) || []).length !== 0 && shouldShowMissingTranslations;
+		return {
+			strategy: {
+				address: strategy.address,
+				name: strategy.name
+			},
+			sum,
+			isValid: sum > 0 && sum < 40
+		};
+	});
+	const hasRiskScoreAnomaly = riskScores?.some((isValid): boolean => !isValid);
 
-	if ((!hasAnomalies && vaultSettings.shouldShowOnlyAnomalies && !shouldRenderDueToMissingIcon && !shouldRenderDueToMissingPrice && !shouldRenderDueToMissingTranslations)) {
+	const descriptions = (vaultData?.strategies ?? []).map((strategy): { strategy: any; isValid: boolean } => ({
+		strategy,
+		isValid: strategy.description !== ''
+	}));
+	const hasDescriptionsAnomaly = descriptions?.some(({isValid}): boolean => !isValid);
+
+	const hasAPYAnomaly = vaultData?.hasErrorAPY || vaultData?.hasNewAPY;
+	const hasWantTokenDescriptionAnomaly = !vaultData?.token?.description;
+
+	const shouldRenderDueToMissingIcon = hasIconAnomaly && vaultSettings.shouldShowIcons;
+	const shouldRenderDueToMissingPrice = hasPriceAnomaly && vaultSettings.shouldShowPrice;
+	const shouldRenderDueToMissingTranslations = Object.keys((vaultData?.missingTranslations) || []).length !== 0 && vaultSettings.shouldShowMissingTranslations;
+	const shouldRenderDueToRetirementAnomaly = hasRetirementAnomaly && vaultSettings.shouldShowRetirement;
+	const shouldRenderDueToYearnMetaFileAnomaly = hasYearnMetaFileAnomaly && vaultSettings.shouldShowYearnMetaFile;
+	const shouldRenderDueToLedgerLiveAnomaly = hasLedgerLiveAnomaly && vaultSettings.shouldShowLedgerLive;
+	const shouldRenderDueToStrategiesAnomaly = hasStrategiesAnomaly && vaultSettings.shouldShowStrategies;
+	const shouldRenderDueToRiskAnomaly = hasRiskAnomaly && vaultSettings.shouldShowRisk;
+
+	const shouldRenderDueToRiskScoreAnomaly = hasRiskScoreAnomaly && vaultSettings.shouldShowRiskScore;
+	const shouldRenderDueToDescriptionsAnomaly = hasDescriptionsAnomaly && vaultSettings.shouldShowDescriptions;
+	const shouldRenderDueToAPYAnomaly = hasAPYAnomaly && vaultSettings.shouldShowAPY;
+	const shouldRenderDueToWantTokenDescriptionAnomaly = hasWantTokenDescriptionAnomaly && vaultSettings.shouldShowWantTokenDescription;
+
+	if (
+		!vaultSettings.shouldShowIcons &&
+		!vaultSettings.shouldShowPrice &&
+		!vaultSettings.shouldShowMissingTranslations &&
+		!vaultSettings.shouldShowRetirement &&
+		!vaultSettings.shouldShowYearnMetaFile &&
+		!vaultSettings.shouldShowLedgerLive &&
+		!vaultSettings.shouldShowStrategies &&
+		!vaultSettings.shouldShowRisk &&
+		!vaultSettings.shouldShowRiskScore &&
+		!vaultSettings.shouldShowDescriptions &&
+		!vaultSettings.shouldShowAPY &&
+		!vaultSettings.shouldShowWantTokenDescription
+	) {
+		return null;
+	}
+
+	if (
+		vaultSettings.shouldShowOnlyAnomalies &&
+		!shouldRenderDueToMissingIcon &&
+		!shouldRenderDueToMissingPrice &&
+		!shouldRenderDueToMissingTranslations &&
+		!shouldRenderDueToRetirementAnomaly &&
+		!shouldRenderDueToYearnMetaFileAnomaly &&
+		!shouldRenderDueToLedgerLiveAnomaly &&
+		!shouldRenderDueToStrategiesAnomaly &&
+		!shouldRenderDueToRiskAnomaly &&
+		!shouldRenderDueToRiskScoreAnomaly &&
+		!shouldRenderDueToDescriptionsAnomaly &&
+		!shouldRenderDueToAPYAnomaly &&
+		!shouldRenderDueToWantTokenDescriptionAnomaly
+	) {
 		return null;
 	}
 
@@ -237,12 +302,12 @@ function	VaultEntity({
 		<div className={'rounded-lg bg-neutral-200'}>
 			<div className={'flex flex-row space-x-4 rounded-t-lg bg-neutral-300/40 p-4'}>
 				<div className={'h-10 min-h-[40px] w-10 min-w-[40px] rounded-full bg-neutral-200'}>
-					{vault.icon ? 
+					{vault.icon ?
 						<Image
 							alt={''}
 							src={vault.icon}
 							width={40}
-							height={40} /> : 
+							height={40} /> :
 						<Image
 							alt={''}
 							src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/${chainID}/${vault.address}/logo-128.png`}
@@ -269,30 +334,30 @@ function	VaultEntity({
 				</div>
 			</div>
 			<div className={'flex flex-col p-4 pt-0'}>
-				<AnomaliesSection
+				{(vaultSettings.shouldShowRetirement && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToRetirementAnomaly) ? <AnomaliesSection
 					label={'Retirement'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: !!vaultData?.hasValidRetirement,
+						isValid: !hasRetirementAnomaly,
 						prefix: 'Retirement',
 						suffix: (
 							<span>
 								{vaultData?.hasValidRetirement ? 'for vault' : 'for vault, it should be retired=true'}
 							</span>
 						)
-					}]} />
+					}]} /> : null}
 
-				<AnomaliesSection
+				{((vaultSettings.shouldShowYearnMetaFile && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToYearnMetaFileAnomaly)) ? <AnomaliesSection
 					label={'Yearn Meta File'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: !!vaultData?.hasYearnMetaFile,
+						isValid: !hasYearnMetaFileAnomaly,
 						onClick: onTriggerModalForMetaFileMissing,
 						prefix: 'Yearn Meta File',
 						suffix: 'for vault'
-					}]} />
+					}]} /> : null}
 
-				{vaultSettings.shouldShowIcons && (
+				{((vaultSettings.shouldShowIcons && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToMissingIcon)) && (
 					<AnomaliesSection
 						label={'Icon'}
 						settings={vaultSettings}
@@ -314,7 +379,7 @@ function	VaultEntity({
 								</span>
 							)
 						}, {
-							isValid:!!vaultData?.hasValidTokenIcon,
+							isValid: !!vaultData?.hasValidTokenIcon,
 							prefix: 'Icon',
 							suffix: (
 								<span className={'inline'}>
@@ -334,7 +399,7 @@ function	VaultEntity({
 					/>
 				)}
 
-				<AnomaliesSection
+				{(vaultSettings.shouldShowLedgerLive && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToLedgerLiveAnomaly) ? <AnomaliesSection
 					label={'Ledger Live'}
 					settings={vaultSettings}
 					errorMessage={vaultData?.hasLedgerIntegration.incoming ? 'PENDING' : undefined}
@@ -344,14 +409,14 @@ function	VaultEntity({
 						onClick: onTriggerModalForLedger,
 						prefix: 'Ledger integration',
 						suffix: 'for vault'
-					}]} />
+					}]} /> : null}
 
-				{vaultSettings.shouldShowPrice && (
+				{((vaultSettings.shouldShowPrice && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToMissingPrice)) && (
 					<AnomaliesSection
 						label={'Price'}
 						settings={vaultSettings}
 						anomalies={[{
-							isValid: !!vaultData?.hasValidPrice,
+							isValid: !hasPriceAnomaly,
 							prefix: 'Price',
 							suffix: (
 								<span>
@@ -365,21 +430,21 @@ function	VaultEntity({
 					/>
 				)}
 
-				<AnomaliesSection
+				{((vaultSettings.shouldShowStrategies && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToStrategiesAnomaly)) ? <AnomaliesSection
 					label={'Strategies'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: !noStrategies,
+						isValid: !hasStrategiesAnomaly,
 						prefix: 'No strategies for this vault',
 						errorMessage: '',
 						suffix: ''
-					}]} />
+					}]} /> : null}
 
-				{vaultData?.hasValidStrategiesRisk && vaultSettings.shouldShowOnlyAnomalies ? null : (
+				{((vaultSettings.shouldShowRisk && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToRiskAnomaly)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk'}</b>
 						{vault.strategies.map((strategy: any): ReactNode => {
-							const	hasRiskFramework = (strategy?.risk?.riskGroup || 'Others') !== 'Others';
+							const hasRiskFramework = (strategy?.risk?.riskGroup || 'Others') !== 'Others';
 							return (
 								<StatusLine
 									key={`${strategy.address}_risk`}
@@ -394,74 +459,62 @@ function	VaultEntity({
 											</a>
 										</span>
 									)} />
-								
+
 							);
 						})}
 					</section>
-				)}
+				) : null}
 
-				{vaultData?.hasValidStrategiesRiskScore && vaultSettings.shouldShowOnlyAnomalies ? null : (
+				{((vaultSettings.shouldShowRiskScore && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToRiskScoreAnomaly)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Risk Score'}</b>
-						{vault.strategies.map((strategy: any): ReactNode => {
-							const sum = (
-								(strategy?.risk?.riskDetails?.TVLImpact || 0)
-								+ (strategy?.risk?.riskDetails?.auditScore || 0)
-								+ (strategy?.risk?.riskDetails?.codeReviewScore || 0)
-								+ (strategy?.risk?.riskDetails?.complexityScore || 0)
-								+ (strategy?.risk?.riskDetails?.longevityImpact || 0)
-								+ (strategy?.risk?.riskDetails?.protocolSafetyScore || 0)
-								+ (strategy?.risk?.riskDetails?.teamKnowledgeScore || 0)
-								+ (strategy?.risk?.riskDetails?.testingScore || 0)
-							);
+						{riskScores?.map((riskScore): ReactNode => {
 							return (
 								<StatusLine
-									key={`${strategy.address}_risk`}
+									key={`${riskScore.strategy.address}_risk`}
 									settings={vaultSettings}
-									isValid={sum > 0 && sum < 40}
+									isValid={!riskScore.isValid}
 									prefix={'Risk Score '}
 									suffix={(
 										<span>
 											{'for strategy '}
-											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${sum > 0 && sum < 40 ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-												{strategy.name}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${riskScore.strategy.address}`} target={'_blank'} className={`underline ${hasRiskScoreAnomaly ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+												{riskScore.strategy.name}
 											</a>
-											{` (${sum})`}
+											{` (${riskScore.sum})`}
 										</span>
 									)} />
-								
+
 							);
 						})}
 					</section>
-				)}
+				) : null}
 
-				{vaultData?.hasValidStrategiesDescriptions && vaultSettings.shouldShowOnlyAnomalies ? null : (
+				{((vaultSettings.shouldShowDescriptions && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToDescriptionsAnomaly)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Descriptions'}</b>
-						{vault.strategies.map((strategy: any): ReactNode => {
-							const	isMissingDescription = strategy.description === '';
-
+						{descriptions?.map((description): ReactNode => {
 							return (
 								<StatusLine
-									key={`${strategy.address}_description`}
-									onClick={(): void => onTriggerModalForDescription(strategy)}
+									key={`${description.strategy.address}_description`}
+									onClick={(): void => onTriggerModalForDescription(description.strategy)}
 									settings={vaultSettings}
-									isValid={!isMissingDescription}
+									isValid={!hasDescriptionsAnomaly}
 									prefix={'Description'}
 									suffix={(
 										<span>
 											{'for strategy '}
-											<a href={`${networks[chainID].explorerBaseURI}/address/${strategy.address}`} target={'_blank'} className={`underline ${!isMissingDescription ? '' : 'text-red-900'}`} rel={'noreferrer'}>
-												{strategy.name}
+											<a href={`${networks[chainID].explorerBaseURI}/address/${description.strategy.address}`} target={'_blank'} className={`underline ${!hasDescriptionsAnomaly ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+												{description.strategy.name}
 											</a>
 										</span>
 									)} />
 							);
 						})}
 					</section>
-				)}
+				) : null}
 
-				<AnomaliesSection
+				{((vaultSettings.shouldShowAPY && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToAPYAnomaly)) ? <AnomaliesSection
 					label={'APY'}
 					settings={vaultSettings}
 					anomalies={[{
@@ -475,15 +528,14 @@ function	VaultEntity({
 						prefix: 'APY is set to ',
 						errorMessage: '[ NEW ]',
 						suffix: `for vault - (Net APY: ${format.amount((vault?.apy?.net_apy || 0) * 100, 2, 4)}% | Gross APR: ${format.amount((vault?.apy?.gross_apr || 0) * 100, 2, 4)}%)`
-					}]} />
+					}]} /> : null}
 
-
-				{shouldRenderDueToMissingTranslations ? (
+				{((vaultSettings.shouldShowMissingTranslations && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToMissingTranslations)) ? (
 					<section aria-label={'strategies check'} className={'mt-4 flex flex-col pl-0 md:pl-0'}>
 						<b className={'mb-1 font-mono text-sm text-neutral-500'}>{'Missing Translations'}</b>
 						{Object.keys(vaultData?.missingTranslations ?? []).map((strategyAddress: any): ReactNode => {
 							const missingTranslation = vaultData?.missingTranslations;
-							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length-8, strategyAddress.length)}`; 
+							const shortAddress = `${strategyAddress.substr(0, 8)}...${strategyAddress.substr(strategyAddress.length - 8, strategyAddress.length)}`;
 
 							return (
 								<StatusLine
@@ -504,11 +556,11 @@ function	VaultEntity({
 					</section>
 				) : null}
 
-				<AnomaliesSection
+				{((vaultSettings.shouldShowWantTokenDescription && !vaultSettings.shouldShowOnlyAnomalies) || (vaultSettings.shouldShowOnlyAnomalies && shouldRenderDueToWantTokenDescriptionAnomaly)) ? <AnomaliesSection
 					label={'Want Token Description'}
 					settings={vaultSettings}
 					anomalies={[{
-						isValid: !!vaultData?.token?.description,
+						isValid: !hasWantTokenDescriptionAnomaly,
 						prefix: 'Description',
 						suffix: (
 							<span className={'inline'}>
@@ -524,7 +576,7 @@ function	VaultEntity({
 								</a>
 							</span>
 						)
-					}]} />
+					}]} /> : null}
 			</div>
 			<ModalFix
 				fix={fixModalData.fix}
