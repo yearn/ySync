@@ -473,7 +473,7 @@ function VaultEntity({
 								<StatusLine
 									key={`${riskScore.strategy.address}_risk`}
 									settings={vaultSettings}
-									isValid={!riskScore.isValid}
+									isValid={riskScore.isValid}
 									prefix={'Risk Score '}
 									suffix={(
 										<span>
