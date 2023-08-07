@@ -13,6 +13,7 @@ import StrategyEntity from 'components/StrategyEntity';
 import PartnerEntity from 'components/PartnerEntity';
 
 const defaultSettings: TSettings = {
+	shouldShowAllFilters: true,
 	shouldShowOnlyAnomalies: true,
 	shouldShowOnlyEndorsed: true,
 	shouldShowVersion: 'v4',
@@ -58,6 +59,41 @@ const AnomaliesCheckbox = ({appSettings, set_appSettings}: {
 				set_appSettings({
 					...appSettings,
 					shouldShowOnlyAnomalies: !appSettings.shouldShowOnlyAnomalies
+				});
+			}} />
+	</label>;
+};
+
+const SelectAllCheckbox = ({appSettings, set_appSettings}: {
+	appSettings: TSettings,
+	set_appSettings: (s: TSettings) => void
+}): ReactElement | null => {
+	return <label
+		htmlFor={'checkbox-anomalies'}
+		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
+		<p className={'pr-4'}>{'Select All Filters'}</p>
+		<input
+			type={'checkbox'}
+			id={'checkbox-select-all'}
+			className={'ml-2 rounded-lg'}
+			checked={appSettings.shouldShowAllFilters}
+			onChange={(): void => {
+				const isSelectAllChecked = !appSettings.shouldShowAllFilters;
+				set_appSettings({
+					...appSettings,
+					shouldShowAllFilters: isSelectAllChecked,
+					shouldShowMissingTranslations: isSelectAllChecked,
+					shouldShowIcons: isSelectAllChecked,
+					shouldShowPrice: isSelectAllChecked,
+					shouldShowRetirement: isSelectAllChecked,
+					shouldShowYearnMetaFile: isSelectAllChecked,
+					shouldShowLedgerLive: isSelectAllChecked,
+					shouldShowStrategies: isSelectAllChecked,
+					shouldShowRisk: isSelectAllChecked,
+					shouldShowRiskScore: isSelectAllChecked,
+					shouldShowDescriptions: isSelectAllChecked,
+					shouldShowAPY: isSelectAllChecked,
+					shouldShowWantTokenDescription: isSelectAllChecked
 				});
 			}} />
 	</label>;
@@ -277,6 +313,7 @@ function Index(): ReactNode {
 							/>
 						</span>
 						{shouldShowAnomaliesCheckbox ? <AnomaliesCheckbox appSettings={appSettings} set_appSettings={set_appSettings} /> : null}
+						<SelectAllCheckbox appSettings={appSettings} set_appSettings={set_appSettings} />
 					</div>
 				</div>
 				<div className={'flex flex-wrap pb-6'}>
