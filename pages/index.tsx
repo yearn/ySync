@@ -68,6 +68,25 @@ const SelectAllCheckbox = ({appSettings, set_appSettings}: {
 	appSettings: TSettings,
 	set_appSettings: (s: TSettings) => void
 }): ReactElement | null => {
+	useEffect((): void => {
+		const isAllSelected = [
+			appSettings.shouldShowMissingTranslations,
+			appSettings.shouldShowIcons,
+			appSettings.shouldShowPrice,
+			appSettings.shouldShowRetirement,
+			appSettings.shouldShowYearnMetaFile,
+			appSettings.shouldShowLedgerLive,
+			appSettings.shouldShowStrategies,
+			appSettings.shouldShowRisk,
+			appSettings.shouldShowRiskScore,
+			appSettings.shouldShowDescriptions,
+			appSettings.shouldShowAPY,
+			appSettings.shouldShowWantTokenDescription
+		].every(Boolean);
+
+		set_appSettings({...appSettings, shouldShowAllFilters: isAllSelected});
+	}, [appSettings, set_appSettings]);
+
 	return <label
 		htmlFor={'checkbox-anomalies'}
 		className={'flex w-fit cursor-pointer flex-row items-center rounded-lg bg-neutral-200/60 p-2 font-mono text-sm text-neutral-500 transition-colors hover:bg-neutral-200'}>
