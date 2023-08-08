@@ -18,7 +18,7 @@ export type	TVaultData = {
 	};
 	details: {
 		hideAlways: false
-		retired?: boolean;
+		retired: boolean;
 	}
 	hasValidStrategiesDescriptions: boolean;
 	hasValidStrategiesTranslations: boolean;

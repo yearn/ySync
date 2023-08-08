@@ -165,12 +165,9 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasErrorAPY: data.apy.type === 'error',
 					hasNewAPY: data.apy.type === 'new',
 					missingTranslations,
-					token: data?.token,
 					address: toAddress(data.address),
 					name: data.display_name || data.name,
-					icon: data.icon,
-					version: data.version,
-					strategies: data.strategies
+					...data
 				};
 			}
 		}
@@ -205,12 +202,12 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasYearnMetaFile,
 					hasValidRetirement: isRetirementValid(data),
 					missingTranslations: {},
-					token: data?.token,
 					address: toAddress(data.address),
 					name: data?.contractName || '',
 					icon: '',
 					version: 'Unknown',
-					strategies: []
+					strategies: [],
+					...data
 
 				};
 				continue;
@@ -247,12 +244,12 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 					hasYearnMetaFile,
 					hasValidRetirement: isRetirementValid(data),
 					missingTranslations: {},
-					token: data?.token,
 					address: toAddress(data.address),
 					name: data?.contractName || '',
 					icon: '',
 					version: 'Unknown',
-					strategies: []
+					strategies: [],
+					...data
 
 				};
 				continue;
