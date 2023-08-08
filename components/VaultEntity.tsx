@@ -246,7 +246,7 @@ function VaultEntity({
 	}));
 	const hasDescriptionsAnomaly = descriptions?.some(({isValid}): boolean => !isValid);
 
-	const hasAPYAnomaly = vaultData?.hasErrorAPY || vaultData?.hasNewAPY;
+	const hasAPYAnomaly = !vaultData.details.retired && !vaultData.details.hideAlways && vaultData?.hasErrorAPY || vaultData?.hasNewAPY;
 	const hasWantTokenDescriptionAnomaly = !vaultData?.token?.description;
 
 	const shouldRenderDueToMissingIcon = hasIconAnomaly && vaultSettings.shouldShowIcons;

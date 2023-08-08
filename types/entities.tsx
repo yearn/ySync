@@ -16,6 +16,10 @@ export type	TVaultData = {
 		incoming?: boolean;
 		deployed?: boolean;
 	};
+	details: {
+		hideAlways: false
+		retired?: boolean;
+	}
 	hasValidStrategiesDescriptions: boolean;
 	hasValidStrategiesTranslations: boolean;
 	hasValidStrategiesRisk: boolean;
