@@ -306,6 +306,7 @@ function Index(): ReactNode {
 
 					const hasAnomalies = (
 						(appSettings.shouldShowStrategies && vault.strategies.length === 0)
+						|| (appSettings.shouldShowMissingTranslations && !vaultData.missingTranslations)
 						|| (appSettings.shouldShowIcons && !vaultData.hasValidIcon)
 						|| (appSettings.shouldShowIcons && !vaultData.hasValidTokenIcon)
 						|| (appSettings.shouldShowPrice && !vaultData.hasValidPrice)
@@ -327,7 +328,7 @@ function Index(): ReactNode {
 		);
 		return _errorCount / (vaults.length || 1) * 100;
 
-	}, [appSettings.shouldShowEntity, appSettings.shouldShowStrategies, appSettings.shouldShowIcons, appSettings.shouldShowPrice, appSettings.shouldShowRetirement, appSettings.shouldShowYearnMetaFile, appSettings.shouldShowLedgerLive, appSettings.shouldShowRisk, appSettings.shouldShowAPY, appSettings.shouldShowWantTokenDescription, appSettings.shouldShowRiskScore, appSettings.shouldShowDescriptions, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
+	}, [appSettings.shouldShowEntity, appSettings.shouldShowStrategies, appSettings.shouldShowMissingTranslations, appSettings.shouldShowIcons, appSettings.shouldShowPrice, appSettings.shouldShowRetirement, appSettings.shouldShowYearnMetaFile, appSettings.shouldShowLedgerLive, appSettings.shouldShowRisk, appSettings.shouldShowAPY, appSettings.shouldShowWantTokenDescription, appSettings.shouldShowRiskScore, appSettings.shouldShowDescriptions, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
 
 	const versions: { [K in TVersions]: { label: string; value: string } } = {
 		all: {label: 'All', value: 'all'},
