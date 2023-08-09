@@ -66,26 +66,28 @@ const AnomaliesCheckbox = ({appSettings, set_appSettings}: {
 
 const SelectAllCheckbox = ({appSettings, set_appSettings}: {
 	appSettings: TSettings,
-	set_appSettings: (s: TSettings) => void
+	set_appSettings: React.Dispatch<React.SetStateAction<TSettings>>
 }): ReactElement | null => {
 	useEffect((): void => {
-		const isAllSelected = [
-			appSettings.shouldShowMissingTranslations,
-			appSettings.shouldShowIcons,
-			appSettings.shouldShowPrice,
-			appSettings.shouldShowRetirement,
-			appSettings.shouldShowYearnMetaFile,
-			appSettings.shouldShowLedgerLive,
-			appSettings.shouldShowStrategies,
-			appSettings.shouldShowRisk,
-			appSettings.shouldShowRiskScore,
-			appSettings.shouldShowDescriptions,
-			appSettings.shouldShowAPY,
-			appSettings.shouldShowWantTokenDescription
-		].every(Boolean);
-
-		set_appSettings({...appSettings, shouldShowAllFilters: isAllSelected});
-	}, [appSettings, set_appSettings]);
+		set_appSettings((prev): TSettings => {
+			const isAllSelected = [
+				prev.shouldShowMissingTranslations,
+				prev.shouldShowIcons,
+				prev.shouldShowPrice,
+				prev.shouldShowRetirement,
+				prev.shouldShowYearnMetaFile,
+				prev.shouldShowLedgerLive,
+				prev.shouldShowStrategies,
+				prev.shouldShowRisk,
+				prev.shouldShowRiskScore,
+				prev.shouldShowDescriptions,
+				prev.shouldShowAPY,
+				prev.shouldShowWantTokenDescription
+			].every(Boolean);
+			
+			return ({...prev, shouldShowAllFilters: isAllSelected});
+		});
+	}, [set_appSettings]);
 
 	return <label
 		htmlFor={'checkbox-anomalies'}
