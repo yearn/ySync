@@ -4,6 +4,7 @@ import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entit
 export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies' | 'partners';
 export type TVersions = 'all' | 'v2' | 'v3' | 'v4';
 export type TSettings = {
+	shouldShowAllFilters: boolean,
 	shouldShowOnlyAnomalies: boolean,
 	shouldShowOnlyEndorsed: boolean,
 	shouldShowMissingTranslations: boolean,
