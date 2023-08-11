@@ -268,23 +268,67 @@ function Index(): ReactNode {
 		const _errorCount = (
 			vaults
 				.filter((vault): boolean => {
+					const vaultData = aggregatedData.vaults[toAddress(vault.address)];
+					if (!vaultData) {
+						return false;
+					}
+
+					const riskScores = (vaultData.strategies ?? []).map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
+						const {riskDetails} = strategy?.risk || {};
+						if (!riskDetails) {
+							return {strategy: {address: strategy.address, name: strategy.name}, sum: 0, isValid: false};
+						}
+						const sum = (
+							(riskDetails.TVLImpact || 0)
+							+ (riskDetails.auditScore || 0)
+							+ (riskDetails.codeReviewScore || 0)
+							+ (riskDetails.complexityScore || 0)
+							+ (riskDetails.longevityImpact || 0)
+							+ (riskDetails.protocolSafetyScore || 0)
+							+ (riskDetails.teamKnowledgeScore || 0)
+							+ (riskDetails.testingScore || 0)
+						);
+
+						return {
+							strategy: {
+								address: strategy.address,
+								name: strategy.name
+							},
+							sum,
+							isValid: sum > 0 && sum < 40
+						};
+					});
+
+					const descriptions = (vaultData.strategies ?? []).map((strategy): { strategy: any; isValid: boolean } => ({
+						strategy,
+						isValid: strategy.description !== ''
+					}));
+
 					const hasAnomalies = (
-						vault.strategies.length === 0
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidPrice
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidIcon
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidTokenIcon
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasLedgerIntegration
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesDescriptions
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasValidStrategiesRisk
-						|| !aggregatedData.vaults[toAddress(vault.address)]?.hasYearnMetaFile
-						|| aggregatedData.vaults[toAddress(vault.address)]?.hasErrorAPY);
+						(appSettings.shouldShowStrategies && vault.strategies.length === 0)
+						|| (appSettings.shouldShowMissingTranslations && !!vaultData.missingTranslations)
+						|| (appSettings.shouldShowIcons && !vaultData.hasValidIcon)
+						|| (appSettings.shouldShowIcons && !vaultData.hasValidTokenIcon)
+						|| (appSettings.shouldShowPrice && !vaultData.hasValidPrice)
+						|| (appSettings.shouldShowRetirement && !vaultData.hasValidRetirement)
+						|| (appSettings.shouldShowYearnMetaFile && !vaultData.hasYearnMetaFile)
+						|| (appSettings.shouldShowLedgerLive && !vaultData.hasLedgerIntegration.deployed)
+						|| (appSettings.shouldShowStrategies && !vaultData.hasValidStrategiesDescriptions) // TODO: check if this is correct
+						|| (appSettings.shouldShowStrategies && !vaultData.hasValidStrategiesRisk) // TODO: check if this is correct
+						|| (appSettings.shouldShowRisk && vaultData.strategies.some((strategy): boolean => (strategy?.risk?.riskGroup || 'Others') === 'Others'))
+						|| (appSettings.shouldShowAPY && vaultData.hasErrorAPY)
+						|| (appSettings.shouldShowAPY && vaultData.hasNewAPY)
+						|| (appSettings.shouldShowWantTokenDescription && !vaultData.token?.description)
+						|| (appSettings.shouldShowRiskScore && riskScores?.some((isValid): boolean => !isValid))
+						|| (appSettings.shouldShowDescriptions && descriptions?.some(({isValid}): boolean => !isValid))
+					);
 					return (hasAnomalies);
 				})
 				.length
 		);
 		return _errorCount / (vaults.length || 1) * 100;
 
-	}, [appSettings.shouldShowEntity, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
+	}, [appSettings.shouldShowEntity, appSettings.shouldShowStrategies, appSettings.shouldShowMissingTranslations, appSettings.shouldShowIcons, appSettings.shouldShowPrice, appSettings.shouldShowRetirement, appSettings.shouldShowYearnMetaFile, appSettings.shouldShowLedgerLive, appSettings.shouldShowRisk, appSettings.shouldShowAPY, appSettings.shouldShowWantTokenDescription, appSettings.shouldShowRiskScore, appSettings.shouldShowDescriptions, vaults, tokens, aggregatedData.tokens, aggregatedData.vaults, partners]);
 
 	const versions: { [K in TVersions]: { label: string; value: string } } = {
 		all: {label: 'All', value: 'all'},
