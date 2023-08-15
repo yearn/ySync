@@ -499,12 +499,12 @@ function VaultEntity({
 									key={`${description.strategy.address}_description`}
 									onClick={(): void => onTriggerModalForDescription(description.strategy)}
 									settings={vaultSettings}
-									isValid={!hasDescriptionsAnomaly}
+									isValid={description.isValid}
 									prefix={'Description'}
 									suffix={(
 										<span>
 											{'for strategy '}
-											<a href={`${networks[chainID].explorerBaseURI}/address/${description.strategy.address}`} target={'_blank'} className={`underline ${!hasDescriptionsAnomaly ? '' : 'text-red-900'}`} rel={'noreferrer'}>
+											<a href={`${networks[chainID].explorerBaseURI}/address/${description.strategy.address}`} target={'_blank'} className={`underline ${description.isValid ? '' : 'text-red-900'}`} rel={'noreferrer'}>
 												{description.strategy.name}
 											</a>
 										</span>
