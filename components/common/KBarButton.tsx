@@ -8,7 +8,7 @@ function	KBarButton(): ReactElement {
 		<div className={'project--kbar-wrapper'}>
 			<label
 				onClick={query.toggle}
-				className={'focus-within:border-accent-500 flex h-8 w-full min-w-[300px] cursor-pointer flex-row items-center rounded-lg px-4 py-2 text-neutral-500 transition-colors'}>
+				className={'flex h-8 w-full min-w-[300px] cursor-pointer flex-row items-center rounded-lg px-4 py-2 text-neutral-500 transition-colors focus-within:border-accent-500'}>
 				<span className={'sr-only'}>{'search with kbar'}</span>
 				<IconSearch className={'mr-2 h-4 w-4 min-w-[16px] text-neutral-500/60'} />
 				<div className={'yearn--searchBox-input flex h-10 items-center text-neutral-500/60'}>

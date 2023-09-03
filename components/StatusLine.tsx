@@ -20,7 +20,7 @@ function	StatusLine({
 		}
 		return (
 			<div className={'flex flex-row items-start space-x-2'}>
-				<IconCheck className={'text-accent-500 mt-[2px] h-4 min-h-[16px] w-4 min-w-[16px]'}/>
+				<IconCheck className={'mt-[2px] h-4 min-h-[16px] w-4 min-w-[16px] text-accent-500'}/>
 				<p className={'break-words text-sm text-neutral-500'}>
 					{prefix}
 					{' OK '}

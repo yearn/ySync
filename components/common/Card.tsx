@@ -1,4 +1,4 @@
-import React, {ReactElement, Fragment} from 'react';
+import React, {Fragment, ReactElement} from 'react';
 import {Disclosure, Tab} from '@headlessui/react';
 import {AnimatePresence, motion} from 'framer-motion';
 import {IconChevron} from '@yearn-finance/web-lib';
@@ -44,7 +44,7 @@ function	CardDetailsSummary({startChildren, endChildren, ...props}: TCardDetailS
 				{endChildren}
 				<div className={'ml-auto'}>
 					<IconChevron
-						className={`text-primary-500 h-6 w-6 transition-transform ${props.open ? '-rotate-90' : '-rotate-180'}`} />
+						className={`h-6 w-6 text-primary-500 transition-transform ${props.open ? '-rotate-90' : '-rotate-180'}`} />
 				</div>
 			</div>
 		</div>

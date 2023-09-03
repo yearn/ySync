@@ -341,7 +341,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			set_aggregatedData(_allData);
 			set_nonce((n): number => n + 1);
 		});
-	}, []);
+	}, [chainID, web3Settings.yDaemonBaseURI]);
 
 	useEffect((): void => {
 		getYearnDataSync(chainID || 1);

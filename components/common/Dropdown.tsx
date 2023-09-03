@@ -61,7 +61,7 @@ export function Dropdown({options, defaultOption, selected, onSelect}: TDropdown
 								</Menu.Items>
 							</Transition>
 						</>
-					)
+					);
 				}}
 			</Menu>
 		</div>
