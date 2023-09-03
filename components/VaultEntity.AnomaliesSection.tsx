@@ -1,5 +1,5 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils';
+import {performBatchedUpdates} from '@yearn-finance/web-lib';
 import StatusLine from 'components/StatusLine';
 import type {TAnomalies, TAnomaliesSection} from 'types/types';
 

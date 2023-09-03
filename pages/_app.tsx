@@ -2,10 +2,11 @@ import React, {ReactElement} from 'react';
 import {AppProps} from 'next/app';
 import {AnimatePresence, motion} from 'framer-motion';
 import {KBarProvider} from 'kbar';
-import {WithYearn} from '@yearn-finance/web-lib/contexts';
+import {WithYearn, localhost} from '@yearn-finance/web-lib';
 import {YearnContextApp} from 'contexts/useYearn';
-import Footer from 'components/common/StandardFooter';
+import {Footer} from 'components/common/StandardFooter';
 import Header from 'components/common/Header';
+import {arbitrum, fantom, mainnet, optimism} from '@wagmi/chains';
 import HeaderTitle from 'components/common/HeaderTitle';
 import KBar from 'components/common/Kbar';
 import KBarButton from 'components/common/KBarButton';
@@ -79,17 +80,23 @@ function	MyApp(props: AppProps): ReactElement {
 	const	{Component, pageProps} = props;
 	
 	return (
-		<WithYearn options={{
-			web3: {
-				shouldUseWallets: false,
-				shouldUseStrictChainMode: false,
-				defaultChainID: 1,
-				supportedChainID: [1, 10, 250, 42161, 1337, 31337]
-			},
-			baseSettings: {
-				yDaemonBaseURI: process.env.YDAEMON_BASE_URI as string
-			}
-		}}>
+		<WithYearn
+			supportedChains={[
+				mainnet,
+				optimism,
+				fantom,
+				arbitrum,
+				localhost
+			]}
+			options={{
+				web3: {
+					shouldUseWallets: false,
+					defaultChainID: 1
+				},
+				baseSettings: {
+					yDaemonBaseURI: process.env.YDAEMON_BASE_URI as string
+				}
+			}}>
 			<YearnContextApp>
 				<AppWrapper
 					Component={Component}

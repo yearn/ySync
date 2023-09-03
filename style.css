@@ -1,5 +1,6 @@
 /* This will load Tailwindcss + all the overwrite from Yearn lib */
-@import '@yearn-finance/web-lib/dist/style.css';
+@import '@yearn-finance/web-lib/build/style.css';
+
 @font-face {
     font-family: 'Menlo Regular';
     font-style: normal;
@@ -17,25 +18,7 @@
 	object-position: 0 70%;
 }
 
-
-:root body[data-theme="light"],
-:root body[data-theme="dark"] {
-	--color-red-900: 3 73% 47%
-}
-
-:root body[data-theme="light"] {
-	& .yearn--card {
-		@apply border border-transparent !shadow-none;
-	}
-	& .label {
-		@apply border-transparent;
-	}
-	& .project--kbar-wrapper {
-		@apply rounded-lg opacity-60 bg-neutral-300/70 hover:bg-neutral-300 transition-colors;
-	}
-}
-
-:root body[data-theme="dark"] {
+:root body {
 	--color-neutral-0: 225 50% 27%;
 	--color-neutral-100: 225 51% 23%;
 	--color-neutral-200: 225 47% 21%;
@@ -43,43 +26,17 @@
 	--color-neutral-400: 0 0% 100%;
 	--color-neutral-500: 230 27% 87%;
 	--color-neutral-700: 0 0% 100%;
+	--color-neutral-900: 230 80% 90%;
 
 	--color-primary-100: 226 50% 18%;
-	--color-primary-200: 225 47% 41%;
-
-	@apply bg-neutral-200;
-	background-image: linear-gradient(180deg,transparent 0,#293e81 80vh);
+	--color-primary-200: 225 47% 41%
+	;
+	--color-accent-500: 220 95% 70%;
+	--color-red-900: 3 73% 70%;
 
 	& .yearn--button[data-variant="light"] {
-		@apply text-neutral-900 bg-primary-200 hover:bg-primary-100;
+		@apply text-neutral-900 bg-primary-200 hover:bg-primary-100 rounded-md;
 		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-100;}
-	}
-
-	& .yearn--card {
-		@apply border border-neutral-200 !shadow-none;
-	}
-
-	& .yearn--searchBox-wrapper {
-		--searchBox-text-color: hsl(var(--color-neutral-500));
-		--searchBox-border-color: hsl(var(--color-neutral-300));
-		--searchBox-bg-color: hsl(var(--color-neutral-0));
-		--searchBox-border-width: 1px;
-	}
-	& .yearn--searchBox {
-		@apply focus-within:border-neutral-200;
-	}
-
-	& .yearn--banner {
-		--banner-bg-color: hsl(var(--color-primary-100));
-		--banner-text-color: hsl(var(--color-neutral-700));
-		--banner-border-color: hsl(var(--color-neutral-200));
-		--banner-border-width: 2px;
-	}
-
-	& .yearn--elementWithActions {
-		--elementWithActions-text-color: hsl(var(--color-neutral-700));
-		--elementWithActions-action-color: hsl(var(--color-primary-500));
-		--elementWithActions-action-color-hover: hsl(var(--color-primary-600));
 	}
 
 	& .project--kbar-wrapper {
@@ -87,34 +44,9 @@
 	}
 }
 
-.yearn--modal {
-	@apply md:max-w-4xl;
-}
-
-.prism-code {
-	@apply p-4 rounded-lg my-4 overflow-x-scroll;
-}
 .token {
 	@apply text-xs;
 	font-family: 'Menlo Regular', monospace;
-}
-
-
-
-.yearn--select-reset {
-	@apply bg-transparent p-0 border-none;
-	&:focus {
-		outline: none;
-		box-shadow: none;
-	}
-}
-.yearn--select-no-arrow {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	background-image: none;
-}
-.yearn--select-no-arrow::-ms-expand {
-    display: none;
 }
 
 .yearn--input {
@@ -135,4 +67,134 @@
 	& ~ .yearn--input-caption {
 		@apply mt-1 pl-2 text-xs transition-colors text-neutral-900
 	}
+}
+
+/* -- Dropdown.tsx ----------------------------------------------------- */
+.yearn--dropdown-menu {
+	--dropdown-text-color: hsl(var(--color-primary-500));
+	--dropdown-bg-color: hsl(var(--color-neutral-300));
+	--dropdown-bg-color-active: hsl(var(--color-neutral-600));
+	--dropdown-border-width: 0px;
+	--dropdown-border-color: transparent;
+
+	@apply flex overflow-y-auto absolute left-0 flex-col mt-1 w-full min-w-fit max-h-60 scrollbar-none;
+	border-radius: var(--default-rounded);
+	border: solid var(--dropdown-border-width) var(--dropdown-border-color);
+	background: var(--dropdown-bg-color);
+}
+.yearn--dropdown-menu-item {
+	@apply flex flex-row items-center cursor-pointer py-1 pr-4 pl-3 transition-colors;
+	color: var(--dropdown-text-color);
+	&[data-active="true"] {
+		background-color: var(--dropdown-bg-color-active);
+	}
+}
+
+/* -- ElementWithActions.tsx ------------------------------------------- */
+.yearn--elementWithActions-copy {
+	@apply cursor-copy px-1 md:px-2;
+}
+.yearn--elementWithActions-linkout {
+	@apply cursor-alias;
+	& > a {@apply cursor-alias;}
+}
+.yearn--elementWithActions-icon {
+	@apply w-4 h-4 transition-colors;
+	color: var(--elementWithActions-action-color);
+	&:hover {
+		color: var(--elementWithActions-action-color-hover);
+	}
+}
+.yearn--elementWithActions {
+	@apply font-mono font-bold text-left;
+	color: var(--elementWithActions-text-color);
+	--elementWithActions-text-color: hsl(var(--color-neutral-700));
+	--elementWithActions-action-color: hsl(var(--color-primary-500));
+	--elementWithActions-action-color-hover: hsl(var(--color-primary-600));
+	& ~ button {
+		@apply flex justify-center items-center p-0 w-8 h-8;
+		border-radius: var(--default-rounded);
+	}
+}
+
+.yearn--elementWithActions-wrapper {
+	--elementWithActions-text-color: hsl(var(--color-neutral-700));
+	--elementWithActions-action-color: hsl(var(--color-primary-500));
+	--elementWithActions-action-color-hover: hsl(var(--color-primary-600));
+	@apply flex flex-row items-center;
+}
+
+/* -- Card.tsx --------------------------------------------------------- */
+.yearn--card-tab-item {
+	--card-tab-color-active: hsl(var(--color-primary-500));
+	--card-tab-color: hsl(var(--color-neutral-400));
+	--card-bg-color: hsl(var(--color-neutral-200));
+
+	@apply w-full h-20 border-b-2 flex-center cursor-pointer;
+	&.selected {
+		@apply font-bold;
+		border-color: var(--card-tab-color-active);
+		color: var(--card-tab-color-active);
+	}
+	&:not(.selected) {
+		@apply transition-colors cursor-pointer;
+		border-color: var(--card-tab-color);
+		color: var(--card-tab-color);
+		&:hover {
+			background-color: var(--card-bg-color);
+		}
+	}
+}
+.yearn--card-tab {
+	@apply flex flex-row w-full !rounded-b-none;
+	& > .yearn--card-tab-item:first-child {
+		border-top-left-radius: var(--default-rounded);
+	}
+	& > .yearn--card-tab-item:last-child {
+		border-top-right-radius: var(--default-rounded);
+	}
+}
+
+.yearn--card {
+	@apply shadow-none transition-all;
+	border-radius: var(--default-rounded);
+	&[role="button"] {@apply cursor-pointer hover:bg-neutral-0 shadow-lg;}
+	&[data-variant="background"] {@apply bg-neutral-100;}
+	&[data-variant="surface"] {@apply bg-neutral-0;}
+	&[data-padding="narrow"] {@apply p-2 md:p-4;}
+	&[data-padding="regular"] {@apply p-4 md:p-6;}
+	&[data-padding="relaxed"] {@apply p-8;}
+}
+
+/* -- SearchBox.tsx ---------------------------------------------------- */
+.yearn--searchBox-wrapper {
+	--searchBox-text-color: hsl(var(--color-neutral-500));
+	--searchBox-border-color: hsl(var(--color-neutral-300));
+	--searchBox-bg-color: hsl(var(--color-neutral-0));
+	--searchBox-border-width: 1px;
+
+	@apply overflow-hidden;
+	border-radius: var(--default-rounded);
+	background-color: var(--searchBox-bg-color);
+}
+
+.yearn--searchBox {
+	@apply flex flex-row items-center w-full focus-within:border-neutral-200 transition-colors bg-transparent;
+	color: var(--searchBox-text-color);
+	border: solid var(--searchBox-border-width) var(--searchBox-border-color);
+	border-radius: var(--default-rounded);
+
+	&[data-padding="narrow"] {
+		@apply p-2 h-10;
+		& > svg {@apply w-4 h-4 mr-2;}
+		& > input {@apply h-10;}
+	}
+	&[data-padding="regular"] {
+		@apply p-2 md:p-4 h-14;
+		& > svg {@apply w-6 h-6 mr-4;}
+		& > input {@apply h-14;}
+	}
+}
+.yearn--searchBox-input {
+	@apply p-0 w-full bg-transparent border-none focus:border-none outline-none focus:outline-none focus:ring-0;
 }

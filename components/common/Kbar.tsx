@@ -58,7 +58,7 @@ const ResultItem = forwardRef((
 	return (
 		<div
 			ref={ref}
-			className={`py-3 px-4 ${active ? 'border-neutral-300 bg-neutral-100' : 'border-transparent bg-transparent'} flex cursor-pointer items-center justify-between border-l-2 transition-colors hover:bg-neutral-100`}>
+			className={`px-4 py-3 ${active ? 'border-neutral-300 bg-neutral-100' : 'border-transparent bg-transparent'} flex cursor-pointer items-center justify-between border-l-2 transition-colors hover:bg-neutral-100`}>
 			<div className={'flex items-center gap-4 text-sm'}>
 				{action.icon && action.icon}
 				<div style={{display: 'flex', flexDirection: 'column'}}>

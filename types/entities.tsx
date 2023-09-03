@@ -1,7 +1,8 @@
+import {TAddress} from '@yearn-finance/web-lib';
 import {TFile} from './types';
 
 export type TVaultToken = {
-	address: string;
+	address: TAddress;
 	name: string;
 	display_name: string;
 	symbol: string;
@@ -33,7 +34,7 @@ export type	TVaultData = {
 	hasValidRetirement: boolean;
 	missingTranslations: {[key: string]: string[]};
 	token?: TVaultToken;
-	address: string;
+	address: TAddress;
 	name: string;
 	icon: string;
 	version: string;
@@ -44,7 +45,7 @@ export type	TVaultsData = {[key: string]: TVaultData}
 
 // Token entity
 export type	TTokenData = {
-	address: string;
+	address: TAddress;
 	name: string;
 	symbol: string;
 	price: string;
@@ -68,7 +69,7 @@ export type	TProtocolsData = {
 }
 
 export type	TStrategy = {
-	address: string;
+	address: TAddress;
 	name: string;
 	description?: string;
 	protocols?: string[];

@@ -1,7 +1,6 @@
 import React, {ReactElement, useMemo, useState} from 'react';
-import {Button} from '@yearn-finance/web-lib/components';
-import {Card} from '@yearn-finance/web-lib/components';
-import {useSettings} from '@yearn-finance/web-lib/contexts';
+import {Button, useSettings} from '@yearn-finance/web-lib';
+import {Card} from 'components/common/Card';
 
 type TWrappedInput = {
 	title: string;
@@ -18,12 +17,12 @@ function	WrappedInput({title, initialValue, onSave}: TWrappedInput): ReactElemen
 	return (
 		<label>
 			<p className={'pb-1 text-neutral-900'}>{title}</p>
-			<div className={'flex flex-row space-x-2 items-center'}>
+			<div className={'flex flex-row items-center space-x-2'}>
 				<div data-focused={isFocused} className={'yearn--input relative w-full'}>
 					<input
 						onFocus={(): void => set_isFocused(true)}
 						onBlur={(): void => set_isFocused(false)}
-						className={'h-10 w-full overflow-x-scroll border-2 border-neutral-700 bg-neutral-0 p-2 outline-none scrollbar-none'}
+						className={'bg-neutral-0 scrollbar-none h-10 w-full overflow-x-scroll border-2 border-neutral-700 p-2 outline-none'}
 						placeholder={'Use default RPC'}
 						value={value}
 						type={'text'}
@@ -49,7 +48,7 @@ function	SectionYearnAPIBaseURI(): ReactElement {
 			<div className={'flex w-full flex-row justify-between pb-4'}>
 				<h4 className={'text-lg font-bold'}>{'Yearn\'s APIs'}</h4>
 			</div>
-			<div className={'text-justify max-w-lg'}>
+			<div className={'max-w-lg text-justify'}>
 				<p>
 					{'The Yearn\'s API endpoints are used to get some specific Yearn\'s related information about the vaults, the strategies and much more.'}
 				</p>

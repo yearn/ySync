@@ -1,7 +1,6 @@
 import React, {ReactElement, createContext, useCallback, useContext, useEffect, useState} from 'react';
 import axios, {AxiosResponse} from 'axios';
-import {performBatchedUpdates, toAddress} from '@yearn-finance/web-lib/utils';
-import {useSettings, useWeb3} from '@yearn-finance/web-lib/contexts';
+import {TAddress, performBatchedUpdates, toAddress, useSettings, useWeb3} from '@yearn-finance/web-lib';
 import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
@@ -354,7 +353,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** image loader event to set the status to false if the load fails.
 	** This function track the icon for a vault.
 	**********************************************************************/
-	function	onUpdateIconStatus(address: string, status: boolean): void {
+	function	onUpdateIconStatus(address: TAddress, status: boolean): void {
 		performBatchedUpdates((): void => {
 			set_aggregatedData((data: appTypes.TAllData): appTypes.TAllData => {
 				const	newData = {
@@ -380,7 +379,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 	** This function track the underlying token for a vault.
 	**********************************************************************/
 	function	onUpdateTokenIconStatus(
-		address: string,
+		address: TAddress,
 		status: boolean,
 		pureToken: boolean
 	): void {

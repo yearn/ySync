@@ -1,8 +1,8 @@
 import React, {ReactElement} from 'react';
-import {AddressWithActions} from '@yearn-finance/web-lib/components';
 import type {TFile, TSettings} from 'types/types';
 import {TStrategy} from 'types/entities';
 import StatusLine from './StatusLine';
+import {AddressWithActions} from 'components/common/AddressWithActions';
 
 type TProtocolStatus = {
 	name: string;

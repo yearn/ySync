@@ -1,14 +1,13 @@
+import {IconHamburger, IconNetworkArbitrum, IconNetworkEthereum, IconNetworkFantom, IconNetworkOptimism, ModalMobileMenu, useWeb3} from '@yearn-finance/web-lib';
+import {Card} from 'components/common/Card';
+import {Dropdown} from 'components/common/Dropdown';
 import	React, {ReactElement, useEffect, useState}				from	'react';
-import	{useWeb3}							from	'@yearn-finance/web-lib/contexts';
-import	{Card, Dropdown, ModalMobileMenu}	from	'@yearn-finance/web-lib/components';
-import	{Hamburger, NetworkArbitrum, NetworkEthereum,
-	NetworkFantom, NetworkOptimism}				from	'@yearn-finance/web-lib/icons';
 
 const	options: any[] = [
-	{icon: <NetworkEthereum />, label: 'Ethereum', value: 1},
-	{icon: <NetworkOptimism />, label: 'Optimism', value: 10},
-	{icon: <NetworkFantom />, label: 'Fantom', value: 250},
-	{icon: <NetworkArbitrum />, label: 'Arbitrum', value: 42161}
+	{icon: <IconNetworkEthereum />, label: 'Ethereum', value: 1},
+	{icon: <IconNetworkOptimism />, label: 'Optimism', value: 10},
+	{icon: <IconNetworkFantom />, label: 'Fantom', value: 250},
+	{icon: <IconNetworkArbitrum />, label: 'Arbitrum', value: 42161}
 ];
 
 type		THeader = {
@@ -37,7 +36,7 @@ function	Header({
 				</div>
 				<div className={'flex flex-row items-center space-x-4 md:hidden'}>
 					<button onClick={(): void => set_hasMobileMenu(true)}>
-						<Hamburger />
+						<IconHamburger />
 					</button>
 				</div>
 				<div className={'flex flex-row items-center space-x-4'}>
@@ -47,7 +46,7 @@ function	Header({
 								defaultOption={options[0]}
 								options={options}
 								selected={selectedOption}
-								onSelect={(option: any): void => onSwitchChain(option.value as number, true)} />
+								onSelect={(option: any): void => onSwitchChain(option.value as number)} />
 						</div>
 					) : null}
 
@@ -56,7 +55,10 @@ function	Header({
 			<ModalMobileMenu
 				shouldUseWallets
 				isOpen={hasMobileMenu}
-				onClose={(): void => set_hasMobileMenu(false)} />
+				shouldUseNetworks={true} // TODO
+				onClose={(): void => set_hasMobileMenu(false)}>
+
+			</ModalMobileMenu>
 		</header>
 	);
 }
