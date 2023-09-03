@@ -1,5 +1,11 @@
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {IconCopy} from '@yearn-finance/web-lib/icons/IconCopy';
+import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
+import {TAddress} from '@yearn-finance/web-lib/types';
+import {toENS} from '@yearn-finance/web-lib/utils/address';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import	React, {ReactElement, useEffect, useState}				from	'react';
-import {IconCopy, IconLinkOut, TAddress, copyToClipboard, getNetwork, toENS, useWeb3} from '@yearn-finance/web-lib';
 
 type TAddressWithActions = {
 	address: TAddress;

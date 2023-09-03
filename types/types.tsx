@@ -1,6 +1,6 @@
 import {ReactElement} from 'react';
 import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
-import {TAddress} from '@yearn-finance/web-lib';
+import {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies' | 'partners';
 export type TVersions = 'all' | 'v2' | 'v3' | 'v4';

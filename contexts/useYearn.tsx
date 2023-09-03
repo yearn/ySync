@@ -1,11 +1,15 @@
 import React, {ReactElement, createContext, useCallback, useContext, useEffect, useState} from 'react';
 import axios, {AxiosResponse} from 'axios';
-import {TAddress, performBatchedUpdates, toAddress, useSettings, useWeb3} from '@yearn-finance/web-lib';
 import {getUniqueLanguages} from 'utils/getUniqueLanguages';
 import type * as appTypes from 'types/types';
 import {TFile} from 'types/types';
 import {cleanString} from 'utils/cleanString';
 import {BigNumber} from 'ethers';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useSettings} from '@yearn-finance/web-lib/contexts/useSettings';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {TAddress} from '@yearn-finance/web-lib/types';
 
 const	YearnContext = createContext<appTypes.TYearnContext>({
 	dataFromAPI: [],

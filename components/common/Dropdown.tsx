@@ -1,7 +1,7 @@
 
 import	React, {Fragment, ReactElement, cloneElement}	from	'react';
 import	{Menu, Transition}		from	'@headlessui/react';
-import {IconChevron} from '@yearn-finance/web-lib';
+import {IconChevron} from '@yearn-finance/web-lib/icons/IconChevron';
 
 export type TDropdownOption = {
 	icon?: ReactElement;

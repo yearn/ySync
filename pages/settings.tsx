@@ -1,6 +1,7 @@
 import React, {ReactElement, useMemo, useState} from 'react';
-import {Button, useSettings} from '@yearn-finance/web-lib';
 import {Card} from 'components/common/Card';
+import {useSettings} from '@yearn-finance/web-lib/contexts/useSettings';
+import {Button} from '@yearn-finance/web-lib/components/Button';
 
 type TWrappedInput = {
 	title: string;

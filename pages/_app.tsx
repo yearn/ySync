@@ -2,8 +2,6 @@ import React, {ReactElement} from 'react';
 import {AppProps} from 'next/app';
 import {AnimatePresence, motion} from 'framer-motion';
 import {KBarProvider} from 'kbar';
-import {WithYearn, localhost} from '@yearn-finance/web-lib';
-import {YearnContextApp} from 'contexts/useYearn';
 import {Footer} from 'components/common/StandardFooter';
 import Header from 'components/common/Header';
 import {arbitrum, fantom, mainnet, optimism} from '@wagmi/chains';
@@ -13,6 +11,9 @@ import KBarButton from 'components/common/KBarButton';
 import Meta from 'components/common/Meta';
 
 import	'../style.css';
+import {YearnContextApp} from 'contexts/useYearn';
+import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
+import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 
 const transition = {duration: 0.3, ease: [0.17, 0.67, 0.83, 0.67]};
 const thumbnailVariants = {

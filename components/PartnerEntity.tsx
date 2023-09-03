@@ -1,8 +1,8 @@
 import React, {ReactElement} from 'react';
 import type {TPartner, TSettings} from 'types/types';
 import StatusLine from './StatusLine';
-import {useWeb3} from '@yearn-finance/web-lib';
 import {Card} from 'components/common/Card';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 type TPartnerEntityProps = {partner: string; status: TPartner[] ;settings: TSettings};
 

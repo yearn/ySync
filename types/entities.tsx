@@ -1,4 +1,4 @@
-import {TAddress} from '@yearn-finance/web-lib';
+import {TAddress} from '@yearn-finance/web-lib/types';
 import {TFile} from './types';
 
 export type TVaultToken = {

@@ -1,11 +1,15 @@
 import React, {ReactElement} from 'react';
 import Image from 'next/image';
-import {IconCopy, IconLinkOut, copyToClipboard, getNetwork, useWeb3} from '@yearn-finance/web-lib';
 import type {TSettings} from 'types/types';
 import TranslationStatusLine  from 'components/TranslationStatusLine';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import {TTokenData} from 'types/entities';
 import {AddressWithActions} from 'components/common/AddressWithActions';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
+import {IconCopy} from '@yearn-finance/web-lib/icons/IconCopy';
+import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 function	TokenEntity({
 	tokenData,

@@ -1,4 +1,10 @@
-import {IconHamburger, IconNetworkArbitrum, IconNetworkEthereum, IconNetworkFantom, IconNetworkOptimism, ModalMobileMenu, useWeb3} from '@yearn-finance/web-lib';
+import {ModalMobileMenu} from '@yearn-finance/web-lib/components/ModalMobileMenu';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {IconHamburger} from '@yearn-finance/web-lib/icons/IconHamburger';
+import {IconNetworkArbitrum} from '@yearn-finance/web-lib/icons/IconNetworkArbitrum';
+import {IconNetworkEthereum} from '@yearn-finance/web-lib/icons/IconNetworkEthereum';
+import {IconNetworkFantom} from '@yearn-finance/web-lib/icons/IconNetworkFantom';
+import {IconNetworkOptimism} from '@yearn-finance/web-lib/icons/IconNetworkOptimism';
 import {Card} from 'components/common/Card';
 import {Dropdown} from 'components/common/Dropdown';
 import	React, {ReactElement, useEffect, useState}				from	'react';

@@ -1,5 +1,4 @@
 import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'react';
-import {TAddress, toAddress, useWeb3} from '@yearn-finance/web-lib';
 import {useYearn} from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
@@ -12,6 +11,9 @@ import PartnerEntity from 'components/PartnerEntity';
 import {Card} from 'components/common/Card';
 import {StatisticCard} from 'components/common/StatisticCard';
 import {Dropdown} from 'components/common/Dropdown';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {TAddress} from '@yearn-finance/web-lib/types';
 
 const defaultSettings: TSettings = {
 	shouldShowAllFilters: true,

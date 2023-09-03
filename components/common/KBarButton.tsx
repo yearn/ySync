@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {useKBar} from 'kbar';
-import {IconSearch} from '@yearn-finance/web-lib';
+import {IconSearch} from '@yearn-finance/web-lib/icons/IconSearch';
 
 function	KBarButton(): ReactElement {
 	const	{query} = useKBar();

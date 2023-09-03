@@ -1,7 +1,7 @@
 import React, {Fragment, ReactElement} from 'react';
 import {Disclosure, Tab} from '@headlessui/react';
 import {AnimatePresence, motion} from 'framer-motion';
-import {IconChevron} from '@yearn-finance/web-lib';
+import {IconChevron} from '@yearn-finance/web-lib/icons/IconChevron';
 
 export type TCard = {
 	className?: string;

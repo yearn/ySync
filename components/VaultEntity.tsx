@@ -1,6 +1,5 @@
 import React, {ReactElement, ReactNode, useState} from 'react';
 import Image from 'next/image';
-import {IconCopy, IconLinkOut, TAddress, copyToClipboard, formatAmount, getNetwork, toAddress, useWeb3} from '@yearn-finance/web-lib';
 import {useYearn} from 'contexts/useYearn';
 import AnomaliesSection from 'components/VaultEntity.AnomaliesSection';
 import StatusLine from 'components/StatusLine';
@@ -8,6 +7,14 @@ import ModalFix from 'components/modals/ModalFix';
 import Code from 'components/Code';
 import type {TFixModalData, TSettings} from 'types/types';
 import {AddressWithActions} from 'components/common/AddressWithActions';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
+import {IconCopy} from '@yearn-finance/web-lib/icons/IconCopy';
+import {TAddress} from '@yearn-finance/web-lib/types';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
+import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 const defaultFixModalData: TFixModalData = {
 	isOpen: false,
