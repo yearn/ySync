@@ -5,7 +5,7 @@ import {TAddress} from '@yearn-finance/web-lib/types';
 import {toENS} from '@yearn-finance/web-lib/utils/address';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
-import	React, {ReactElement, useEffect, useState}				from	'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 
 type TAddressWithActions = {
 	address: TAddress;
@@ -15,22 +15,22 @@ type TAddressWithActions = {
 	className?: string;
 };
 
-export function	AddressWithActions({
+export function AddressWithActions({
 	address,
 	explorer = '',
 	truncate = 5,
 	wrapperClassName,
 	className = ''
 }: TAddressWithActions): ReactElement {
-	const	{chainID} = useWeb3();
-	const	[explorerURI, set_explorerURI] = useState('');
+	const {chainID} = useWeb3();
+	const [explorerURI, set_explorerURI] = useState('');
 
 	useEffect((): void => {
 		if (explorer !== '') {
 			set_explorerURI(explorer);
 			return;
 		}
-		
+
 		const network = getNetwork(chainID).defaultBlockExplorer;
 		if (network) {
 			set_explorerURI(network);

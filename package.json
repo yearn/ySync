@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@babel/core": "^7.0.0",
-		"@yearn-finance/web-lib": "3.0.8",
+		"@yearn-finance/web-lib": "3.0.18",
 		"axios": "^0.27.2",
 		"eslint-plugin-brackets": "^0.1.3",
 		"eslint-plugin-simple-import-sort": "^10.0.0",
