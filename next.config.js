@@ -34,6 +34,7 @@ module.exports = (phase) => withPWA({
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
 		INFURA_KEY: process.env.INFURA_KEY,
 		// YDAEMON_ENDPOINT: 'http://localhost:8080'
-		YDAEMON_BASE_URI: 'https://ydaemon.ycorpo.com'
+		YDAEMON_BASE_URI: 'https://ydaemon.ycorpo.com',
+		WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID
 	}
 });
