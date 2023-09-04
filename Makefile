@@ -1,6 +1,7 @@
 .PHONY: build up down
 
 build:
+	source .env
 	docker build -t ysync .
 
 up:
