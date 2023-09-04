@@ -9,7 +9,7 @@ The main data source is the [yDaemon](https://github.com/yearn/ydaemon), accessi
 
 ## How to run the project
 1. Clone the repository
-2. Create your own `.env` with your `WALLETCONNECT_PROJECT_ID`
+2. Rename `.env.example` to `.env`; add your `WALLETCONNECT_PROJECT_ID`
 3. Run `yarn`  
 4. Run `yarn run dev`  
 5. Access `http://localhost:3000`  
