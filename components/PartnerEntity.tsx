@@ -1,12 +1,12 @@
 import React, {ReactElement} from 'react';
-import {Card} from '@yearn-finance/web-lib/components';
 import type {TPartner, TSettings} from 'types/types';
 import StatusLine from './StatusLine';
-import {useWeb3} from '@yearn-finance/web-lib';
+import {Card} from 'components/common/Card';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 type TPartnerEntityProps = {partner: string; status: TPartner[] ;settings: TSettings};
 
-const getSuffix = (src: string, chainID: string, hasAnomalies: boolean, partner: string): ReactElement | string => {
+const getSuffix = (src: string, chainID: number, hasAnomalies: boolean, partner: string): ReactElement | string => {
 	if (hasAnomalies && src === 'yDaemon') {
 		return (<span>
 			{'yDaemon (file '}

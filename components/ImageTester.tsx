@@ -2,8 +2,8 @@
 import React, {ReactElement} from 'react';
 import {useYearn}  from 'contexts/useYearn';
 import {TTokenData, TTokensData} from 'types/entities';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
-import {toAddress} from '@yearn-finance/web-lib/utils';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	VaultImageTester({vaults}: {vaults: any[]}): ReactElement {
 	const	{onUpdateIconStatus, onUpdateTokenIconStatus} = useYearn();

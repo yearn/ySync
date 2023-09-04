@@ -1,5 +1,6 @@
+import {Modal} from '@yearn-finance/web-lib/components/Modal';
+import {Card} from 'components/common/Card';
 import	React, {ReactElement}	from	'react';
-import	{Card, Modal}			from	'@yearn-finance/web-lib/components';
 import	type {TFixModalData}	from	'types/types';
 
 type		TModalFix = {

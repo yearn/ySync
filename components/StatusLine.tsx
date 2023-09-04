@@ -50,7 +50,7 @@ function	StatusLine({
 					{suffix}
 					{onClick ? <IconFix
 						onClick={onClick}
-						className={'mt-[2px] ml-2 inline h-4 min-h-[16px] w-4 min-w-[16px] cursor-pointer text-neutral-500/40 transition-colors hover:text-neutral-500'} /> : null}
+						className={'ml-2 mt-[2px] inline h-4 min-h-[16px] w-4 min-w-[16px] cursor-pointer text-neutral-500/40 transition-colors hover:text-neutral-500'} /> : null}
 				</p>
 			</div>
 		);	
@@ -64,7 +64,7 @@ function	StatusLine({
 				{suffix}
 				{onClick ? <IconFix
 					onClick={onClick}
-					className={'mt-[2px] ml-2 inline h-4 min-h-[16px] w-4 min-w-[16px] cursor-pointer text-neutral-500/40 transition-colors hover:text-neutral-500'} /> : null}
+					className={'ml-2 mt-[2px] inline h-4 min-h-[16px] w-4 min-w-[16px] cursor-pointer text-neutral-500/40 transition-colors hover:text-neutral-500'} /> : null}
 			</p>
 		</div>
 	);

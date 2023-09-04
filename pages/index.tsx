@@ -1,7 +1,4 @@
 import React, {ReactElement, ReactNode, useEffect, useMemo, useState} from 'react';
-import {useWeb3} from '@yearn-finance/web-lib/contexts';
-import {toAddress} from '@yearn-finance/web-lib/utils';
-import {Card, Dropdown, StatisticCard} from '@yearn-finance/web-lib/components';
 import {useYearn} from 'contexts/useYearn';
 import VaultEntity from 'components/VaultEntity';
 import TokenEntity from 'components/TokenEntity';
@@ -11,6 +8,12 @@ import TranslationStatusLine from 'components/TranslationStatusLine';
 import {TStrategiesData, TTokensData} from 'types/entities';
 import StrategyEntity from 'components/StrategyEntity';
 import PartnerEntity from 'components/PartnerEntity';
+import {Card} from 'components/common/Card';
+import {StatisticCard} from 'components/common/StatisticCard';
+import {Dropdown} from 'components/common/Dropdown';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {TAddress} from '@yearn-finance/web-lib/types';
 
 const defaultSettings: TSettings = {
 	shouldShowAllFilters: true,
@@ -32,7 +35,7 @@ const defaultSettings: TSettings = {
 	shouldShowEntity: 'vaults'
 };
 
-type TOption = { label: string; value: TEntity };
+type TOption = { label: string; value: string };
 
 const OPTIONS: TOption[] = [
 	{label: 'Vaults', value: 'vaults'},
@@ -273,7 +276,7 @@ function Index(): ReactNode {
 						return false;
 					}
 
-					const riskScores = (vaultData.strategies ?? []).map((strategy): { strategy: { address: string; name: string; }; sum: number; isValid: boolean } => {
+					const riskScores = (vaultData.strategies ?? []).map((strategy): { strategy: { address: TAddress; name: string; }; sum: number; isValid: boolean } => {
 						const {riskDetails} = strategy?.risk || {};
 						if (!riskDetails) {
 							return {strategy: {address: strategy.address, name: strategy.name}, sum: 0, isValid: false};
@@ -365,15 +368,15 @@ function Index(): ReactNode {
 								selected={selectedOption}
 								onSelect={(option: TOption): void => {
 									set_selectedOption(option);
-									set_appSettings({...appSettings, shouldShowEntity: option.value});
+									set_appSettings({...appSettings, shouldShowEntity: option.value as TEntity});
 								}} />
 						</div>				<span className={'grid-cols-2'}>
 							<Dropdown
 								defaultOption={versions.v4}
 								options={versionsOptions}
 								selected={versions[appSettings.shouldShowVersion]}
-								onSelect={(option: { label: string; value: TVersions; }): void => {
-									set_appSettings({...appSettings, shouldShowVersion: option.value});
+								onSelect={(option: { label: string; value: string; }): void => {
+									set_appSettings({...appSettings, shouldShowVersion: option.value as TVersions});
 								}}
 							/>
 						</span>

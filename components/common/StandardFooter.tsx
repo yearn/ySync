@@ -1,12 +1,8 @@
 import React, {ReactElement} from 'react';
-import {SwitchTheme} from '@yearn-finance/web-lib/components';
-import {useUI} from '@yearn-finance/web-lib/contexts';
 import meta from 'public/manifest.json';
 import Link from 'next/link';
 
-function	Footer(): ReactElement {
-	const	{theme, switchTheme} = useUI();
-
+export function	Footer(): ReactElement {
 	return (
 		<footer className={'mx-auto mt-auto hidden w-full max-w-6xl flex-row items-center py-8 md:flex'}>
 			<a href={meta.github} target={'_blank'} className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
@@ -30,13 +26,6 @@ function	Footer(): ReactElement {
 					{'Settings'}
 				</a>
 			</Link>
-
-			<div className={'ml-auto px-3'}>
-				<SwitchTheme theme={theme} switchTheme={switchTheme} />
-			</div>
-
 		</footer>
 	);
 }
-
-export default Footer;

@@ -7,17 +7,13 @@ const {PHASE_EXPORT} = require('next/constants');
 
 module.exports = (phase) => withPWA({
 	assetPrefix: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT ? './' : '/',
-	experimental: {
-		images: {
-			unoptimized: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT //Exporting image does not support optimization
-		}
-	},
 	images: {
 		domains: [
 			'rawcdn.githack.com',
 			'raw.githubusercontent.com',
 			'assets.smold.app'
-		]
+		],
+		unoptimized: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT // Exporting image does not support optimization
 	},
 	env: {
 		/* 🔵 - Yearn Finance **************************************************
@@ -38,6 +34,7 @@ module.exports = (phase) => withPWA({
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
 		INFURA_KEY: process.env.INFURA_KEY,
 		// YDAEMON_ENDPOINT: 'http://localhost:8080'
-		YDAEMON_BASE_URI: 'https://ydaemon.ycorpo.com'
+		YDAEMON_BASE_URI: 'https://ydaemon.ycorpo.com',
+		WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID
 	}
 });

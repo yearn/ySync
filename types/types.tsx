@@ -1,5 +1,6 @@
 import {ReactElement} from 'react';
 import {TProtocolsData, TStrategiesData, TTokensData, TVaultsData} from './entities';
+import {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TEntity = 'vaults' | 'tokens' | 'protocols' | 'strategies' | 'partners';
 export type TVersions = 'all' | 'v2' | 'v3' | 'v4';
@@ -43,7 +44,7 @@ export type	TFixModalData = {
 	isOpen: boolean,
 	fix: {
 		category: 'ledger' | 'description' | 'file' | '',
-		address: string,
+		address: TAddress,
 		name: string,
 		instructions: (string | ReactElement)[]
 	}
@@ -53,8 +54,8 @@ export type	TFixModalData = {
 export type	TYearnContext = {
 	dataFromAPI: any[],
 	aggregatedData: TAllData,
-	onUpdateIconStatus: (address: string, status: boolean) => void,
-	onUpdateTokenIconStatus: (address: string, status: boolean, pureToken: boolean) => void,
+	onUpdateIconStatus: (address: TAddress, status: boolean) => void,
+	onUpdateTokenIconStatus: (address: TAddress, status: boolean, pureToken: boolean) => void,
 	nonce: number
 }
 
@@ -70,7 +71,7 @@ export type TFile = {
 }
 
 export type TExternalTokensFromYDaemon = {
-	address: string,
+	address: TAddress,
 	name: string,
 	symbol: string,
 	price: number,
@@ -103,7 +104,7 @@ export type	TRisk = {
 }
 
 export type	TStrategy = {
-	address: string,
+	address: TAddress,
 	name: string,
 	description?: string,
 	risk?: TRisk,

@@ -1,7 +1,7 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils';
 import StatusLine from 'components/StatusLine';
 import type {TAnomalies, TAnomaliesSection} from 'types/types';
+import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 function	AnomaliesSection({
 	label,
