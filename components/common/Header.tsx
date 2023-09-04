@@ -5,6 +5,7 @@ import {IconNetworkArbitrum} from '@yearn-finance/web-lib/icons/IconNetworkArbit
 import {IconNetworkEthereum} from '@yearn-finance/web-lib/icons/IconNetworkEthereum';
 import {IconNetworkFantom} from '@yearn-finance/web-lib/icons/IconNetworkFantom';
 import {IconNetworkOptimism} from '@yearn-finance/web-lib/icons/IconNetworkOptimism';
+import {IconNetworkBase} from '@yearn-finance/web-lib/icons/IconNetworkBase';
 import {Card} from 'components/common/Card';
 import {Dropdown} from 'components/common/Dropdown';
 import	React, {ReactElement, useEffect, useState}				from	'react';
@@ -13,6 +14,7 @@ const	options: any[] = [
 	{icon: <IconNetworkEthereum />, label: 'Ethereum', value: 1},
 	{icon: <IconNetworkOptimism />, label: 'Optimism', value: 10},
 	{icon: <IconNetworkFantom />, label: 'Fantom', value: 250},
+	{icon: <IconNetworkBase />, label: 'Base', value: 8453},
 	{icon: <IconNetworkArbitrum />, label: 'Arbitrum', value: 42161}
 ];
 
