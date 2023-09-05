@@ -3014,10 +3014,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@yearn-finance/web-lib@3.0.30":
-  version "3.0.30"
-  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-3.0.30.tgz#294dc7c887ff2899e376c8e1109f42fa923ec0f7"
-  integrity sha512-FLOPa1WpJYBiiA7/gREk27atXSDCQ+vO0tCL2xO1JUMpHQaH/b6078zeqbl4972w3s3C2YW5AMSpozPDCS4c9g==
+"@yearn-finance/web-lib@3.0.33":
+  version "3.0.33"
+  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-3.0.33.tgz#90a79d1476c4a781afc93018a12da2a255ca2ba4"
+  integrity sha512-n0JjblPe7F40wUhRF4zK8AHTDBXGYXrmwO0onBWr/+d1SDYQAHEHANIN8LLswlztjaMtKbLhyCPv9skG87sziA==
   dependencies:
     "@babel/core" "^7.0.0-0"
     "@headlessui/react" "^1.7.17"
