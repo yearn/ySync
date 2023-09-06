@@ -16,7 +16,7 @@ export function	Footer(): ReactElement {
 				<span className={'sr-only'}>{'Access Yearn\'s Discord'}</span>
 				{'Discord'}
 			</a>
-			<a href={'https://twitter.com/iearnfinance'} target={'_blank'} className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
+			<a href={'https://x.com/yearnfi'} target={'_blank'} className={'pr-6 text-xs text-neutral-500 transition-colors hover:text-accent-500 hover:underline'} rel={'noreferrer'}>
 				<span className={'sr-only'}>{'Access Yearn\'s Twitter account'}</span>
 				{'Twitter'}
 			</a>
