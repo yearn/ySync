@@ -28,6 +28,6 @@ body:
     id: thoughts
     attributes:
       label: Thoughts
-      description: Any idea or thoughts for the web-template team?
+      description: Any idea or thoughts for the ysync team?
     validations:
       required: false
