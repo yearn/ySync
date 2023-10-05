@@ -25,12 +25,12 @@ const defaultSettings: TSettings = {
 	shouldShowPrice: true,
 	shouldShowRetirement: true,
 	shouldShowYearnMetaFile: true,
-	shouldShowLedgerLive: true,
+	shouldShowLedgerLive: false,
 	shouldShowStrategies: true,
 	shouldShowRisk: true,
 	shouldShowRiskScore: true,
 	shouldShowDescriptions: true,
-	shouldShowAPY: true,
+	shouldShowAPY: false,
 	shouldShowWantTokenDescription: true,
 	shouldShowEntity: 'vaults'
 };
