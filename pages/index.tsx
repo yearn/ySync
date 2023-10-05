@@ -221,9 +221,6 @@ function Index(): ReactNode {
 	useEffect((): void => {
 		if (appSettings.shouldShowEntity === 'vaults') {
 			let _vaults = [...dataFromAPI] || [];
-			if (appSettings.shouldShowOnlyEndorsed) {
-				_vaults = _vaults.filter((vault: { endorsed: boolean }): boolean => vault.endorsed);
-			}
 			if (appSettings.shouldShowVersion === 'v2') {
 				_vaults = _vaults.filter((vault: { version: string }): boolean => Number(vault.version.replace('.', '')) >= 2);
 			} else if (appSettings.shouldShowVersion === 'v3') {

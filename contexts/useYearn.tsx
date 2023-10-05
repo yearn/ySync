@@ -79,7 +79,7 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		
 		const LANGUAGES = [...new Set(Object.values(strategies.data).map(({localization}: any): string[] => localization ? Object.keys(localization) : []).flat())];
 
-		const	_allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()};
+		const _allData: appTypes.TAllData = {vaults: {}, tokens: {}, protocols: {protocol: {}, files: []}, strategies: {}, partners: new Map()};
 		_allData.partners = partners;
 
 		// Mapping the strategies for ease of access
@@ -105,10 +105,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** This is the base data for the app.
 		**********************************************************************/
 		for (const data of fromAPI.data) {
-			if (!_allData.vaults) {
-				continue;
-			}
-
 			if (!_allData.vaults[toAddress(data.address) as string]) {
 				const	hasValidStrategiesDescriptions = (data?.strategies || []).every((strategy: appTypes.TStrategy): boolean => (
 					strategy.description !== ''
@@ -175,7 +171,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 			}
 		}
 
-
 		/* 🔵 - Yearn Finance **************************************************
 		** Processing data from the Ledger file
 		** Ledger Plugin integration works in a mysterious way. We need to
@@ -183,10 +178,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		** Only for mainnet.
 		**********************************************************************/
 		for (const data of _ledgerSupport?.data?.contracts || []) {
-			if (!_allData.vaults) {
-				continue;
-			}
-			
 			if (!_allData.vaults[toAddress(data.address)]) {
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				_allData.vaults[toAddress(data.address)] = {
@@ -225,10 +216,6 @@ export const YearnContextApp = ({children}: {children: ReactElement}): ReactElem
 		}
 
 		for (const data of _ledgerSupportFork?.data?.contracts || []) {
-			if (!_allData.vaults) {
-				continue;
-			}
-			
 			if (!_allData.vaults[toAddress(data.address)]) {
 				const	hasYearnMetaFile = YEARN_META_VAULT_FILES.includes(data.address);
 				_allData.vaults[toAddress(data.address)] = {

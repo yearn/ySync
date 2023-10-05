@@ -4,7 +4,7 @@ import {AnimatePresence, motion} from 'framer-motion';
 import {KBarProvider} from 'kbar';
 import {Footer} from 'components/common/StandardFooter';
 import Header from 'components/common/Header';
-import {arbitrum, fantom, mainnet, optimism} from '@wagmi/chains';
+import {arbitrum, base, fantom, mainnet, optimism} from '@wagmi/chains';
 import HeaderTitle from 'components/common/HeaderTitle';
 import KBar from 'components/common/Kbar';
 import KBarButton from 'components/common/KBarButton';
@@ -87,6 +87,7 @@ function	MyApp(props: AppProps): ReactElement {
 				optimism,
 				fantom,
 				arbitrum,
+				base,
 				localhost
 			]}
 			options={{
